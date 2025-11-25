@@ -51,7 +51,7 @@ aideepread-tech.github.io/
 
   * **📺 YouTube 頻道**: [DeepRead AI](https://www.youtube.com/@DeepReadAI-CK) - 觀看搭配視覺化解說的影片摘要。
   * **🌐 知識庫網站**: [DeepRead Tech Feed](https://aideepread-tech.github.io/) - 瀏覽完整的簡報、筆記與原始文獻來源。
-  * **📝 許願池(待更新)**: [提交您想了解的主題]() - 告訴我們您想看什麼，我們會優先製作。
+  * **📝 許願池**: [提交您想了解的主題](https://docs.google.com/forms/d/e/1FAIpQLSeFvIvo8i4tpglifjcnXn_R_cFy4csRPZEOzNxf07QFmguvmA/viewform?usp=sharing&ouid=109922389232594363985) - 告訴我們您想看什麼，我們會優先製作。
 
 ## ⚠️ 免責聲明 (Disclaimer)
 
