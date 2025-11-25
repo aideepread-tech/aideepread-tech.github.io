@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPTPlaner Guide</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#0f172a; --muted:#64748b; --card:#f8fafc; --accent:#2563eb; --accent-2:#1d4ed8;
+    --border:#e2e8f0; --ok:#16a34a; --warn:#ca8a04; --bad:#dc2626; --pill:#e0e7ff;
+  }
+  .dark{
+    --bg:#0b1220; --fg:#e5e7eb; --muted:#94a3b8; --card:#0f172a; --accent:#60a5fa; --accent-2:#3b82f6;
+    --border:#1f2937; --ok:#22c55e; --warn:#f59e0b; --bad:#f87171; --pill:#172554;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",Arial,"Apple Color Emoji","Segoe UI Emoji"; background:var(--bg); color:var(--fg);}
+  header{position:sticky; top:0; z-index:10; backdrop-filter:saturate(180%) blur(10px); background:color-mix(in srgb, var(--bg) 88%, transparent); border-bottom:1px solid var(--border);}
+  .container{max-width:1100px; margin:0 auto; padding:16px;}
+  h1{margin:6px 0 2px; font-size:22px;}
+  p.subtitle{margin:0 0 10px; color:var(--muted); font-size:14px;}
+  .toolbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:8px 0 12px;}
+  button{padding:8px 12px; font-size: 14px; border:1px solid var(--border); border-radius:12px; background:var(--card); color:var(--fg); cursor:pointer;}
+  button:hover{background-color: var(--border);}
+  .hr{height:1px; background:var(--border); margin:10px 0;}
+  .footer{color:var(--muted); font-size:12px; padding:20px 0 40px; text-align:center;}
+  .meta{display:flex; flex-wrap:wrap; gap:10px; margin:6px 0 8px;}
+  .meta a{color:var(--accent); text-decoration:none;}
+  .meta a:hover{text-decoration:underline;}
+
+  /* --- Layout Styles for side-by-side view --- */
+  .page { display: flex; border-bottom: 1px solid var(--border); padding: 20px 0; margin-bottom: 20px; }
+  .slide { flex: 1; padding-right: 20px; border-right: 1px solid var(--border); min-width: 0; }
+  .notes { flex: 1; padding-left: 20px; min-width: 0; }
+  h2 { border-bottom: 1px solid var(--border); padding-bottom: 10px; color: var(--fg); font-size: 18px; margin-top: 0; }
+  pre { background: var(--card); padding: 15px; border-radius: 8px; white-space: pre-wrap; word-wrap: break-word; border: 1px solid var(--border); font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; }
+  
+  /* --- SVG & Toggle Styles --- */
+  .slide-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+
+  .svg-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background-color: var(--card);
+  }
+  .svg-container svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px -2px rgba(0,0,0,0.08);
+  }
+
+  .conceptual-svg-container {
+    width: 100%;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background-color: var(--card);
+    padding: 10px;
+    border: 1px solid var(--border);
+  }
+  .conceptual-svg-container svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .slide-view-svg .no-svg-placeholder { aspect-ratio: 16/9; background-color: var(--card); border: 2px dashed var(--border); border-radius: 8px; display: flex; justify-content: center; align-items: center; color: var(--muted); font-size: 14px; }
+
+  /* Generic styles for rendered markdown content */
+  .rendered-content h1, .rendered-content h2, .rendered-content h3, .rendered-content h4, .rendered-content h5, .rendered-content h6 { border-bottom: none; padding-bottom: 5px; margin-top: 20px; }
+  .rendered-content ul, .rendered-content ol { padding-left: 25px; }
+  .rendered-content code { background-color: var(--pill); padding: 2px 5px; border-radius: 3px; font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; }
+  .rendered-content blockquote { border-left: 4px solid var(--border); padding-left: 15px; color: var(--muted); margin-left: 0; }
+  .rendered-content table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+  .rendered-content th, .rendered-content td { border: 1px solid var(--border); padding: 8px; }
+  .rendered-content th { background-color: var(--card); }
+  .rendered-content img { max-width: 100%; height: auto; display: block; margin: 1em 0; border-radius: 8px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <h1>Nested Learning: The Illusion of Deep Learning Architectures</h1>
+    <p class="subtitle">這篇論文挑戰傳統深度學習架構，提出一種名為「巢狀學習」(Nested Learning) 的新範式。它將模型重新定義為多層次的巢狀優化問題，揭示模型如何透過壓縮自身「脈絡流」進行學習，並為設計能持續學習、自我修改的更強大演算法開闢了新途徑。</p>
+    
+    <em style="font-size: 15px; color: var(--muted);">By Ali Behrouz, Meisam Razaviyayn, Peiling Zhong, Vahab Mirrokni, Google Research, arXiv preprint</em>
+    
+  </div>
+</header>
+
+<main class="container">
+  
+  <div class="rendered-content" style="font-size: 15px; padding: 15px 0;">
+      <p>深度學習模型（尤其是大型語言模型）在訓練後本質上是靜態的，無法持續獲取新知識，類似於「順行性遺忘症」。為了解決此限制，本論文引入了「巢狀學習」（Nested Learning, NL），一個受人腦記憶鞏固機制啟發的新學習範式。NL 將模型重新詮釋為一個由多層次、巢狀優化問題組成的整合系統，其中每個層級都有獨立的「脈絡流」與更新頻率。此觀點揭示了現有模型（包含優化器）皆為壓縮其脈絡的聯想記憶體。基於 NL，論文提出了三大核心貢獻：將優化器視為深度記憶體的「深度優化器」、能學習如何自我修改的「自修改泰坦」模型，以及一個「連續體記憶系統」。結合這些概念的 HOPE 架構在持續學習、語言模型和長脈絡推理任務中展現了卓越的潛力，為超越傳統堆疊層級的 AI 自我改進提供了藍圖。</p>
+
+  </div>
+  <div class="hr"></div>
+  
+  
+  
+        <div class="page" id="page-01">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 01</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-01">
+                    <h1>Nested Learning: The Illusion of Deep Learning Architectures</h1>
+<p><strong>Authors:</strong> Ali Behrouz, Meisam Razaviyayn, Peiling Zhong, Vahab Mirrokni (Google Research)</p>
+<hr />
+<p><strong>Core Argument:</strong></p>
+<p>Despite decades of progress, deep learning models face fundamental challenges in continual learning and adaptation. The conventional approach of stacking layers provides capacity but not necessarily greater computational depth or the ability to acquire new knowledge efficiently.</p>
+<p>This paper introduces <strong>Nested Learning (NL)</strong>, a new paradigm that reframes models not as flat architectures, but as a system of nested, multi-level optimization problems, each with its own &quot;context flow.&quot;</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 01</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 01 頁：The_Illusion_of_Deep_Learning</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>本篇論文由 Google Research 的 Ali Behrouz 等人發表，題為《巢狀學習：深度學習架構的幻象》。</li>
+<li>核心論點：傳統透過「堆疊層數」來加深模型的作法，雖然增加了容量，但在持續學習與適應性等根本問題上已遭遇瓶頸。</li>
+<li>本文提出一個名為「巢狀學習」(Nested Learning, NL) 的新範式，將模型重新定義為一個由多層次、多速率的巢狀優化問題組成的複雜系統。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)</p>
+<p>大家好，今天我們要探討一篇我認為極具啟發性的論文，它來自 Google Research 的 Ali Behrouz、Meisam Razaviyayn、Peiling Zhong 和 Vahab Mirrokni 等幾位學者，標題就非常引人深思：<strong>《Nested Learning: The Illusion of Deep Learning Architectures》</strong>，巢狀學習：深度學習架構的幻象。</p>
+<p>這個標題點出了一個我們這個時代最核心的問題。</p>
+<h5>① 「深度」的幻象</h5>
+<p>幾十年來，我們在 AI 領域的公式似乎很簡單：需要更強大的模型？那就把網路做得更深、更寬，也就是不斷地「堆疊層數」。從 AlexNet 到巨大的語言模型，這套方法確實帶來了驚人的成功。</p>
+<p>但這篇論文的作者們要我們停下來思考：這種堆疊，真的帶來了我們以為的「深度」嗎？還是，它只是一種幻象？</p>
+<blockquote>
+<p>論文中提到，傳統的深度學習在幾個關鍵面向並未因「層數堆疊」而提升：例如，模型的<strong>計算深度</strong> (computational depth) 可能沒有改變、模型適應新任務或持續學習的能力也沒有本質上的增強。</p>
+</blockquote>
+<p>我們看似在建造越來越高的摩天大樓，但地基和結構本身，可能從未改變。這就是今天我們要討論的核心挑戰。</p>
+<h5>② 新範式：巢狀學習 (Nested Learning)</h5>
+<p>為了解決這個困境，作者們提出了一個全新的視角，也就是 <strong>Nested Learning (NL)</strong>，我把它翻譯成「巢狀學習」。</p>
+<p>這個概念徹底改變了我們看待模型的方式。它主張，一個真正的學習模型，不應該是一個平面的、一層疊一層的線性結構。</p>
+<blockquote>
+<p>它應該被看作是一個「巢狀的、多層次的優化問題系統」，其中每個部分都有自己獨立的「脈絡流」(context flow)。</p>
+</blockquote>
+<p>想像一下，這不再是蓋大樓，而是觀察一個生態系。在這個系統裡，有快速反應的單元，也有緩慢、深層思考的單元，它們以不同的頻率、在不同的時間尺度上獨立運作與學習，共同構成一個動態的、能不斷適應的整體。這就是巢狀學習想要帶給我們的啟示。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在講完「『深度』的幻象」後，可以稍微停頓，讓聽眾思考一下這個詞的重量。</li>
+<li><strong>關鍵詞強調</strong>：本頁最重要的詞是 &quot;Nested Learning (NL)&quot;，請在念到時加重語氣，並可以手勢輔助，表達「層層嵌套」的感覺。同時，強調 &quot;Illusion&quot; (幻象) 這個詞，引發聽眾的好奇。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>那麼，這個「堆疊層數」所帶來的幻象，具體在現實世界中造成了什麼樣的根本性挑戰呢？最明顯的例子，就發生在當今最強大的大型語言模型 (LLMs) 身上。下一頁，我們就來揭開 LLMs 那個靜態不變的核心問題。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-02">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 02</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-02">
+                    <h1>The Core Challenge: The Static Nature of LLMs</h1>
+<p>Large Language Models (LLMs) are powerful, yet largely static after deployment. Their knowledge is frozen after the pre-training phase.</p>
+<hr />
+<h3>The &quot;Anterograde Amnesia&quot; Analogy</h3>
+<p>LLMs behave like a person with anterograde amnesia:</p>
+<ol>
+<li><strong>Intact Old Memories:</strong> They retain the vast knowledge from their training data (the &quot;long past&quot;).</li>
+<li><strong>Inability to Form New Memories:</strong> They cannot form new long-term memories from new information encountered in their context window.</li>
+</ol>
+<p>The model's parameters (long-term memory) are not updated by new context, limiting them to continuously experiencing the &quot;immediate present&quot; without true learning.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 02</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 02 頁：Core_Challenge_The_Static_Nature_of_LLMs</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>當前的大型語言模型 (LLMs) 在訓練完成後，其核心知識是<strong>靜態的 (static)</strong>，無法持續學習新知。</li>
+<li>這種限制，好比患上了「順行性遺忘症 (Anterograde Amnesia)」。</li>
+<li>模型能記住預訓練時的「遙遠過去」，也能處理當前對話中的「即時資訊」，卻無法將新資訊轉化為永久記憶。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+上一頁我們看到了這篇論文的核心論點，現在，讓我們深入探討它要解決的第一個，也是最根本的問題。大家可能覺得現在的 LLM 已經無所不能，但我要告訴各位，它們其實患有一種嚴重的「記憶障礙」。</p>
+<h5>① LLM 的核心困境：知識的「靜態性」</h5>
+<p>首先，我們必須理解，當前所有的大型語言模型，在完成訓練並部署後，基本上是<strong>靜態的</strong>。這意味著它們的知識被「凍結」在了預訓練結束的那一刻。</p>
+<p>它們可以完美執行在訓練階段學到的任務，但卻無法在不經過昂貴的重新訓練下，從新的對話或資料中學習到新的技能或知識。</p>
+<blockquote>
+<p>它們唯一具備的適應性，來自於所謂的「情境中學習 (in-context learning)」，也就是利用你當前輸入的提示詞來完成任務。但這種記憶是短暫的、臨時的，一旦對話結束，這些資訊也就煙消雲散了。</p>
+</blockquote>
+<h5>② 「順行性遺忘症」的精準比喻</h5>
+<p>為了讓大家更深刻地理解這個困境，論文的作者提出了一個非常精妙的比喻：<strong>順行性遺忘症 (Anterograde Amnesia)</strong>。</p>
+<p>這是一種真實存在的腦損傷，患者會保有發病前的所有記憶，但卻失去了形成<strong>新的長期記憶</strong>的能力。他們彷彿永遠活在「當下」，每一個新的瞬間對他們來說都是全新的體驗，因為他們無法將新的經歷寫入大腦的硬碟。</p>
+<p>這跟 LLM 的處境驚人地相似：</p>
+<ul>
+<li><strong>完整的舊記憶</strong>：模型擁有在預訓練時學到的海量知識，這就是它的「遙遠過去」。</li>
+<li><strong>無法形成新記憶</strong>：當我們在對話框中提供新的資訊時，這些資訊只存在於模型的「即時情境 (immediate context)」中，類似於人類的短期記憶。它永遠不會更新模型本身的參數——也就是那些儲存知識的 MLP 層（長期記憶）。</li>
+</ul>
+<p>因此，模型被迫在一個沒有學習能力的「永恆當下」中不斷重複運作。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在介紹完「順行性遺忘症」後，可以停頓兩秒，讓聽眾消化這個震撼性的比喻。</li>
+<li><strong>關鍵詞強調</strong>：在講到 <strong>&quot;Static&quot;</strong> (靜態的) 和 <strong>&quot;Anterograde Amnesia&quot;</strong> (順行性遺忘症) 時，請加重語氣，這是本頁的核心概念。</li>
+<li><strong>補充案例</strong>：可以舉例說明：「就像你告訴模型一個今天才發生的新聞，它可以在當下跟你聊，但你開一個新對話再問它，它就完全不記得了。」</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>既然我們了解了 LLM 的記憶系統存在如此根本性的缺陷，那麼一個健康的、能夠持續學習的記憶系統又是如何運作的呢？下一頁，我們將從大自然最偉大的傑作——人類大腦中，尋找靈感。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-03">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 03</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-03">
+                    <h1>Inspiration: Human Brain's Memory Consolidation</h1>
+<p>The brain efficiently manages continual learning through neuroplasticity and two key memory consolidation processes:</p>
+<hr />
+<ol>
+<li>
+<p><strong>Online (Synaptic) Consolidation:</strong></p>
+<ul>
+<li>A rapid process occurring immediately after learning.</li>
+<li>Stabilizes new, fragile memory traces and begins their transfer from short-term to long-term storage.</li>
+<li><strong>This is the phase missing in current LLMs.</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>Offline (Systems) Consolidation:</strong></p>
+<ul>
+<li>A slower process, often during sleep.</li>
+<li>Replays, strengthens, and reorganizes memories for permanent storage in the cortex.</li>
+</ul>
+</li>
+</ol>
+<p>Nested Learning aims to create a computational analog to the brain's online consolidation process, allowing models to learn from new experiences.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 03</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 03 頁：Inspiration_Human_Brain's_Memory_Consolidation</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>人類大腦透過兩種記憶鞏固過程來實現持續學習：「線上鞏固」和「離線鞏固」。</li>
+<li>「線上鞏固」是即時發生的，能快速穩定新記憶，這是目前大型語言模型所缺乏的關鍵環節。</li>
+<li>「離線鞏固」則是在休息或睡眠時發生，負責將記憶長期儲存。</li>
+<li>本研究的核心啟發，便是模擬大腦的「線上鞏固」機制，讓 AI 能從新經驗中學習。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+好，在理解了當前 LLM 就像得了「順行性遺忘症」這個核心痛點後，我們很自然地會問：那該向誰學習呢？答案，就在我們自己的大腦裡。這一頁，我們來看看人類大腦是如何高效地處理持續學習的，這也是我們提出「巢狀學習」最重要的靈感來源。</p>
+<p>大腦的學習能力，很大程度歸功於所謂的「神經可塑性」(neuroplasticity)，也就是大腦能根據新經驗、新記憶，甚至損傷，來改變自身結構的能力。而論文指出，記憶的形成，至少包含兩種互補的鞏固過程。</p>
+<h5>① 線上鞏固 (Online Consolidation)</h5>
+<p>首先是第一種，也是對我們啟發最大的一種，叫做「線上」或「突觸」鞏固。</p>
+<blockquote>
+<ul>
+<li><strong>A rapid process occurring immediately after learning.</strong></li>
+</ul>
+<p>這是一個<strong>非常快速</strong>的過程，幾乎在你學習新事物的當下或之後很短的時間內就會發生，甚至在你清醒的時候就在進行。</p>
+</blockquote>
+<blockquote>
+<ul>
+<li><strong>Stabilizes new, fragile memory traces and begins their transfer from short-term to long-term storage.</strong></li>
+</ul>
+<p>它的作用，是把那些剛形成、還非常脆弱的記憶痕跡給穩定下來，並且啟動一個從「短期記憶」轉存到「長期記憶」的初始過程。你可以把它想像成電腦寫入檔案時的「暫存」動作，確保新資訊不會馬上遺失。</p>
+</blockquote>
+<p>而最關鍵的一點來了：</p>
+<blockquote>
+<p><strong>This is the phase missing in current LLMs.</strong></p>
+<p><strong>這，就是當前大型語言模型所缺失的階段。</strong></p>
+</blockquote>
+<p>它們的參數在預訓練結束後就被凍結了，無法像大腦一樣，即時地穩定和內化新的知識。</p>
+<h5>② 離線鞏固 (Offline Consolidation)</h5>
+<p>接著是第二種，叫做「離線」或「系統」鞏固。</p>
+<blockquote>
+<ul>
+<li><strong>A slower process, often during sleep.</strong></li>
+</ul>
+<p>相較之下，這是一個<strong>比較緩慢</strong>的過程，通常發生在我們睡覺或休息的時候。</p>
+</blockquote>
+<blockquote>
+<ul>
+<li><strong>Replays, strengthens, and reorganizes memories for permanent storage in the cortex.</strong></li>
+</ul>
+<p>在這段時間裡，大腦會做什麼呢？論文提到，它會不斷「重播」(replay) 最近編碼的記憶模式。學術上，這與海馬迴中的「尖波漣漪」(sharp-wave ripples, SWRs) 活動有關。透過這種重播，大腦不斷強化、重組這些記憶，並最終將它們轉移到大腦皮層，進行永久性的儲存。</p>
+</blockquote>
+<p>這就像是我們晚上睡覺時，大腦在自動整理白天的檔案，進行歸檔和備份。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在講完「This is the phase missing in current LLMs」這句時，請務必加重語氣並稍作停頓，讓聽眾深刻體會到這是當前技術的核心缺陷。</li>
+<li><strong>補充案例</strong>：可以簡單比喻：線上鞏固就像是「寫下筆記」，離線鞏固則是「回家後整理筆記，變成自己的知識體系」。LLM 現在只會讀舊筆記，卻不會寫新筆記。</li>
+<li><strong>關鍵詞強調</strong>：本頁的 <code>Online Consolidation</code> 和 <code>Offline Consolidation</code> 是核心概念，建議唸出原文後再進行中文解釋，以幫助聽眾對照論文。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>既然我們找到了靈感來源——也就是大腦的「線上鞏固」機制。那麼，下一頁我們將正式介紹，該如何將這個生物學上的概念，轉化為一個全新的計算範式。這就是我們提出的：<strong>巢狀學習 (Nested Learning)</strong>。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-04">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 04</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-04">
+                    <h1>A New Paradigm: Nested Learning (NL)</h1>
+<p>Nested Learning represents a model and its training procedure as a set of nested, multi-level, and/or parallel optimization problems.</p>
+<hr />
+<h3>Key Idea:</h3>
+<p>Instead of a single, flat architecture with one training loop, NL views a model as an integrated system where different components learn at different speeds and on different types of information.</p>
+<ul>
+<li>Each component has its own <strong>&quot;context flow&quot;</strong> and <strong>update frequency</strong>.</li>
+<li>This reveals the hidden computational depth and inner gradient flows within existing models (like Transformers).</li>
+<li>It provides a path to design more expressive learning algorithms with more &quot;levels.&quot;</li>
+</ul>
+<p><img src="https://cdn-mineru.openxlab.org.cn/result/2025-11-24/cbe03578-fa5a-435c-a00d-6aaf72ec8da0/dabc572dc61251dcb4053d54b39ffb178b52505daef928d58473a0b112fe60ba.jpg" alt="Nested Learning Paradigm" /></p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 04</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 04 頁：A New Paradigm: Nested Learning (NL)</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>典範轉移</strong>：巢狀學習 (Nested Learning, NL) 提出，模型不應被看作是扁平的層級堆疊，而是一個由多層次、多速度的「巢狀優化問題」組成的整合系統。</li>
+<li><strong>核心概念</strong>：系統中的每個組件都擁有自己的「脈絡流 (context flow)」與「更新頻率 (update frequency)」，意味著不同部分以不同速度學習不同類型的資訊。</li>
+<li><strong>兩大貢獻</strong>：這個新視角不僅揭示了現有模型（如 Transformer）隱藏的計算深度，使其成為一個數學上的「白箱」；更重要的是，它提供了一條通往更強大、具備更高階能力的學習演算法之路。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+到目前為止，我們已經了解了當前 LLM 就像患有順行性遺忘症，無法形成新的長期記憶。那麼，這是否意味著我們走到了死胡同？完全不是。這篇論文的作者們提出了一個顛覆性的新典範，徹底改變我們看待模型架構的方式。這就是——<strong>巢狀學習 (Nested Learning, NL)</strong>。</p>
+<p>那麼，什麼是巢狀學習呢？</p>
+<h5>① 重新定義模型架構</h5>
+<p>簡單來說，巢狀學習的核心思想是：</p>
+<blockquote>
+<p>Nested Learning represents a model and its training procedure as a set of nested, multi-level, and/or parallel optimization problems.
+(巢狀學習將一個模型及其訓練過程，表述為一組巢狀的、多層次的、且/或平行的優化問題。)</p>
+</blockquote>
+<p>這句話聽起來可能有點抽象。請大家看一下投影片右邊的圖示。傳統的深度學習觀念，就像是這張圖的「扁平化版本 (flattened image)」，我們只看到一個個堆疊起來的黑盒子，卻不了解內部的真實運作。</p>
+<h5>② 從「扁平」到「整合系統」</h5>
+<p>NL 則提供了一個立體的、<strong>整合系統</strong>的視角。它告訴我們，一個模型並非只有一個單一的、緩慢的訓練循環（也就是我們常說的 pre-training）。相反地，模型內部其實充滿了許多個小型的、更快的學習循環。</p>
+<p>這個觀點的關鍵在於兩個概念：</p>
+<ul>
+<li><strong>脈絡流 (Context Flow)</strong>：指的是每個組件所「學習」的資訊類型。對某些組件來說，脈絡是輸入的文字 token；但對另一些組件（例如優化器），它的脈絡可能就是<strong>梯度 (gradients)</strong> 本身。</li>
+<li><strong>更新頻率 (Update Frequency)</strong>：指的是每個組件學習和更新其參數的速度。有些組件在每個 token 進來時都會快速更新，而另一些則可能在處理完數千個 token 後才緩慢更新一次。</li>
+</ul>
+<h5>③ 「白箱化」與「新維度」</h5>
+<p>當我們用「脈絡流」和「更新頻率」來解構模型時，會帶來兩個巨大的好處：</p>
+<p>第一，它揭示了現有模型內部<strong>隱藏的計算深度</strong>與梯度流。過去我們認為像 Transformer 這樣的模型很神秘，但 NL 讓所有內部的運作過程都變得透明，成為一個<strong>數學上的白箱 (mathematically white-box)</strong>，我們可以清楚地分析它。</p>
+<p>第二，也是更令人興奮的一點是，它為設計學習演算法提供了一個<strong>全新的維度 (a new dimension to deep learning)</strong>。我們不再只滿足於堆疊更多的「層 (layers)」，而是可以設計擁有更多「級別 (levels)」的演算法，從而實現更高階的脈絡中學習 (in-context learning) 能力。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在解釋完「脈絡流」和「更新頻率」後，可以稍作停頓，讓聽眾消化這兩個核心術語。</li>
+<li><strong>補充案例</strong>：你可以用一個企業組織來比喻：
+<ul>
+<li><strong>執行長 (CEO)</strong> 關注年度戰略，更新頻率最低（對應最外層的慢速學習）。</li>
+<li><strong>部門主管</strong> 根據季度目標調整策略，頻率中等。</li>
+<li><strong>第一線員工</strong> 每天應對客戶回饋，更新頻率最高（對應最內層的快速學習）。</li>
+<li>整個公司（模型）就是一個由不同更新頻率組件構成的巢狀系統。</li>
+</ul>
+</li>
+<li><strong>關鍵詞強調</strong>：本頁的 <strong>&quot;Nested Learning&quot;</strong>, <strong>&quot;context flow&quot;</strong>, 和 <strong>&quot;update frequency&quot;</strong> 是整篇論文的基石，唸到時請務必加重語氣。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>那麼，這個由無數個小型優化問題構成的巢狀系統，它最根本的運作單元是什麼呢？下一頁，我們將會看到，從神經科學的視角出發，這一切都可以被歸結為一個核心概念——<strong>聯想記憶 (Associative Memory)</strong>。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-05">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 05</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-05">
+                    <h1>Fundamental Unit: Learning as Associative Memory</h1>
+<p>NL redefines the concepts of memory and learning from a neuropsychology perspective:</p>
+<ul>
+<li><strong>Memory:</strong> A neural update caused by an input.</li>
+<li><strong>Learning:</strong> The process for acquiring <em>effective and useful</em> memory.</li>
+</ul>
+<hr />
+<h3>Associative Memory</h3>
+<p>The core building block is the <strong>associative memory</strong>: an operator <code>M</code> that learns to map a set of keys (K) to a set of values (V) by minimizing a quality-of-mapping objective.</p>
+<p><code>M* = argmin_M L(M(K); V)</code></p>
+<p>In NL, <strong>all elements</strong> of a computational model—from attention mechanisms to the optimizer itself—are treated as associative memory systems that learn by compressing their own specific context flow.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 05</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 05 頁：Fundamental_Unit_Learning_as_Associative_Memory</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>重新定義學習與記憶</strong>：從神經心理學角度出發，將「記憶」視為由輸入引發的神經元更新，「學習」則是獲取有效記憶的過程。</li>
+<li><strong>核心建構單元</strong>：提出「聯想式記憶」(Associative Memory) 作為所有計算模型的基礎，其本質是一個學習將「鍵」(Keys) 映射到「值」(Values) 的運算子。</li>
+<li><strong>統一視角</strong>：在巢狀學習 (NL) 框架下，模型的所有組件（包含優化器）都被視為壓縮自身「脈絡流」的聯想式記憶系統。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+好，剛剛我們談到了當前 LLM 的困境，就像得了「順向失憶症」。為了解決這個問題，這篇論文提出了一個全新的視角，而這個視角的基石，就是重新定義我們習以為常的兩個詞：「學習」與「記憶」。</p>
+<h5>① 記憶 vs. 學習：一個更精確的區分</h5>
+<p>首先，讓我們先放下在機器學習領域的直覺，跟隨論文作者，從神經心理學的觀點來思考。</p>
+<blockquote>
+<p>在這篇論文中，作者明確區分了 <strong>Memory (記憶)</strong> 與 <strong>Learning (學習)</strong>：</p>
+<ul>
+<li><strong>Memory (記憶)</strong> is a neural update caused by an input. (記憶，是由一次輸入所引發的神經元更新。)</li>
+<li><strong>Learning (學習)</strong> is the process for acquiring <em>effective and useful</em> memory. (學習，則是獲取<strong>有效且有用</strong>的記憶的過程。)</li>
+</ul>
+</blockquote>
+<p>換句話說，<strong>記憶</strong>只是一個單純的「更新」動作，就像是數據寫入。而<strong>學習</strong>，則是一個更高級的過程，它要確保這些寫入的記憶是「有效的」、「有用的」，能真正提升模型的能力。這是一個非常關鍵的區別，也是整個「巢狀學習」理論的基礎。</p>
+<h5>② 核心建構單元：聯想式記憶</h5>
+<p>那麼，如果「學習」是獲取有效記憶的過程，這個過程的基本單位是什麼呢？論文給出的答案是：<strong>聯想式記憶 (Associative Memory)</strong>。</p>
+<p>這不是一個新詞，但 NL 賦予了它核心地位。簡單來說，聯想式記憶就是一個運算子 <code>M</code>，它的工作就是學會如何將一組「鍵」(Keys)，也就是 <code>K</code>，正確地對應到一組「值」(Values)，也就是 <code>V</code>。</p>
+<h5>③ 聯想式記憶的數學形式</h5>
+<p>這個「學會對應」的過程，可以用一個非常簡潔的數學式來表達。</p>
+<blockquote>
+<p>整個學習的目標，就是找到一個最好的運算子 <code>M*</code>，來最小化「它所預測的映射結果」與「真實值」之間的差距。也就是這個公式：
+<code>M* = argmin_M L(M(K); V)</code></p>
+</blockquote>
+<p>這裡的 <code>L</code> 指的就是一個衡量映射品質好壞的目標函數 (objective)。所以，學習的過程，本質上就是在解這個最佳化問題。</p>
+<h5>④ 統一模型的萬物論</h5>
+<p>最震撼的觀點來了。在「巢狀學習」的框架下，作者認為一個模型中 <strong>所有</strong> 的組件，都可以被看作是這種正在解決最佳化問題的「聯想式記憶」。</p>
+<blockquote>
+<p>不論是我們熟知的注意力機制、RNN，甚至是我們用來訓練模型的<strong>優化器 (Optimizer)</strong> 本身...它們全都是「聯-想-式-記-憶-系-統」！每一個組件，都在學習如何壓縮它自己所面對的特定「脈絡流」(context flow)。</p>
+</blockquote>
+<p>這就像是說，整個模型不是一個單一的大腦，而是由無數個專注於不同「記憶任務」的小型大腦所組成的生態系。這徹底改變了我們看待模型架構的方式。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：講完第 ① 點關於記憶與學習的新定義後，可以停頓一下，讓聽眾吸收這個概念上的轉變。</li>
+<li><strong>關鍵詞強調</strong>：在第 ④ 點提到「所有組件...都是聯想式記憶系統」時，請加重語氣並放慢速度，這是本頁最核心、也最具顛覆性的觀點。</li>
+<li><strong>補充案例</strong>：你可以補充說：「我們平常覺得優化器只是個更新權重的工具，但在這個觀點下，它本身就是一個正在學習『如何記住梯度歷史』的記憶模組。」</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>既然我們有了「聯想式記憶」這個統一的原子單元，下一頁，我們就來實際動手『拆解』我們熟悉的模型。我們會看到，即使是簡單的梯度下降法，其內部也隱藏著驚人的巢狀結構。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-06">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 06</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-06">
+                    <h1>Deconstruction: Models as Nested Optimization Problems</h1>
+<p>NL reveals that seemingly simple training processes are already multi-level optimization problems.</p>
+<hr />
+<h3>Example 1: Training an MLP with Momentum</h3>
+<ul>
+<li><strong>Level 1 (Outer Loop):</strong> The model weights <code>W</code> are updated.</li>
+<li><strong>Level 2 (Inner Loop):</strong> The momentum term <code>m</code> is itself an associative memory that compresses past gradients. It has its own, faster optimization process.</li>
+</ul>
+<h3>Example 2: Linear Attention</h3>
+<ul>
+<li><strong>Level 1 (Outer Loop):</strong> The projection matrices <code>W_k, W_q, W_v</code> are trained (slow updates).</li>
+<li><strong>Level 2 (Inner Loop):</strong> The attention matrix <code>M</code> is updated with each new token, acting as a fast memory that compresses key-value pairs.</li>
+</ul>
+<p>This decomposition is based on <strong>update frequency</strong>, creating a hierarchy of learning speeds within the model.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 06</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 06 頁：Deconstruction_Models_as_Nested_Optimization_Problems</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>Nested Learning (NL) 揭示了即使是標準的深度學習模型，其內部也隱含著多層次的優化問題。</li>
+<li><strong>MLP with Momentum</strong>：可被解構為兩個層級，權重 <code>W</code> 是慢速更新的外層，而動量 <code>m</code> 自身就是一個快速更新、壓縮梯度歷史的內存記憶體。</li>
+<li><strong>Linear Attention</strong>：同樣是雙層結構，投影矩陣 <code>W_k, W_q, W_v</code> 是慢速訓練的外層，而注意力矩陣 <code>M</code> 則是隨著每個 Token 快速更新的內存。</li>
+<li>這種層級劃分的依據是 <strong>更新頻率 (update frequency)</strong>，它在模型內部創造了不同速度的學習迴圈。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+上一頁我們談到，Nested Learning 的基本單位是「關聯記憶體」。這聽起來可能有點抽象，但最驚人的部分是，這個概念並不是全新的發明——它一直隱藏在我們日常使用的模型之中。這一頁，我們就要扮演一次偵探，把我們熟悉的模型「解構」開來，看看裡面到底藏著什麼玄機。</p>
+<h5>① 第一個案例：訓練一個帶有動量的 MLP</h5>
+<p>我們從最基礎的開始：用一個帶有 Momentum 的優化器來訓練一個簡單的多層感知器（MLP）。從表面上看，這就是一個訓練過程嘛，對吧？</p>
+<p>但根據 Nested Learning 的視角，這其實是一個 <strong>兩層巢狀優化問題</strong>。</p>
+<ul>
+<li><strong>第一層，也就是外層迴圈 (Outer Loop)</strong>，是我們最熟悉的：模型的<strong>權重 <code>W</code></strong> 正在被緩慢地更新。這是學習的主體。</li>
+<li>但<strong>第二層，那個內層迴圈 (Inner Loop)</strong>，就藏在 <strong>動量項 <code>m</code></strong> 裡面。動量 <code>m</code> 並不只是一個被動的數值。根據論文的觀點，它本身就是一個「關聯記憶體」！它的任務，就是用比模型權重 <strong>快得多的頻率</strong>，去不斷地學習、壓縮過去所有梯度的歷史資訊。</li>
+</ul>
+<blockquote>
+<p>所以，當我們在使用 Momentum 時，其實已經在不自覺地運行一個「兩級火箭」：一個慢速的引擎在調整模型主體，而一個高速的引擎在處理梯度資訊的記憶。</p>
+</blockquote>
+<h5>② 第二個案例：線性注意力機制 (Linear Attention)</h5>
+<p>這個雙層結構在像 Linear Attention 這樣的現代架構中更加明顯。</p>
+<ul>
+<li>同樣的，<strong>第一層，外層迴圈</strong>，是那些<strong>投影矩陣 <code>W_k</code>、<code>W_q</code> 和 <code>W_v</code></strong>。它們是在整個訓練過程中被優化的，更新速度相對較慢。</li>
+<li>而<strong>第二層，內層迴圈</strong>，則是那個<strong>注意力矩陣 <code>M</code></strong>。它的更新是即時的，<strong>每當一個新的 Token 進來，它就會立刻更新</strong>，把新的 key-value pair 壓縮進自己的狀態裡。這是一個非常高速、用來處理即時上下文的「快速記憶體」。</li>
+</ul>
+<p>所以你看，無論是優化器的一個小組件，還是模型的一個核心架構，我們都能發現這種不同速度的學習層級。而區分這一切的關鍵，就是投影片上最後提到的那個詞：<strong>更新頻率 (update frequency)</strong>。這正是 Nested Learning 用來建立模型內部學習層級的度量衡。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在講完 MLP 的例子後，可以稍微停頓，讓「動量也是一個記憶體」這個違反直覺的概念被聽眾吸收。</li>
+<li><strong>關鍵詞強調</strong>：請務必加重「<strong>更新頻率 (update frequency)</strong>」這個詞的語氣，因為它是理解 NL 如何解構模型的鑰匙。</li>
+<li><strong>補充案例</strong>：如果時間允許，可以提到論文中的公式 (7) 到 (11)，簡單說明動量項 <code>m</code> 的更新本身就是一個最小化問題，證明了它是一個獨立的優化過程。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>剛剛我們發現，連小小的動量項，本質上都是一個在學習的「微型模組」。這個發現極具啟發性。下一頁，我們將把這個觀點推向極致，探討一個更激進的想法：是不是所有的「優化器」，本身就是一個完整的學習模組？</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-07">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 07</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-07">
+                    <h1>Contribution 1: Optimizers as Learning Modules</h1>
+<p>NL reveals that well-known gradient-based optimizers are themselves learning modules.</p>
+<hr />
+<ul>
+<li><strong>SGD with Momentum:</strong> A 2-level system where the momentum term is a key-less associative memory that stores a history of gradients.</li>
+<li><strong>Adam Optimizer:</strong> Can be shown to be an optimal associative memory for the model's gradients.</li>
+</ul>
+<h3>Building More Expressive Optimizers</h3>
+<p>This insight allows us to design better optimizers by enhancing the underlying memory module:</p>
+<ul>
+<li><strong>More Expressive Association:</strong> Use preconditioning (<code>P_i</code>) to give the memory meaningful values to associate with gradients.</li>
+<li><strong>More Expressive Objectives:</strong> Use L2 regression instead of dot-product similarity for the update rule (Delta Rule).</li>
+<li><strong>More Expressive Memory:</strong> Replace the linear momentum memory with a deep one (e.g., an MLP), resulting in <strong>Deep Momentum Gradient Descent (DMGD)</strong>.</li>
+</ul>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 07</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 07 頁：Contribution_1_Optimizers_as_Learning_Modules</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>Nested Learning (NL) 重新詮釋了優化器，視其為具備自身學習能力的「學習模組」，而非單純的訓練工具。</li>
+<li>傳統優化器如「帶動量的隨機梯度下降法 (SGD with Momentum)」可被解構為一個雙層學習系統。</li>
+<li>基於此洞見，我們可以通過升級優化器內部的「記憶模組」來設計更強大、更具表達力的優化器，例如 <strong>Deep Momentum Gradient Descent (DMGD)</strong>。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+各位，我們通常認為優化器 (Optimizer) 就像是訓練模型的引擎，負責調整參數。但如果我告訴你，根據 Nested Learning 的觀點，這個引擎本身其實也在學習呢？這就是我們第一個驚人的貢獻：將優化器視為學習模組。</p>
+<h5>① 解構傳統優化器</h5>
+<p>讓我們先從一個大家都很熟悉的例子開始：<strong>帶動量的隨機梯度下降法 (SGD with Momentum)</strong>。</p>
+<p>從傳統視角看，它只是在梯度下降中加入了一個「動量」項，來加速收斂並越過局部最小值。但在 Nested Learning 的框架下，這其實是一個隱藏的<strong>兩層優化問題 (2-level system)</strong>。</p>
+<ul>
+<li><strong>第一層 (外層)</strong>，是我們熟知的模型權重 <code>W</code> 的更新，它的更新頻率相對較慢。</li>
+<li><strong>第二層 (內層)</strong>，則是那個動量項 <code>m</code>。論文揭示，這個動量項本身就是一個 <strong>「無鍵值的聯想記憶體 (key-less associative memory)」</strong>！它的唯一工作，就是學習如何將過去所有的「梯度歷史」壓縮並儲存在自己的參數中。它之所以是 &quot;key-less&quot;，是因為它對待所有梯度都一視同仁，把它們映射到一個單一的目標上。</li>
+</ul>
+<blockquote>
+<p>這篇論文讓我們驚覺，我們習以為常的優化器，內部早已存在著一個記憶與學習的微系統。同樣地，論文也證明了另一個主流優化器 <strong>Adam</strong>，本質上也可以被看作是一個為模型梯度設計的「最佳聯想記憶體」。</p>
+</blockquote>
+<h5>② 打造更強大的優化器</h5>
+<p>一旦我們接受了「優化器也是學習模組」這個觀點，一個全新的世界就此展開。我們不再需要盲目地發明新的優化器，而是可以像設計神經網路一樣，有系統地去「升級」它內部的記憶元件。</p>
+<p>論文提出了三個具體的升級方向：</p>
+<ul>
+<li>
+<p><strong>第一，更具表達力的關聯 (More Expressive Association)</strong>：既然動量是個記憶體，那我們可以給它更豐富的資訊。與其讓它是 &quot;key-less&quot; 的，我們可以引入「預處理 (preconditioning)」矩陣 <code>P_i</code>，讓記憶體學會將特定的「梯度 (key)」映射到有意義的「數值 (value)」。例如，這個 <code>P_i</code> 可以包含梯度的二階資訊，如 Hessian 矩陣的資訊，讓記憶更有方向性。</p>
+</li>
+<li>
+<p><strong>第二，更具表達力的目標 (More Expressive Objectives)</strong>：傳統動量的內部學習目標，類似於簡單的點積，這是一種較弱的學習規則。我們可以將它升級為更強大的 <strong>L2 回歸損失</strong>，這會產生一種基於 <strong>「Delta Rule」</strong> 的更新方式。這種規則能讓記憶體更有效地管理其有限的容量，從而更好地記住過去的梯度序列。</p>
+</li>
+<li>
+<p><strong>第三，更具表達力的記憶體 (More Expressive Memory)</strong>：這是最直接的想法。既然動量是一個線性的記憶體，那它的表達能力當然有限。我們何不直接用一個更強大的模組來取代它？例如，用一個 <strong>MLP</strong> 來取代線性的動量矩陣。這就誕生了論文中提到的 <strong>「深度動量梯度下降法 (Deep Momentum Gradient Descent, DMGD)」</strong>。</p>
+</li>
+</ul>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：講完「動量是無鍵值的聯想記憶體」後，可以稍作停頓。這是一個違反直覺但極具啟發性的觀點，給聽眾一點時間消化。</li>
+<li><strong>補充案例</strong>：如果時間允許，可以提到論文中另一個例子：將動量記憶體的輸出通過一個非線性函數（如 Newton-Schulz 迭代），就能推導出現代的 Muon 優化器。這再次證明了 NL 框架的解釋力。</li>
+<li><strong>關鍵詞強調</strong>：本頁的核心術語是 <strong><code>key-less associative memory</code></strong>、<strong><code>Delta Rule</code></strong> 和 <strong><code>DMGD</code></strong>。在講到這些詞時，請加重語氣，並確保聽眾理解它們分別對應了對記憶體「關聯」、「目標」和「架構」的升級。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>好的，我們剛剛看到 Nested Learning 如何讓我們重新解構並強化一個像「優化器」這樣的基礎元件。但 NL 的威力遠不止於此。如果連優化器本身都能學習，那模型架構是否也能學會「如何自我修改」呢？下一頁，我們就來探討這個更令人興奮的貢獻：自我修改的架構。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-08">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 08</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-08">
+                    <h1>Contribution 2: Self-Modifying Architectures</h1>
+<p>Taking advantage of NL's insights, the paper presents a novel sequence model that learns how to modify itself by learning its own update algorithm.</p>
+<hr />
+<p>This builds on the idea that the update rules themselves can be parameterized and learned, rather than being fixed (like standard backpropagation).</p>
+<p>The model becomes <strong>self-referential</strong>, where one part of the network learns the algorithm that another part of the network uses to update its weights.</p>
+<p>This concept is embodied in architectures like <strong>Titans</strong>, which learn to memorize and adapt at test time.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 08</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 08 頁：Contribution_2_Self-Modifying_Architectures</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>核心概念</strong>：模型不再依賴固定的學習規則（如反向傳播），而是學會「如何自我修改」。</li>
+<li><strong>關鍵術語</strong>：這種架構被稱為「自我指涉 (self-referential)」，即網路的一部分學習如何更新另一部分的演算法。</li>
+<li><strong>具體實例</strong>：論文中提到的 <code>Titans</code> 架構，就是這種能夠在測試階段進行學習與適應的模型典範。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+各位，剛才我們談論了如何將優化器本身也看作是一個學習模組。現在，我們要將這個想法推向一個更激進、也更令人興奮的層次：<strong>如果一個模型能夠學會如何自我修改呢？</strong></p>
+<p>這就是「巢狀學習」帶來的第二項重大貢獻：<strong>自我修改架構</strong>。</p>
+<h5>① 打破固定規則的枷鎖</h5>
+<p>傳統的深度學習，無論多深多複雜，都遵循著一個相對固定的遊戲規則——那就是反向傳播演算法。權重的更新方式，在模型設計之初就已經被決定了。</p>
+<p>但這篇論文提出了一個顛覆性的觀點：</p>
+<blockquote>
+<p>為什麼更新規則本身不能是<strong>可學習的</strong>呢？為什麼它不能像模型的其他參數一樣，透過學習來動態調整？</p>
+</blockquote>
+<p>這就是自我修改架構的核心，它讓更新規則從一個「寫死的指令」變成了一個「可被參數化的、動態的」過程。</p>
+<h5>② 「自我指涉」：模型學會如何學習</h5>
+<p>當一個模型的更新規則可以被學習時，它就進入了一種我們稱之為 <strong>「自我指涉」(self-referential)</strong> 的狀態。</p>
+<p>這是什麼意思呢？簡單來說，就是網路的一部分，學會了去扮演「老師」或「演算法設計師」的角色，它負責告訴網路的另一部分在面對新數據時，<strong>應該如何更新自己的權重</strong>。這就像一個程式，它不但能執行任務，還能在執行過程中，學會如何優化自己的底層程式碼。</p>
+<h5>③ 具體實踐：Titans 架構</h5>
+<p>這個聽起來很科幻的概念，其實已經有了具體的架構來實現，那就是論文中引用的 <strong>Titans</strong> 模型。</p>
+<p>這個架構就是自我修改理念的具體化身，它特別擅長 <strong>&quot;learn to memorize and adapt at test time&quot; (在測試階段進行學習、記憶與適應)</strong>。換句話說，當它在部署後遇到新資訊時，它不是視而不見，而是能動態地調整自己來適應這些新資訊，這正是目前大型語言模型所欠缺的關鍵能力。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在講完「自我指涉」這個概念後，可以停頓兩秒。這個概念比較抽象，需要給聽眾一點時間消化。</li>
+<li><strong>關鍵詞強調</strong>：請務必加重「<strong>自我指涉 (self-referential)</strong>」這個詞的語氣，這是本頁最核心的術語。</li>
+<li><strong>概念類比</strong>：可以將其比喻為「一個懂得自我進化的生物」，它不僅在學習知識，更在學習「如何學習」。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>了解了模型可以學會「如何」學習之後，下一個自然而然的問題就是：學到的新知識，該「儲存」在哪裡？這就引出了我們的第三項貢獻，一種全新的記憶體系——<strong>連續體記憶系統 (Continuum Memory System)</strong>。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-09">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 09</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-09">
+                    <h1>Contribution 3: The Continuum Memory System (CMS)</h1>
+<p>CMS generalizes the traditional binary view of long-term vs. short-term memory.</p>
+<hr />
+<p>Instead of one fast working memory (attention) and one slow persistent memory (MLP), CMS proposes a <strong>chain of memory modules</strong>, each operating at a different frequency.</p>
+<p><code>y_t = MLP^(f_k)(...MLP^(f_1)(x_t)...)</code></p>
+<ul>
+<li>Each MLP block <code>MLP^(f_l)</code> is associated with a specific update frequency <code>f_l</code>.</li>
+<li>Faster-frequency blocks (like <code>f_1</code>) are updated more often, capturing recent context.</li>
+<li>Slower-frequency blocks (like <code>f_k</code>) are updated infrequently, capturing more abstract, long-term knowledge.</li>
+</ul>
+<p>This creates a spectrum of memory persistence and abstraction within the model.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 09</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 09 頁：Contribution_3_The_Continuum_Memory_System_(CMS)</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>挑戰傳統記憶模型</strong>：現有的 AI 模型通常將記憶分為「短期」（如 Attention）和「長期」（如 MLP），這是一種過於簡化的二元觀點。</li>
+<li><strong>提出連續體光譜</strong>：論文引入了「連續記憶系統」(Continuum Memory System, CMS)，主張記憶不是兩個點，而是一個從快到慢、從具體到抽象的連續光譜。</li>
+<li><strong>多頻率更新機制</strong>：CMS 由一連串的 MLP 模組構成，每個模組以不同的頻率更新，快的模組捕捉即時資訊，慢的模組則沉澱為長期、抽象的知識。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+各位，我們通常習慣把記憶想成兩個獨立的盒子：一個是放著剛發生事情的「短期記憶」，另一個是儲存核心知識的「長期記憶」。就連我們強大的 Transformer 模型，基本上也是這樣設計的：Attention 負責短期工作記憶，而 MLP 層則扮演長期知識庫。但...如果這個非黑即白的二元看法，本身就是一種限制呢？</p>
+<p>這就是本篇論文第三個核心貢獻要挑戰的觀點，它提出了一個更符合生物直覺、也更強大的新架構，稱為 <strong>連續記憶系統 (Continuum Memory System, CMS)</strong>。</p>
+<h5>① 打破二元論：從兩個點到一條光譜</h5>
+<p>傳統 Transformer 的記憶體系，其實可以看作是 CMS 的一個特例，也就是只有一個快速記憶體（Attention）和一個極慢記憶體（MLP）的 <code>k=1</code> 的版本。這就像一個只有兩個檔位的變速箱，要嘛全速衝刺，要嘛幾乎靜止，中間缺乏過渡。</p>
+<p>CMS 認為，一個真正能持續學習的系統，其記憶應該像一道<strong>光譜 (Spectrum)</strong>。在這道光譜上，有著不同層次的記憶，它們以不同的速度在演化、在固化。</p>
+<h5>② 核心架構：多頻率更新的 MLP 鏈</h5>
+<p>那麼，CMS 是如何實現這個「記憶光譜」的呢？它的設計非常巧妙。</p>
+<blockquote>
+<p>CMS 不再使用單一的 MLP 層，而是提出了一個由多個 MLP 模組串接而成的<strong>記憶鏈 (a chain of memory modules)</strong>。</p>
+</blockquote>
+<p>各位可以在投影片上看到這個公式：<code>y_t = MLP^(f_k)(...MLP^(f_1)(x_t)...)</code>。</p>
+<p>這代表什麼意思呢？</p>
+<ul>
+<li><code>MLP^(f_1)</code> 是一個<strong>高頻率</strong>更新的模組。它可能每處理幾個 token 就會更新一次，負責捕捉最即時、最詳細的上下文資訊。這就像我們大腦裡最表層的、稍縱即逝的記憶。</li>
+<li>而 <code>MLP^(f_k)</code> 則是一個<strong>低頻率</strong>更新的模組。它可能要處理數千、甚至數萬個 token 才會更新一次。它的作用是從海量的資訊中，提煉出最核心、最抽象的知識，並將其沉澱為模型的「世界觀」。</li>
+</ul>
+<p>透過這種不同頻率的更新機制，CMS 就在模型內部，創造出了一個從具體到抽象、從短暫到持久的<strong>記憶連續體</strong>。論文中提到，這種設計的目標，就是讓每個頻率的參數 <code>θ</code> 都負責壓縮其對應時間尺度下的上下文，最終形成對應層次的抽象知識。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在介紹「記憶光譜」這個概念時，可以放慢語速，用手勢畫出一道光譜的樣子，幫助聽眾建立視覺化想像。</li>
+<li><strong>關鍵詞強調</strong>：請務必加重 <strong>&quot;Continuum Memory System&quot;</strong> 這個詞的語氣，這是本頁，乃至整篇論文的核心創新之一。可以唸出它的英文全名，再接著講中文。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>那麼，當我們把這種具有「記憶光譜」的連續記憶系統，與前面提到的「自修改架構」結合在一起時，會誕生出什麼樣的怪物級學習模組呢？下一頁，我們就來揭曉這篇論文的終極王牌：<strong>HOPE</strong> 架構。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-10">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 10</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-10">
+                    <h1>Introducing HOPE: A Self-Referential Learning Module</h1>
+<p>HOPE (Hierarchical Online Processing Engine) is the novel architecture proposed in the paper that combines the key contributions.</p>
+<hr />
+<p><strong>HOPE = Self-Referential Model + Continuum Memory System</strong></p>
+<ol>
+<li>
+<p>It uses a <strong>self-referential sequence model</strong> (based on Titans) as its working memory, allowing it to learn its own update rule from the context.</p>
+</li>
+<li>
+<p>It replaces the standard Feed-Forward Network (FFN) with the <strong>Continuum Memory System (CMS)</strong>, creating multiple levels of persistent memory with different update frequencies.</p>
+</li>
+</ol>
+<p>This results in a learning module that shows promising results in language modeling, continual learning, and long-context reasoning.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 10</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 10 頁：Introducing_HOPE_A_Self-Referential_Learning_Module</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>HOPE</strong> (Hierarchical Online Processing Engine) 是結合本文核心貢獻的全新模型架構。</li>
+<li>它由兩大關鍵部分組成：一個能自我修改的 <strong>Self-Referential Model</strong> 和一個多層次記憶系統 <strong>Continuum Memory System (CMS)</strong>。</li>
+<li>這個架構旨在解決模型的靜態問題，使其在語言建模、持續學習和長脈絡推理方面表現出色。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+到目前為止，我們討論了許多理論性的概念：自我修改的架構、連續光譜般的記憶系統...。現在，讓我們看看如何將這些想法整合在一起，打造出一個全新的、更強大的學習模型。這就是我們提出的 <strong>HOPE</strong> 架構。</p>
+<p>這個名字 <strong>HOPE</strong>，是 <strong>Hierarchical Online Processing Engine</strong> 的縮寫，也就是「層級式線上處理引擎」。這個名字本身就暗示了它的設計哲學——一個具備不同層次、並且能夠即時學習的系統。</p>
+<h5>① HOPE 的核心方程式：兩大創新模組的結合</h5>
+<p>大家可以把 HOPE 的核心概念，理解為一個簡單的方程式：<strong>HOPE = 自我參照模型 + 連續記憶系統 (CMS)</strong>。這兩個部分，分別對應了模型的「工作記憶」和「長期知識庫」，但都用了全新的方式來實現。</p>
+<p>首先，是它的「工作記憶」部分——一個<strong>自我參照序列模型 (Self-Referential Sequence Model)</strong>。</p>
+<blockquote>
+<p>這個模型基於一篇名為 <strong>Titans</strong> 的研究，它的革命性之處在於，它<strong>不使用固定的演算法來處理資訊</strong>。相反地，它會從當前的脈絡中，動態地「學習」自己該用什麼樣的更新規則。這就像給了模型一個「學會如何學習」的能力，讓它能更靈活地應對瞬息萬變的輸入。</p>
+</blockquote>
+<h5>② 拋棄傳統 FFN，擁抱連續記憶系統 (CMS)</h5>
+<p>方程式的第二部分，是 HOPE 的「長期知識庫」。在這裡，我們做了一個非常大膽的改變：我們徹底拋棄了傳統 Transformer 架構中那個巨大、靜態的 Feed-Forward Network (FFN)。</p>
+<p>我們都知道，傳統的 FFN 在預訓練結束後就幾乎不再變動，這正是造成模型「順行性遺忘症」的主因。</p>
+<blockquote>
+<p>為了克服這個問題，HOPE 導入了我們前面提到的 <strong>Continuum Memory System (CMS)</strong>。它不是單一的記憶體，而是一個由多個 MLP 區塊組成的「記憶體鏈」。鏈上的每個 MLP 都有<strong>不同的更新頻率</strong>：</p>
+<ul>
+<li>有些更新得非常<strong>快</strong>，用來捕捉最近、最即時的資訊。</li>
+<li>有些則更新得非常<strong>慢</strong>，負責沉澱和儲存那些經過時間考驗的、更抽象的長期知識。</li>
+</ul>
+</blockquote>
+<p>透過這種設計，HOPE 就同時擁有了能夠動態適應的「工作記憶」和一個能夠持續演化的「知識光譜」。這讓它成為一個真正意義上的學習模組，並在後續的實驗中，展現了它在語言建模、持續學習、以及長脈絡推理任務上的巨大潛力。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在解釋完「自我參照模型」和「CMS」後，可以稍作停頓，讓聽眾消化這兩個核心概念。</li>
+<li><strong>關鍵詞強調</strong>：提到 <strong>&quot;HOPE&quot;</strong>、<strong>&quot;Titans&quot;</strong> 和 <strong>&quot;Continuum Memory System&quot;</strong> 時，請加重語氣，這些是本頁的核心術語。</li>
+<li><strong>視覺輔助</strong>：可以指著投影片上的方程式 <code>HOPE = ...</code>，來輔助說明這兩個部分的結合。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>那麼，這個由「動態工作記憶」和「多頻率長期記憶」組成的 HOPE 架構，在結構上與我們熟悉的 Transformer 到底有什麼不同呢？下一頁，我們將透過一張架構對比圖，讓大家一目了然。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-11">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 11</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-11">
+                    <h1>Architecture Comparison: HOPE vs. Transformers</h1>
+<p>Visually, HOPE introduces a new dimension of depth—nested levels—compared to the &quot;flat&quot; architecture of a standard Transformer.</p>
+<hr />
+<p><strong>Transformer Block:</strong></p>
+<ul>
+<li>Self-Attention (Fast, Short-Term Memory)</li>
+<li>MLP / FFN (Slow, Long-Term Memory)</li>
+</ul>
+<p><strong>HOPE Block:</strong></p>
+<ul>
+<li>Self-Referential Recurrent Unit (Learns its own update rule)</li>
+<li>Continuum Memory System (Chain of MLPs with varied update frequencies)</li>
+</ul>
+<p><img src="https://cdn-mineru.openxlab.org.cn/result/2025-11-24/cbe03578-fa5a-435c-a00d-6aaf72ec8da0/4c4244baf79ef5206ddc2844b6fcffae237ad782b5f95e7c955557c9ab3d2f9d.jpg" alt="HOPE vs Transformer Architecture" /></p>
+<p><em>Clarity Note: Diagrams are simplified. Normalization and other components are omitted.</em></p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 11</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 11 頁：Architecture_Comparison_HOPE_vs._Transformers</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>這是一張視覺化的核心差異圖：Transformer 是「扁平」的雙速架構，而 HOPE 則是「巢狀」的多層次、多頻率架構。</li>
+<li><strong>Transformer Block</strong> = 一個快速的工作記憶 (Self-Attention) + 一個慢速的長期知識庫 (MLP)。</li>
+<li><strong>HOPE Block</strong> = 一個能自我學習更新規則的遞迴單元 (Self-Referential Unit) + 一個由多種速度記憶體組成的連續體 (Continuum Memory System)。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+好，現在讓我們把目光聚焦到這張架構對比圖上。這張圖非常直觀地揭示了 HOPE 與傳統 Transformer 之間，最根本的設計哲學差異——可以說，這是從「扁平」走向「立體」的進化。</p>
+<h5>① 首先，我們來看左邊的傳統 Transformer Block</h5>
+<p>大家都很熟悉，它基本上是一個雙速系統。</p>
+<ul>
+<li><strong>Self-Attention</strong> 部分，就像是我們大腦的「工作記憶」或電腦的「RAM」，反應非常快，負責處理當前情境中的資訊，但忘得也快。它是 <strong>Fast, Short-Term Memory</strong>。</li>
+<li>而 <strong>MLP</strong> 或稱為 <strong>FFN</strong> 的部分，則扮演著「長期記憶」的角色，像是儲存在大腦皮層或電腦硬碟裡的知識。它的更新速度非常慢，在模型預訓練結束後基本上就被固定下來，負責儲存從海量資料中學到的抽象知識。它是 <strong>Slow, Long-Term Memory</strong>。</li>
+</ul>
+<blockquote>
+<p>正如論文所指出的，傳統的 Transformer 架構，其實可以被看作是我們稍早提到的「連續記憶體系統 (CMS)」的一個特例——一個只有一層慢速記憶體的極簡版本。</p>
+</blockquote>
+<h5>② 接著，我們來看右邊的 HOPE Block，它的設計就複雜且優雅得多了</h5>
+<p>HOPE 引入了一個全新的維度：<strong>巢狀深度 (nested levels)</strong>。</p>
+<ul>
+<li>
+<p>首先，它用一個 <strong>Self-Referential Recurrent Unit (自參考遞迴單元)</strong> 取代了傳統的 Attention。這不是一個固定的機制，它的核心亮點在於，這個模組能夠 <strong>學會如何學習</strong>，也就是它會根據當下的內文，動態地學習自己的更新規則！這讓它變得極其靈活。</p>
+</li>
+<li>
+<p>再來，它用我們前面介紹的 <strong>Continuum Memory System (連續記憶體系統)</strong>，取代了單一的 MLP 層。這不是一塊鐵板一塊的長期記憶，而是一整串由多個 MLP 組成的鏈條，<strong>每一個 MLP 都有自己不同的更新頻率</strong>。有的更新得快，捕捉近期資訊；有的更新得中等；有的則非常慢，沉澱最核心的抽象知識。這就形成了一個從短期到長期的、平滑過渡的記憶光譜。</p>
+</li>
+</ul>
+<h5>③ 最後，一個小小的提醒</h5>
+<p>請大家注意一下圖右下角的這行「<em>Clarity Note</em>」。作者特別說明，為了讓大家能一眼看懂核心思想的差異，這張圖進行了簡化。它省略了像「Normalization (正規化)」層以及其他一些可能存在的數據依賴組件。我們關注的焦點，是這個從「雙速」到「多頻譜」的核心架構演進。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在分別講完 Transformer 和 HOPE 的架構後，可以稍作停頓，讓聽眾消化一下兩者的差異。指著圖上的對應部分進行解說，效果會更好。</li>
+<li><strong>補充比喻</strong>：解釋 CMS 時，可以使用電腦 L1, L2, L3 快取的比喻，幫助聽眾理解不同速度的記憶體如何協同工作。</li>
+<li><strong>關鍵詞強調</strong>：在講到 &quot;<strong>Self-Referential</strong>&quot; (能學習如何更新自己) 和 &quot;<strong>Continuum Memory System</strong>&quot; (記憶頻率的光譜) 時，請加重語氣，這是 HOPE 的精髓所在。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>理論上的架構再優美，終究還是要靠實驗數據來說話。接下來，我們就來看看 HOPE 在真實的戰場上，面對一系列語言模型和常識推理的挑戰，它的表現究竟如何。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-12">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 12</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-12">
+                    <h1>Experimental Validation</h1>
+<p>To test its effectiveness, HOPE was evaluated against strong baselines on a range of standard benchmarks.</p>
+<hr />
+<h3>Tasks:</h3>
+<ol>
+<li><strong>Language Modeling:</strong>
+<ul>
+<li>WikiText-103 (ppl ↓)</li>
+<li>LAMBADA (ppl ↓, acc ↑)</li>
+</ul>
+</li>
+<li><strong>Common-Sense Reasoning:</strong>
+<ul>
+<li>PIQA, HellaSwag, WinoGrande, ARC, SIQA, BoolQ (acc ↑)</li>
+</ul>
+</li>
+</ol>
+<h3>Baselines:</h3>
+<ul>
+<li>Transformer++</li>
+<li>Modern RNNs: RetNet, DeltaNet, Samba, Titans</li>
+</ul>
+<h3>Scales:</h3>
+<p>Models were compared at multiple parameter counts: 340M, 760M, and 1.3B.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 12</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 12 頁：Experimental Validation: Language &amp; Reasoning Tasks</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>為了驗證 HOPE 架構的成效，研究團隊進行了一系列的標竿測試。</li>
+<li>評估任務分為兩大類：<strong>語言模型 (Language Modeling)</strong> 與 <strong>常識推理 (Common-Sense Reasoning)</strong>。</li>
+<li>比較的對象 (Baselines) 包含先進的 <strong>Transformer++</strong> 以及多種現代循環神經網路 (RNNs)，如 <strong>RetNet</strong> 和 <strong>Titans</strong>。</li>
+<li>實驗在三種不同模型規模下進行，分別是 340M、760M 和 1.3B 參數，以檢驗其可擴展性。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+好的，我們剛剛介紹完 HOPE 這個結合了「自我參照模型」與「連續記憶體系統」的全新架構。理論聽起來非常創新，但它在真實世界中的表現究竟如何？這一頁，我們就來看看研究團隊是如何嚴格地驗證 HOPE 的實際成效。</p>
+<h5>① 評估任務：考驗語言能力與推理能力</h5>
+<p>為了全面地評估模型，實驗設計了兩大類型的任務。</p>
+<ul>
+<li>
+<p>第一類是 <strong>語言模型 (Language Modeling)</strong> 任務。這主要是在測試模型預測下一個字詞的準確度，是評估其核心語言理解能力的基礎。這裡用了兩個經典的數據集：<strong>WikiText-103</strong> 和 <strong>LAMBADA</strong>。各位在報告中會看到 <code>ppl ↓</code> 的符號，這代表「困惑度 (Perplexity)」，這個數值越低，表示模型預測得越準，語言能力越強。而 <code>acc ↑</code> 則是「準確率 (Accuracy)」，越高越好。</p>
+</li>
+<li>
+<p>第二類是更具挑戰性的 <strong>常識推理 (Common-Sense Reasoning)</strong>。這不只是考驗語言，更是考驗模型是否能像人一樣，對物理世界、社交互動和因果關係進行推理。</p>
+<blockquote>
+<p>為了進行全面性的評估，研究團隊使用了多個公認的測試集，包含了 <strong>PIQA</strong>、<strong>HellaSwag</strong>、<strong>WinoGrande</strong>、<strong>ARC</strong>、<strong>SIQA</strong>，以及 <strong>BoolQ</strong>。這些測試集涵蓋了從物理常識到社會情境的各種推理問題。</p>
+</blockquote>
+</li>
+</ul>
+<h5>② 競爭對手：與當代最強模型一較高下</h5>
+<p>要證明自己的強大，就必須挑戰最強的對手。因此，HOPE 的比較基準 (Baselines) 涵蓋了當前的主流與前沿模型。</p>
+<ul>
+<li>首先是 <strong>Transformer++</strong>，這可以看作是一個非常強化的 Transformer 基準模型，代表了當前主流架構的頂尖水準。</li>
+<li>接著是一系列的 <strong>現代循環神經網路 (Modern RNNs)</strong>，包括近年來備受矚目的 <strong>RetNet</strong>、<strong>DeltaNet</strong>、<strong>Samba</strong>，以及同為該團隊提出的 <strong>Titans</strong>。這確保了比較是公平且全面的，不僅超越了傳統，也要能領先當代。</li>
+</ul>
+<h5>③ 實驗規模：從小到大，驗證可擴展性</h5>
+<p>最後，所有的比較都不是在單一規模下完成的。研究團隊在 <strong>340M (三億四千萬)</strong>、<strong>760M (七億六千萬)</strong> 和 <strong>1.3B (十三億)</strong> 這三種不同參數規模上進行了完整的訓練與評估。這點非常重要，因為它能驗證 HOPE 的優勢是否會隨著模型規模的增長而持續存在，這正是大型語言模型研究中最關鍵的問題之一。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在解釋 <code>ppl ↓</code> (困惑度) 和 <code>acc ↑</code> (準確率) 時，可以放慢速度，確保聽眾理解這兩個核心評估指標的意義。</li>
+<li><strong>關鍵詞強調</strong>：在唸到 <code>PIQA, HellaSwag, WinoGrande, ARC, SIQA, BoolQ</code> 這些測試集名稱時，可以稍微停頓，讓聽眾感受到評估的廣泛與嚴謹性。</li>
+<li><strong>補充案例</strong>：如果時間允許，可以簡單舉例：「例如 HellaSwag 會給模型一個不完整的句子，看它能不能選出最合乎邏輯的結尾，這非常考驗模型的常識。」</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>那麼，我們已經設定好了這個嚴謹的競技場，涵蓋了困難的任務、強大的對手和不同的比賽量級。大家最關心的問題肯定是：HOPE 的表現究竟如何？下一頁，我們就來看實際的數據結果。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-13">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 13</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-13">
+                    <h1>Key Results &amp; Performance</h1>
+<p>HOPE demonstrates superior or highly competitive performance across all scales and tasks.</p>
+<hr />
+<h3>Performance Highlights (1.3B Parameter Models):</h3>
+<p>| Model         | LMB. ppl ↓ | Avg. Acc ↑ |
+|---------------|------------|------------|
+| Transformer++ | 18.32      | 52.25      |
+| RetNet        | 17.27      | 52.02      |
+| DeltaNet      | 16.88      | 52.14      |
+| Samba*        | 13.29      | 54.00      |
+| Titans (LMM)  | 11.41      | 56.82      |
+| <strong>HOPE (ours)</strong> | <strong>11.63</strong>  | <strong>57.23</strong>  |</p>
+<ul>
+<li>HOPE consistently outperforms Transformer baselines and other modern recurrent architectures like RetNet and DeltaNet.</li>
+<li>It achieves the highest average accuracy on reasoning tasks, demonstrating the benefit of its dynamic, multi-level design.</li>
+</ul>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 13</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 13 頁：Key Results &amp; Performance Benchmarks</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>在 1.3B 參數規模的對比中，HOPE 模型在語言建模（LMB ppl）與平均推理準確率（Avg. Acc）上，均展現頂尖或超越性的效能。</li>
+<li>HOPE 在平均推理準確率上達到 <code>57.23%</code>，是所有對比模型中最高的，超越了 <code>Transformer++</code>、<code>RetNet</code>，甚至是前代先進模型 <code>Titans</code>。</li>
+<li>實驗結果驗證了 HOPE 動態、多層級記憶系統設計的優越性，尤其是在需要常識推理的複雜任務上。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白，引導聽眾聚焦於數據)
+好的，理論講了這麼多，這個結合了「自我參照模型」和「連續記憶系統」的全新架構 <strong>HOPE</strong>，在真實世界的表現究竟如何呢？我們直接用數據說話。</p>
+<h5>① 整體效能概覽</h5>
+<p>大家請看這張表格，這裡聚焦在 <code>1.3B</code> 參數規模的模型。我們評估了兩個核心指標：左邊的 <strong>LMB. ppl</strong>，代表在 LAMBADA 數據集上的「語言模型困惑度」，這個值越低，代表模型預測下一個詞的能力越準確、越像人話。右邊的 <strong>Avg. Acc</strong> 則是模型在一系列「常識推理任務」上的平均準確率，這項指標越高，代表模型越「聰明」。</p>
+<p>你可以看到，HOPE 的表現非常亮眼。在困惑度上，它達到了 <code>11.63</code>，與當前最強的循環模型 <code>Titans</code> (<code>11.41</code>) 幾乎並駕齊驅，並且遠遠優於像 <code>Transformer++</code> (<code>18.32</code>) 這樣的基準模型。</p>
+<h5>② 推理能力的決定性勝利</h5>
+<p>但真正讓 HOPE 脫穎而出的，是右邊的平均準確率。</p>
+<blockquote>
+<p>在橫跨 <strong>PIQA、HellaSwag、WinoGrande</strong> 等多個需要深度理解與常識推理的任務上，HOPE 取得了 <code>57.23%</code> 的平均準確率，這是所有模型中最高的。</p>
+</blockquote>
+<p>這意味著什麼？雖然有些模型（如 <code>Titans</code>）在「生成流暢文本」方面可能稍微領先，但 HOPE 在<strong>理解和解決問題</strong>的能力上，實現了反超。這直接證明了我們提出的 <strong>Continuum Memory System (CMS)</strong>，也就是那套多頻率更新的記憶系統，確實讓模型擁有了更強大的動態推理能力。它不只是在背誦，更是在「思考」。</p>
+<h5>③ 全面超越與可擴展性</h5>
+<p>這個優勢並非偶然。從表格中可以看到，HOPE 的效能全面超越了其他知名的現代循環神經網路架構，例如 <code>RetNet</code> 和 <code>DeltaNet</code>。更重要的是，根據我們論文中的完整數據 (Table 1)，這種領先趨勢在 <code>340M</code>、<code>760M</code> 到 <code>1.3B</code> 的<strong>所有模型規模</strong>上都保持一致。這證明了 HOPE 架構不僅高效，還具備優秀的<strong>可擴展性 (Scalability)</strong>。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在解釋完「困惑度」和「平均準確率」後，可以稍作停頓，讓聽眾先消化表格中的欄位意義。在唸出 HOPE 的 <code>57.23%</code> 這個數字時，請加重語氣，這是本頁的「英雄數據」。</li>
+<li><strong>補充案例</strong>：可以口頭提及，這些推理任務就像是問機器人「如果我把濕衣服放進冰箱會怎樣？」這類需要常識才能回答的問題，更能凸顯 HOPE 的價值。</li>
+<li><strong>關鍵詞強調</strong>：本頁的核心勝利在於 <code>Avg. Acc</code>（平均準確率），請務必強調這是衡量「真正理解能力」而非「流暢度」的指標。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>這些強勁的數據，不僅僅是數字上的勝利，它們更堅實地證明了「巢狀學習」這個理論框架的價值。這也自然地引導我們來到最後的結論：我們該如何超越「堆疊更多層」的思維，來打造下一代的人工智慧。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-14">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 14</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-14">
+                    <h1>Conclusion: Beyond Stacking Layers</h1>
+<p>Nested Learning (NL) offers a new lens to understand and design machine learning models, moving beyond the simple illusion of depth created by stacking layers.</p>
+<hr />
+<h3>Key Takeaways:</h3>
+<ol>
+<li><strong>A New Dimension:</strong> NL introduces &quot;levels&quot; of optimization as a new dimension for designing more expressive models.</li>
+<li><strong>White-Box Understanding:</strong> It provides a transparent, mathematical framework for decomposing existing architectures and their training algorithms.</li>
+<li><strong>Continual Learning:</strong> By modeling online memory consolidation, NL offers a principled path toward models that can continually learn and adapt.</li>
+<li><strong>HOPE:</strong> The proposed HOPE architecture validates these principles, achieving state-of-the-art results by combining a self-modifying memory with a continuum of knowledge storage.</li>
+</ol>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 14</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 14 頁：Conclusion_Beyond_Stacking_Layers</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>超越堆疊</strong>：「深度學習」的未來不只在於增加層數，而在於增加「學習層次」。</li>
+<li><strong>全新維度</strong>：巢狀學習 (NL) 為模型設計引入了「優化層級」這一新維度，讓模型內部有多個不同速度的學習迴圈。</li>
+<li><strong>白箱化理解</strong>：NL 提供了一個透明的數學框架，讓我們能解構並改進現有的架構與優化器。</li>
+<li><strong>邁向持續學習</strong>：透過模擬大腦的線上記憶鞏固，NL 為實現能持續學習新知識的 AI 提供了實際路徑。</li>
+<li><strong>HOPE 的驗證</strong>：HOPE 架構的卓越表現，證明了 NL 理論的有效性與巨大潛力。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+各位，在我們今天的討論來到尾聲時，我們必須回答一個最終的問題：這一切意味著什麼？它意味著，我們或許應該超越那種「只要堆疊更多層，模型就會更強大」的簡單、甚至是帶有誤導性的幻覺了。這正是論文標題所謂的《深度學習的幻覺》。</p>
+<h5>① 一個全新的維度</h5>
+<p>幾十年來，「深度學習」幾乎等同於垂直地堆疊神經網路層。但巢狀學習 (Nested Learning) 提出了一個根本性的轉變：我們不該只追求<strong>深度 (depth)</strong>，而應該追求<strong>層次 (levels)</strong>。</p>
+<blockquote>
+<p>這是在模型設計中開闢了一個全新的維度：<strong>優化層級的維度</strong>。</p>
+</blockquote>
+<p>想像一下，一個模型不再是一個單一的、笨重的處理流程，而是一個內部擁有多個學習引擎的系統，每個引擎都以不同的<strong>更新頻率 (update frequency)</strong> 在運作。快的引擎處理即時資訊，慢的引擎則負責沉澱、提煉出更抽象的知識。這才是更接近生物智慧的模式。</p>
+<h5>② 從黑箱到白箱的理解</h5>
+<p>巢狀學習最令人興奮的一點是，它不只是一個新的模型架構，它更像是一副新的<strong>眼鏡</strong>，讓我們能以前所未有的清晰度，看透現有模型的內部運作。</p>
+<p>過去我們視為理所當然的工具，例如 <strong>Adam 優化器</strong>，或是 <strong>Attention 機制</strong>，在 NL 的框架下被重新詮釋。它們不再是神秘的黑箱，而是可以被數學方法解構的、各自擁有目標函數的「學習模組」。當我們能看懂它們，我們就能夠系統性地去<strong>改進</strong>它們，就像我們在前面看到的，可以設計出更有表達力的優化器。</p>
+<h5>③ 實現真正的「持續學習」</h5>
+<p>讓我們回到一開始提到的「順行性遺忘症」比喻。目前的 LLM 就像無法形成新記憶的病人，知識被凍結在預訓練完成的那一刻。</p>
+<p>巢狀學習透過模仿大腦的「線上記憶鞏固」過程，為這個根本性難題提供了一條有原則的解決路徑。這不是紙上談兵，而是讓我們能打造出<strong>真正能夠從新經驗中學習、持續自我演進</strong>的 AI 模型。這代表著，未來的 AI 不僅僅是擁有記憶，更能<strong>創造</strong>新的記憶。</p>
+<h5>④ HOPE：理論的最終驗證</h5>
+<p>當然，一個理論如果沒有實驗證明，就只是空想。而 <strong>HOPE 架構</strong>，就是巢狀學習理論最強而有力的實證。</p>
+<p>HOPE 將一個能<strong>自我修改</strong>的核心，與我們提到的<strong>連續體記憶系統 (Continuum Memory System)</strong> 相結合。結果是什麼？它在語言模型和常識推理任務上，取得了超越 Transformer 和其他現代循環網路的頂尖性能，尤其是在平均準確率上達到了<strong>全場最高的 57.23%</strong>。這清楚地表明，NL 的設計原則不僅是正確的，更是高效的。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在講完四個要點後，可以稍作停頓，讓聽眾消化這些結論性的觀點。準備進入最後的總結。</li>
+<li><strong>關鍵詞強調</strong>：在提到 &quot;深度 (depth)&quot; 與 &quot;層次 (levels)&quot; 的對比時，請加重語氣，這是整場演講的核心思想轉變。</li>
+<li><strong>最終總結 (Closing Statement)</strong>：這已是最後一頁，請用一段強而有力的話作結。
+<blockquote>
+<p>我們正站在一個典範轉移的起點。未來 AI 的發展，可能不再是比誰能蓋出更高的摩天大樓，而是比誰能設計出更精巧、更多層次的智慧城市。巢狀學習，正是這座未來城市的設計藍圖。謝謝大家。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+</main>
+
+    <footer class="footer">
+        <div class="hr" style="margin: 40px 0 20px;"></div>
+        <div class="meta" style="justify-content: center; font-size: 14px;">
+            <span>Author: Chiakai Chang</span>
+            <a href="https://github.com/Chiakai-Chang/PPTPlaner" target="_blank">GitHub</a>
+            <a href="https://www.linkedin.com/in/chiakai-chang-htciu" target="_blank">LinkedIn</a>
+            <a href="mailto:lotifv@gmail.com">Email</a>
+        </div>
+        <p style="margin-top: 8px; font-size: 11px;">Copyright &copy; 2025 Chiakai Chang. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButtons = document.querySelectorAll('.toggle-view-btn');
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const pageId = this.dataset.pageId;
+                    const svgView = document.getElementById(`svg-view-${pageId}`);
+                    const textView = document.getElementById(`text-view-${pageId}`);
+
+                    if (svgView && textView) {
+                        const isSvgVisible = svgView.style.display !== 'none';
+                        if (isSvgVisible) {
+                            svgView.style.display = 'none';
+                            textView.style.display = 'block';
+                            this.textContent = '顯示圖像';
+                        } else {
+                            svgView.style.display = 'block';
+                            textView.style.display = 'none';
+                            this.textContent = '顯示文字';
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
