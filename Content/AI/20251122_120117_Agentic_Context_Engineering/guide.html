@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPTPlaner Guide</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#0f172a; --muted:#64748b; --card:#f8fafc; --accent:#2563eb; --accent-2:#1d4ed8;
+    --border:#e2e8f0; --ok:#16a34a; --warn:#ca8a04; --bad:#dc2626; --pill:#e0e7ff;
+  }
+  .dark{
+    --bg:#0b1220; --fg:#e5e7eb; --muted:#94a3b8; --card:#0f172a; --accent:#60a5fa; --accent-2:#3b82f6;
+    --border:#1f2937; --ok:#22c55e; --warn:#f59e0b; --bad:#f87171; --pill:#172554;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",Arial,"Apple Color Emoji","Segoe UI Emoji"; background:var(--bg); color:var(--fg);}
+  header{position:sticky; top:0; z-index:10; backdrop-filter:saturate(180%) blur(10px); background:color-mix(in srgb, var(--bg) 88%, transparent); border-bottom:1px solid var(--border);}
+  .container{max-width:1100px; margin:0 auto; padding:16px;}
+  h1{margin:6px 0 2px; font-size:22px;}
+  p.subtitle{margin:0 0 10px; color:var(--muted); font-size:14px;}
+  .toolbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:8px 0 12px;}
+  button{padding:8px 12px; font-size: 14px; border:1px solid var(--border); border-radius:12px; background:var(--card); color:var(--fg); cursor:pointer;}
+  button:hover{background-color: var(--border);}
+  .hr{height:1px; background:var(--border); margin:10px 0;}
+  .footer{color:var(--muted); font-size:12px; padding:20px 0 40px; text-align:center;}
+  .meta{display:flex; flex-wrap:wrap; gap:10px; margin:6px 0 8px;}
+  .meta a{color:var(--accent); text-decoration:none;}
+  .meta a:hover{text-decoration:underline;}
+
+  /* --- Layout Styles for side-by-side view --- */
+  .page { display: flex; border-bottom: 1px solid var(--border); padding: 20px 0; margin-bottom: 20px; }
+  .slide { flex: 1; padding-right: 20px; border-right: 1px solid var(--border); min-width: 0; }
+  .notes { flex: 1; padding-left: 20px; min-width: 0; }
+  h2 { border-bottom: 1px solid var(--border); padding-bottom: 10px; color: var(--fg); font-size: 18px; margin-top: 0; }
+  pre { background: var(--card); padding: 15px; border-radius: 8px; white-space: pre-wrap; word-wrap: break-word; border: 1px solid var(--border); font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; }
+  
+  /* --- SVG & Toggle Styles --- */
+  .slide-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+
+  .svg-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background-color: var(--card);
+  }
+  .svg-container svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px -2px rgba(0,0,0,0.08);
+  }
+
+  .conceptual-svg-container {
+    width: 100%;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background-color: var(--card);
+    padding: 10px;
+    border: 1px solid var(--border);
+  }
+  .conceptual-svg-container svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .slide-view-svg .no-svg-placeholder { aspect-ratio: 16/9; background-color: var(--card); border: 2px dashed var(--border); border-radius: 8px; display: flex; justify-content: center; align-items: center; color: var(--muted); font-size: 14px; }
+
+  /* Generic styles for rendered markdown content */
+  .rendered-content h1, .rendered-content h2, .rendered-content h3, .rendered-content h4, .rendered-content h5, .rendered-content h6 { border-bottom: none; padding-bottom: 5px; margin-top: 20px; }
+  .rendered-content ul, .rendered-content ol { padding-left: 25px; }
+  .rendered-content code { background-color: var(--pill); padding: 2px 5px; border-radius: 3px; font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; }
+  .rendered-content blockquote { border-left: 4px solid var(--border); padding-left: 15px; color: var(--muted); margin-left: 0; }
+  .rendered-content table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+  .rendered-content th, .rendered-content td { border: 1px solid var(--border); padding: 8px; }
+  .rendered-content th { background-color: var(--card); }
+  .rendered-content img { max-width: 100%; height: auto; display: block; margin: 1em 0; border-radius: 8px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <h1>Agentic Context Engineering: Evolving Contexts for Self-Improving Language Models</h1>
+    <p class="subtitle">大型語言模型常因上下文過度簡化或遺忘而效能衰退。本研究提出「代理人情境工程」(ACE)，一個將模型上下文視為動態演進「劇本」的框架。它能讓 AI 持續學習並自我改進，在複雜任務上展現卓越效能與效率。</p>
+    
+    <em style="font-size: 15px; color: var(--muted);">By Qizheng Zhang, Changran Hu, Shubhangi Upasani, Boyuan Ma, Fenglu Hong, Vamsidhar Kamanuru, Jay Rainton, Chen Wu, Mengmeng Ji, Hanchen Li, Urmish Thakker, James Zou, Kunle Olukotun, arXiv:2510.04618v1 [cs.AI], Oct 2025</em>
+    
+  </div>
+</header>
+
+<main class="container">
+  
+  <div class="rendered-content" style="font-size: 15px; padding: 15px 0;">
+      <p>大型語言模型（LLM）應用依賴「上下文適應」提升效能，但現有方法常面臨「簡潔偏誤」（犧牲細節）與「上下文崩潰」（資訊流失）的挑戰。本研究提出「代理人情境工程」（ACE），將上下文視為不斷演進的「策略劇本」。ACE 透過模組化的生成、反思與策展流程，以「增量更新」和「成長-精煉」原則持續累積和優化知識，有效避免資訊遺失。實驗證明，ACE 能顯著提升 LLM 在代理人基準測試與金融分析等專業任務上的表現，甚至讓開源模型達到頂尖商業模型的水平，為建構可規模化、高效的自我改進 AI 系統提供了新途徑。</p>
+
+  </div>
+  <div class="hr"></div>
+  
+  
+  
+        <div class="page" id="page-01">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 01</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-01">
+                    <h1>The Challenge: Improving LLMs Beyond Training</h1>
+<p>Modern AI systems increasingly depend on enhancing Large Language Models (LLMs) <em>after</em> their initial training is complete. Instead of costly and slow model weight updates, the focus has shifted to <strong>context adaptation</strong>—modifying the model's inputs to improve performance on specific tasks.</p>
+<p>This approach underpins critical components like:</p>
+<ul>
+<li>System prompts that guide behavior</li>
+<li>Memory that carries past experiences</li>
+<li>Factual evidence to reduce hallucination</li>
+</ul>
+<p>However, existing methods for context adaptation face fundamental limitations.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 01</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 01 頁：The_Challenge_Improving_LLMs_Beyond_Training</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>當前 AI 發展的重點，已從訓練模型轉向在「訓練後」提升模型能力的挑戰。</li>
+<li>核心方法是「脈絡適應 (Context Adaptation)」，也就是透過修改模型輸入，而非調整模型權重，來優化其表現。</li>
+<li>這種方法雖然普遍，卻面臨著根本性的限制，這也是本次分享要探討的核心。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>大家好，今天我們要探討一個在 LLM 領域越來越重要的問題：「模型訓練完之後，然後呢？」我們都知道訓練一個大型語言模型既昂貴又耗時，但真正的挑戰，其實才正要開始。那就是如何在不重新訓練的前提下，讓模型變得更聰明、更專業。</p>
+<h5>① 新的競技場：從「訓練」到「適應」</h5>
+<p>各位可以想像，現在 AI 應用的前線，比如能夠自主操作軟體的 <strong>LLM agents</strong>，或是結合多個模型的 <strong>Compound AI systems</strong>，它們成功的關鍵，不再只是模型本身的強大，而在於一種更靈活的技術，我們稱之為 <strong>脈絡適應 (Context Adaptation)</strong>。</p>
+<p>簡單來說，我們不再去動模型的「大腦」（也就是它的權重），而是專注於給它「更好的指令和筆記」（也就是修改輸入）。</p>
+<h5>② 什麼是脈絡適應？</h5>
+<p>這個概念其實貫穿在我們每天使用的 AI 服務中。每一次我們設定 <strong>System Prompt</strong> 來引導模型的語氣和行為、每一次模型需要記住之前的對話（<strong>Memory</strong>）、或者每一次它需要引用外部文件來避免胡說八道（<strong>Factual Evidence</strong>），這些全都是脈絡適應的具體應用。</p>
+<p>而這個趨勢之所以能普及，背後有兩大技術推手：第一是 <strong>長脈絡模型 (Long-context LLMs)</strong> 的突破，讓模型能讀懂更長的資訊；第二是 <strong>KV 快取 (KV Cache)</strong> 等技術，讓我們在提供長篇大論的資訊時，成本和延遲都大幅降低。</p>
+<blockquote>
+<p>所以，脈絡適應正在成為建構一個能夠自我進化、可擴展 AI 系統的核心範式。這是一個巨大的轉變。</p>
+</blockquote>
+<h5>③ 看似美好的背後：潛藏的危機</h5>
+<p>然而，當我們開心地使用這些方法時，卻發現了兩個嚴重的「絆腳石」。這些問題非常隱蔽，但卻會導致模型表現不升反降。</p>
+<p>它們就像是潛藏在系統中的暗礁，如果我們不了解它們，我們打造的 AI 系統，隨時都可能觸礁翻覆。那麼，這些問題到底是什麼呢？</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在講完「這是一個巨大的轉變」後，可以稍微停頓一下，讓聽眾消化這個觀念的重要性。</li>
+<li><strong>補充案例</strong>：如果時間允許，可以舉例，像是「ChatGPT 的 Custom Instructions 功能，就是一種最直接的脈絡適應，讓模型能記住你個人的偏好。」</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>了解了這個大背景後，下一頁，我們就來深入看看目前主流的「脈絡適應」方法具體有哪些，以及它們是如何運作的。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-02">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 02</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-02">
+                    <h1>Current Approach: Context Adaptation</h1>
+<p>Context adaptation refers to methods that improve model behavior by constructing or modifying the inputs to an LLM, rather than altering its weights.</p>
+<p><strong>Key Advantages:</strong></p>
+<ul>
+<li><strong>Interpretability:</strong> Contexts are human-readable and explainable.</li>
+<li><strong>Agility:</strong> Allows for rapid integration of new knowledge at runtime.</li>
+<li><strong>Modularity:</strong> Can be shared across different models or systems.</li>
+</ul>
+<p><strong>Common Methods:</strong></p>
+<ul>
+<li>Refining system prompts.</li>
+<li>Using in-context learning (ICL) with examples.</li>
+<li>Building an external memory of strategies (e.g., Dynamic Cheatsheet).</li>
+<li>Iterative optimization based on execution feedback (e.g., GEPA, Reflexion).</li>
+</ul>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 02</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 02 頁：Current_Approach_Context_Adaptation</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>脈絡適應 (Context Adaptation) 是指在不改動模型權重的前提下，透過修改輸入來優化模型行為的方法。</li>
+<li>它的核心優點是：可解釋 (Interpretability)、敏捷 (Agility) 與模組化 (Modularity)。</li>
+<li>常見方法包括：優化提示詞、情境學習 (ICL)，以及更進階的，基於執行回饋的自動優化，如 GEPA 和 Reflexion。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+好，承接上一頁，我們已經知道，「脈絡適應」是現在提升 LLM 能力的主流戰場。這一頁，我們就來拆解一下，這個聽起來有點學術的名詞，到底是什麼意思，以及它具體是怎麼做的。</p>
+<p>簡單來說，脈絡適應就是：<strong>我們不去碰模型複雜的「大腦權重」，而是專注於優化我們「餵給它的資料」。</strong></p>
+<h5>① 為什麼大家都在用？三大核心優勢</h5>
+<p>這個方法之所以能成為主流，是因為它帶來了三個傳統模型訓練無法比擬的好處：</p>
+<ul>
+<li>第一，<strong>可解釋性 (Interpretability)</strong>：模型的權重就像一個黑盒子，沒人知道裡面發生了什麼。但是，「脈絡」——也就是我們寫的提示詞、給的範例——是我們看得懂的人類語言。這讓我們能清楚地理解和控制模型的行為。</li>
+<li>第二，<strong>敏捷性 (Agility)</strong>：市場瞬息萬變，我們不可能每次有新知識就花幾百萬去重新訓練模型。脈絡適應讓我們可以在「執行當下 (runtime)」快速把新資訊塞給模型。比如，一個財經助理 agent，可以立刻讀懂最新的財報，而不需要重新訓練。</li>
+<li>第三，<strong>模組化 (Modularity)</strong>：一個設計好的「脈絡」，就像一個樂高積木，可以被不同的模型或系統重複使用，大大增加了開發效率。</li>
+</ul>
+<h5>② 具體是怎麼做的？從手動到自動</h5>
+<p>那麼，這些「脈絡」要怎麼優化呢？它的發展可以分為幾個層次：</p>
+<p>最基礎的，就是我們手動去<strong>修改系統提示詞 (System Prompt)</strong>，或是提供一些高品質的範例，也就是所謂的 <strong>In-Context Learning (ICL)</strong>。</p>
+<p>但現在，更前沿的方法是讓模型「自己學會優化自己」。這些方法會去分析模型執行的過程，然後用自然語言生成回饋，來迭代改進脈絡。</p>
+<blockquote>
+<p>這就像是給模型請了一個隨身教練。模型每次執行任務，教練（另一個 LLM）就在旁邊觀察，然後告訴它：「你這次這裡做得不好，下次試試這個策略。」</p>
+</blockquote>
+<p>這方面的代表性研究，包括了：</p>
+<ul>
+<li><strong>Reflexion</strong>：它專門反思「失敗的經驗」，從而改進未來的規劃。</li>
+<li><strong>GEPA</strong>：它會收集整個執行軌跡——包括思考過程、工具調用——然後進行全面的診斷，提出改進建議。</li>
+<li><strong>Dynamic Cheatsheet</strong>：這個方法更有趣，它會為模型建立一個外部的「記憶體」或「小抄」，把過去所有成功的策略、有用的程式碼都記錄下來，供未來隨時查閱。</li>
+</ul>
+<p>這些基於自然語言回饋的方法，是超越傳統模型微調的一大步，讓我們能用更靈活、更直觀的方式來打造更強大的 AI 系統。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>類比說明</strong>：可以這樣比喻：「脈絡適應」就像是我們不打算把一位廚師送回廚藝學校重造，而是直接給他一份更好的食譜 (a better recipe)，讓他立刻就能做出更美味的菜餚。</li>
+<li><strong>節奏提醒</strong>：在介紹完 GEPA、Reflexion 等方法後，可以稍作停頓，讓聽眾感受到這個領域的技術深度。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>聽起來這一切都非常完美，對吧？我們有可解釋、又敏捷的方法，甚至能讓 AI 自己教自己。然而，現實是殘酷的。在這些美好的表象之下，潛藏著兩個非常棘手的問題，它們正是導致許多 AI 專案停滯不前的元兇。下一頁，我們就來揭開第一個問題：「簡潔性偏誤」。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-03">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 03</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-03">
+                    <h1>Limitation 1: The Brevity Bias</h1>
+<p>Many current context adaptation methods suffer from a <strong>brevity bias</strong>.</p>
+<ul>
+<li><strong>Problem:</strong> The optimization process tends to favor short, generic instructions over comprehensive, detailed ones.</li>
+<li><strong>Example:</strong> An optimizer might repeatedly produce a simple prompt like <code>&quot;Create unit tests&quot;</code> while omitting domain-specific heuristics, failure modes, or complex tool-use guidelines.</li>
+<li><strong>Impact:</strong> This sacrifices the very details and diversity needed for high performance in complex, knowledge-intensive domains like agentic systems or programming.</li>
+</ul>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 03</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 03 頁：Limitation_1_The_Brevity_Bias</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>現行的脈絡適應方法，普遍存在一種「簡潔性偏誤 (Brevity Bias)」。</li>
+<li>這個偏誤指的是，AI 在優化過程中，傾向於產生簡短、通用的指令，而犧牲了深度和細節。</li>
+<li>這種「重簡潔、輕細節」的傾向，會嚴重削弱 AI 在需要專業知識的複雜任務上的表現。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白) 好的，我們剛剛提到了脈絡適應背後有潛在的危機。現在，我們就來揭曉第一個，也是最常見的一個問題，我稱之為「簡潔性偏誤」。</p>
+<h5>① 什麼是「簡潔性偏誤」？</h5>
+<p>這個概念聽起來可能有點學術，但其實非常直觀。許多用來自動優化「提示詞」的方法，它們的目標函數或內在偏好，會讓它們<strong>極度熱愛「簡短」與「通用」的指令</strong>。它們會認為，越短的指令越好，越通用的指令越高明。</p>
+<p>這聽起來好像沒錯，追求簡潔是好事。但問題在於，它們為了追求簡潔，會把那些真正有價值的、充滿細節的專業知識，當作「雜訊」一樣給過濾掉了。</p>
+<h5>② 一個具體的例子</h5>
+<p>讓我們來看一個真實的研究案例。在一項關於「測試案例生成」的任務中，研究人員發現，一個提示詞優化器，在經過數次迭代後，反覆產生幾乎一模一樣的、非常空泛的指令。</p>
+<blockquote>
+<p>就如同這頁投影片上寫的，它可能會給你一句像是 <code>&quot;Create unit tests&quot;</code> (也就是「建立單元測試」) 這樣的指令。</p>
+</blockquote>
+<p>你看，這句話本身沒有錯，但它完全沒有告訴模型<strong>如何</strong>去寫一個好的測試！那些針對這個特定領域的<strong>啟發式規則 (heuristics)</strong>、常見的<strong>失敗模式</strong>，或是複雜的<strong>工具使用指南</strong>，全都被犧牲了。</p>
+<h5>③ 偏誤帶來的衝擊</h5>
+<p>這就是「簡潔性偏誤」最致命的地方。它讓 AI 系統丟掉了在複雜任務中致勝的關鍵——也就是那些寶貴的、領域特定的細節知識。</p>
+<p>當我們要求 AI 扮演一個需要深度知識的角色時，比如一個軟體工程師、一個金融分析師，這種偏誤會讓它的表現「看起來很努力，但實際上很外行」。因為它學到的，只是一些空洞的口號，而不是真正能解決問題的具體策略。這就導致 AI 在真正重要的、知識密集的應用場景中，表現大打折扣。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在講完 <code>&quot;Create unit tests&quot;</code> 的例子後，可以停頓一下，讓聽眾體會這個指令有多麼空泛。</li>
+<li><strong>視覺輔助</strong>：可以指著投影片上的「Impact」部分，強調「sacrifices the very details」這一點，將口語和視覺內容結合。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>如果說「簡潔性偏誤」像是讓我們的 AI 專家逐漸變得平庸，那麼下一個我們要談的問題，就更嚴重了。它會導致 AI 瞬間「失憶」，我們稱之為「脈絡崩潰」。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-04">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 04</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-04">
+                    <h1>Limitation 2: Context Collapse</h1>
+<p>A more severe issue is <strong>context collapse</strong>, where iterative rewriting of the context leads to a sudden and dramatic loss of information.</p>
+<ul>
+<li><strong>Cause:</strong> When an LLM is tasked with rewriting a large, accumulated context, it often compresses it into a much shorter, less informative summary.</li>
+<li><strong>Case Study:</strong> In one experiment, a context of <strong>18,282 tokens</strong> (66.7% accuracy) collapsed to just <strong>122 tokens</strong> in the next step, causing accuracy to plummet to 57.1%.</li>
+<li><strong>Risk:</strong> This demonstrates that monolithic, end-to-end rewriting can abruptly erase valuable, accumulated knowledge.</li>
+</ul>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 04</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 04 頁：Limitation_2_Context_Collapse</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>除了「簡潔性偏誤」，一個更嚴重的問題是「脈絡崩潰 (Context Collapse)」。</li>
+<li>當 AI 被要求「重寫」或「更新」一個逐漸累積變大的知識庫時，它傾向於將其過度壓縮，變成一個極短的摘要。</li>
+<li>這個過程會導致災難性的資訊損失，讓 AI 瞬間「失憶」，效能急劇下降，甚至比沒有學習前還差。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白) 剛剛我們談到「簡潔性偏誤」會讓我們的 AI 專家逐漸變得平庸，但現在，我們要來面對一個更驚悚、更具戲劇性的問題。這個問題，會讓 AI 在一瞬間，就把自己累積的所有智慧忘得一乾二淨。我們稱之為「脈絡崩潰」。</p>
+<h5>① 什麼是「脈絡崩潰」？</h5>
+<p>想像一下，你正在訓練一個 AI 代理人，它不斷學習、累積經驗，它的「筆記本」（也就是它的脈絡）變得越來越厚、越來越有價值。但這時，你下達了一個指令：「好了，請你總結一下你學到的所有東西，然後寫一本新的、更精簡的筆記本。」</p>
+<p>這就是問題的根源。當 AI 模型被賦予這種「一次性重寫整個脈絡」的任務時，一個可怕的現象發生了：它往往不會去「精煉」，而是去「極度壓縮」。那些寶貴的細節、策略、失敗經驗，在一瞬間就被夷為平地，變成一句空洞的總結。</p>
+<h5>② 一個真實的災難案例</h5>
+<p>這不是危言聳聽，讓我們來看看一個發生在 <code>AppWorld</code> 這個基準測試中的真實案例。</p>
+<p>研究人員讓一個 AI 代理人持續學習，在第 60 次迭代時，它的脈絡筆記已經累積到了 <strong>18,282 個 token</strong>，當時它的任務準確率是 66.7%，表現相當不錯。</p>
+<p>但就在下一次更新時，災難發生了。模型在重寫脈絡後，這個龐大的知識庫瞬間崩塌，只剩下 <strong>122 個 token</strong>。這就像一位學富五車的學者，突然把畢生所學忘掉，只記得自己的名字。</p>
+<blockquote>
+<p>而最諷刺的是，它的準確率從 66.7% 急速下降到 57.1%——這個數字，甚至比它一開始什麼都沒學的基準線 (63.7%) 還要糟糕！</p>
+</blockquote>
+<p>這意味著，這種「進化」不僅沒有帶來進步，反而造成了嚴重的退化。</p>
+<h5>③ 風險的核心：一次性的整體重寫</h5>
+<p>這個案例揭示了一個根本性的風險：讓 AI <strong>從頭到尾、一次性地重寫（monolithic rewriting）</strong> 自己的知識庫，是一個極其危險的操作。這就像要求一位歷史學家每天都重新寫一遍世界史，過程中必然會遺忘大量重要的細節。</p>
+<p>寶貴的、經過多輪迭代才累積起來的知識，可能會在一次不經意的「總結」中，被徹底清除。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在公布「18,282 token 崩潰到 122 token」以及「準確率甚至低於基準線」時，可以放慢語速，加重語氣，讓聽眾感受到問題的嚴重性。</li>
+<li><strong>補充案例</strong>：這個問題並非只存在於理論中，它在 <code>Dynamic Cheatsheet</code> 這類先進的適應方法中也被觀察到，證明了這是個普遍存在的風險。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>既然我們已經看到，這種「一次性重寫」的策略會帶來災難性的失憶風險，那麼解決方案的方向就很明確了。我們需要的，不是一個健忘的系統，而是一個能夠持續「累積」與「提煉」知識的系統。下一頁，我們將探討一個全新的典範：將脈絡視為「進化式劇本」。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-05">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 05</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-05">
+                    <h1>A New Paradigm: Contexts as Evolving Playbooks</h1>
+<p>To overcome these limitations, we must shift our perspective. Instead of treating contexts as concise summaries, we should view them as <strong>comprehensive, evolving playbooks</strong>.</p>
+<ul>
+<li><strong>Old Idea:</strong> Compress knowledge into short prompts.</li>
+<li><strong>New Idea:</strong> Saturate the context with abundant, detailed, and rich domain insights.</li>
+</ul>
+<p>LLMs are highly effective when provided with long, detailed contexts. The goal is to <strong>preserve</strong> domain-specific heuristics and tactics, allowing the model to distill relevance autonomously at inference time.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 05</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 05 頁：A_New_Paradigm_Contexts_as_Evolving_Playbooks</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>為了解決「簡潔性偏誤」與「脈絡崩潰」，我們需要一個全新的思維典範。</li>
+<li><strong>舊思維</strong>是將知識「壓縮」成簡短的提示詞；<strong>新思維</strong>是將脈絡視為一本詳盡的、不斷進化的「教戰手冊 (Playbook)」。</li>
+<li>核心理念是：與其由我們幫 AI 過濾資訊，不如提供豐富、詳盡的脈絡，讓 AI 在執行任務時，自主地從中提取有用的部分。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白) 好的，我們剛剛看到了「簡潔性偏誤」和「脈絡崩潰」這兩個嚴峻的挑戰。它們都指向一個共同的問題：過去那種試圖把知識「壓縮」成簡短指令的做法，已經走到了盡頭。那麼，未來的路該怎麼走呢？這就需要我們在思維上，來一次徹底的轉變。</p>
+<h5>① 新典範：從「摘要」到「教戰手冊」</h5>
+<p>我們提出的新典範是：<strong>停止將「脈絡」視為一份需要被精簡的摘要，而是要把它當作一本詳盡的、不斷進化的「教戰手冊 (Evolving Playbook)」</strong>。</p>
+<p>這本手冊不是追求簡潔，而是追求<strong>全面、豐富、而且充滿了領域的洞見</strong>。想像一下，一個頂尖運動員的教練，給他的不是一句「好好打球」的空泛口號，而是一整本記錄了各種戰術、對手分析、應變策略的厚厚手冊。我們為 AI 準備的脈絡，就該是這樣的手冊。</p>
+<h5>② 核心洞察：AI 的思考方式與人類不同</h5>
+<p>你可能會問，這麼長的內容，AI 不會消化不良嗎？這裡，我們必須理解一個關鍵且反直覺的洞察：</p>
+<blockquote>
+<p>AI 的學習方式，和人類不一樣。人類大腦喜歡簡潔的歸納和通則，但大型語言模型 (LLMs) 恰恰相反，當它們被提供<strong>長篇、詳細的脈絡</strong>時，反而能表現得更出色。</p>
+</blockquote>
+<p>它們擁有從海量資訊中自主提取相關重點的能力。所以，我們過去那種「幫 AI 劃重點」的作法，其實是限制了它們的潛力。</p>
+<h5>③ 新的目標：飽和脈絡，保存細節</h5>
+<p>所以，我們的目標不再是「壓縮知識」，而是要反過來，用<strong>大量、有用、豐富的資訊去「飽和」整個脈絡</strong>。</p>
+<ul>
+<li><strong>舊思維</strong>：把專業的啟發式規則、戰術，當作雜訊一樣過濾掉。</li>
+<li><strong>新思維</strong>：把這些寶貴的細節全部<strong>保存</strong>下來，讓模型在推論的當下，自己決定什麼是重要的。</li>
+</ul>
+<p>我們的任務，從「資訊過濾器」，轉變為「知識收藏家」，為 AI 打造一本最全面的教戰手冊。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在講完「AI 的思考方式與人類不同」這個洞察後，可以稍微停頓一下。這是一個很關鍵的「Aha Moment」，讓聽眾有時間吸收這個反直覺的觀點。</li>
+<li><strong>視覺輔助</strong>：可以指著投影片上的「Old Idea」和「New Idea」，用手勢做出「壓縮」和「擴展」的對比動作，加強視覺印象。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>好了，既然我們確立了這個將「脈絡」打造成「進化版教戰手冊」的新哲學，那麼下一個最關鍵的問題就是：我們該如何系統化地去建立、維護、並且進化這本手冊呢？這就是我們接下來要介紹的全新框架——<strong>ACE (Agentic Context Engineering)</strong>。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-06">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 06</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-06">
+                    <h1>Introducing: Agentic Context Engineering (ACE)</h1>
+<p><strong>ACE</strong> is a framework designed to build and manage these comprehensive, evolving playbooks.</p>
+<p>It treats context adaptation as a structured engineering discipline for both:</p>
+<ol>
+<li><strong>Offline Optimization</strong> (e.g., creating a powerful system prompt from a dataset).</li>
+<li><strong>Online Adaptation</strong> (e.g., refining an agent's memory during execution).</li>
+</ol>
+<p>ACE is built on the principle that contexts should continuously <strong>accumulate, refine, and organize</strong> strategies over time, rather than being compressed or rewritten from scratch.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 06</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 06 頁：Introducing_Agentic_Context_Engineering_(ACE)</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>為了解決「簡潔性偏誤」與「脈絡崩潰」，我們提出一個名為 <strong>ACE (Agentic Context Engineering)</strong> 的新框架。</li>
+<li>ACE 的核心思想是將「脈絡」視為一個不斷演進、擴充的<strong>動態腳本庫 (Evolving Playbooks)</strong>，而不只是一段靜態指令。</li>
+<li>它將脈絡適應，提升為一門結構化的工程學科，並應用於「離線優化」與「線上適應」兩種場景。</li>
+<li>其基本原則是：<strong>持續地累積、精煉和組織策略</strong>，徹底拋棄過去那種從頭改寫或壓縮知識的做法。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白) 各位，剛才我們看到了既有方法存在的兩大痛點：「簡潔性偏誤」讓 AI 變得膚淺，「脈絡崩潰」則讓 AI 瞬間失憶。那麼，我們該如何突破這個困境呢？今天，我想向各位介紹我們提出的解決方案，一個全新的框架，我們稱之為 <strong>Agentic Context Engineering</strong>，簡稱 <strong>ACE</strong>。</p>
+<h5>① ACE 是什麼？它不只是一個方法，更是一門工程學問</h5>
+<p>首先，ACE 的核心，是我們對「脈絡」這個概念的重新定義。我們認為，脈絡不應該是一段寫死後就不太變動的指令，而應該像一本<strong>活的、不斷演進的「腳本庫」或「戰術手冊」</strong>。</p>
+<blockquote>
+<p>這就是為什麼我們稱之為「工程 (Engineering)」。我們希望把脈絡的調整，從過去那種有點隨性的「提示詞藝術」，轉變為一門有結構、有紀律、可管理的<strong>工程學科</strong>。</p>
+</blockquote>
+<p>這個框架，旨在系統性地建立並管理這些內容豐富、細節滿載的動態腳本庫。</p>
+<h5>② ACE 的兩大應用戰場：離線與線上</h5>
+<p>那麼，這門工程技術可以用在哪裡呢？主要有兩個場景：</p>
+<ul>
+<li>
+<p><strong>第一，是「離線優化 (Offline Optimization)」</strong>。這就像是 AI 系統上線前的「集訓」。我們可以給它一個龐大的資料集，讓 ACE 框架去自動學習、挖掘，最終打造出一套極其強大的「初始系統提示 (System Prompt)」。這等於是讓 AI 帶著一份頂尖的教戰守則上場。</p>
+</li>
+<li>
+<p><strong>第二，是「線上適應 (Online Adaptation)」</strong>。這就是 AI 在實戰中的「即時學習」。舉例來說，當一個 AI 代理人 (Agent) 在執行任務時，ACE 會幫助它即時地從每一次的成功與失敗中吸取教訓，動態更新它的「記憶體」。這讓 AI 能夠邊做邊學，越用越聰明。</p>
+</li>
+</ul>
+<h5>③ ACE 的核心哲學：累積，而非拋棄</h5>
+<p>而這一切的背後，都源於一個最根本的原則轉變。</p>
+<p>過去的方法，總想著把知識<strong>壓縮、改寫、總結</strong>，結果就是我們前面看到的，細節遺失，甚至整個脈絡崩潰。</p>
+<p>而 ACE 的原則恰恰相反，它強調的是**「持續地累積、精煉和組織 (accumulate, refine, and organize)」<strong>。它會不斷地把新的策略、新的知識點，像積木一樣，有條不紊地加到現有的腳本庫中，同時還會聰明地移除重複或過時的內容。這確保了知識</strong>只會增加，不會無故消失**。這種設計，正是為了解決前面提到的「脈絡崩潰」問題。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在講出「Agentic Context Engineering, 簡稱 ACE」時，可以加重語氣並稍作停頓，讓這個新名詞在聽眾腦中留下深刻印象。</li>
+<li><strong>肢體語言</strong>：「離線」時可以做出「準備、儲備」的手勢；講「線上」時，可以做出「前進、執行中」的手勢，幫助聽眾直觀理解。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>了解了 ACE 的核心理念與目標後，大家肯定會好奇，這個框架實際上是如何運作的呢？它又是如何實現「累積、精煉、組織」這個原則的？下一頁，我們將揭曉 ACE 框架內部巧妙的「勞力分工」設計。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-07">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 07</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-07">
+                    <h1>The ACE Framework: An Agentic Division of Labor</h1>
+<p>ACE employs a modular, agentic architecture with three specialized roles, mirroring a human learning process:</p>
+<ol>
+<li>
+<p><strong>The Generator:</strong></p>
+<ul>
+<li>Executes tasks and produces reasoning trajectories, surfacing successes and failures.</li>
+</ul>
+</li>
+<li>
+<p><strong>The Reflector:</strong></p>
+<ul>
+<li>Critiques the Generator's traces to distill concrete, actionable insights and lessons.</li>
+</ul>
+</li>
+<li>
+<p><strong>The Curator:</strong></p>
+<ul>
+<li>Integrates these insights into the context through structured, incremental updates.</li>
+</ul>
+</li>
+</ol>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 07</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 07 頁：The_ACE_Framework_An_Agentic_Division_of_Labor</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>ACE 框架的核心是一種「代理人分工」架構，模仿人類團隊的學習模式。</li>
+<li>它包含三個專門的角色：負責執行任務的 <strong>Generator (執行者)</strong>。</li>
+<li>負責從執行結果中提煉經驗的 <strong>Reflector (反思者)</strong>。</li>
+<li>以及負責將經驗整合進知識庫的 <strong>Curator (策展人)</strong>。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白) 好的，我們前面提到了要建立一個能夠自我進化的「劇本集 (Playbook)」。但問題是，誰來寫？誰來反思？誰來整理？如果只靠一個 AI，很容易會把它累垮，甚至精神錯亂。ACE 提出了一個非常聰明的解法，那就是「團隊合作」，也就是這頁我們要談的<strong>代理人分工框架 (An Agentic Division of Labor)</strong>。</p>
+<p>這個框架，其實就是在模仿一個高效的人類學習團隊，它把複雜的學習任務拆分給三個專門的 AI 代理人。</p>
+<h5>① 第一位成員：執行者 (The Generator)</h5>
+<p>首先，團隊裡的先鋒，是 <strong>執行者 (Generator)</strong>。它的工作很單純：就是「動手做」。當接到一個新任務時，Generator 會立刻開始解決問題，並產生一連串詳細的「思考與行動軌跡」。這就像一份詳細的工作日誌，裡面不僅記錄了成功的路徑，也暴露了它在過程中踩到的坑、遇到的失敗。它的目標是產生最原始的素材，供團隊其他人分析。</p>
+<h5>② 第二位成員：反思者 (The Reflector)</h5>
+<p>接著，<strong>反思者 (Reflector)</strong> 就會接手這份工作日誌。它的角色就像團隊裡的資深導師或品保專家 (QA)。它不親自動手做，而是專注於「批判」與「提煉」。它會仔細審視 Generator 的執行過程，不論成功或失敗，並從中提煉出具體、可操作的經驗教訓。</p>
+<blockquote>
+<p>這一步至關重要。Reflector 的任務是把原始的經驗，轉化為「智慧」。例如，它可能會總結出：「當遇到 A 情況時，應該優先使用 B 工具，而不是 C 工具，因為 C 會導致錯誤。」</p>
+</blockquote>
+<h5>③ 第三位成員：策展人 (The Curator)</h5>
+<p>最後，<strong>策展人 (Curator)</strong> 登場。它的工作，是將 Reflector 提煉出的那些寶貴經驗，小心翼翼地整合回我們的「進化劇本」當中。它就像一位知識庫管理員，負責歸檔與整理。最關鍵的是，它並非粗暴地重寫整個劇本，而是進行<strong>結構化的、增量式的更新</strong>。這個設計，就是為了解決我們前面提到的「脈絡崩潰」問題。</p>
+<p>這整個流程——<strong>執行、反思、整合</strong>——完美地複製了人類的學習閉環，同時也透過分工，避免了讓單一模型承擔所有責任而導致的瓶頸。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在介紹完三個角色後，可以停頓一下，用一個比喻來加深聽眾的印象：「這就像一個廚房團隊，Generator 是負責炒菜的廚師，Reflector 是在旁邊試吃並給出改良建議的主廚，而 Curator 則是負責把最佳食譜更新到菜單上的人。」</li>
+<li><strong>補充案例</strong>：可以強調，這種分工讓每個代理人都能專注於自己最擅長的事，最大化團隊的學習效率。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>我們已經認識了這個夢幻團隊的「成員」。但你可能最好奇的是，那位策展人 (Curator) 究竟是用了什麼魔法，才能在不斷增加知識的同時，又不會導致劇本「崩潰」呢？這就引出了 ACE 的第一個核心機制：「增量 Delta 更新」。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-08">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 08</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-08">
+                    <h1>Core Mechanism 1: Incremental Delta Updates</h1>
+<p>To prevent context collapse, ACE avoids monolithic rewrites. Instead, it uses <strong>incremental delta updates</strong>.</p>
+<ul>
+<li><strong>Structured Context:</strong> The context is not a single block of text, but a collection of structured, itemized bullets (e.g., a strategy, a concept, a failure mode).</li>
+<li><strong>Localized Edits:</strong> The Reflector proposes changes as a small <code>delta context</code> containing only new or modified bullets.</li>
+<li><strong>Deterministic Merge:</strong> The Curator uses lightweight, non-LLM logic to merge these deltas into the main context.</li>
+</ul>
+<p>This ensures that past knowledge is preserved while new insights are steadily appended, enabling scalability and preventing information loss.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 08</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 08 頁：Core_Mechanism_1_Incremental_Delta_Updates</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>為了解決「脈絡崩潰」，ACE 的第一個核心機制是「增量 Delta 更新」。</li>
+<li>它將龐大、單一的脈絡，拆解成一個個結構化的「項目要點 (itemized bullets)」。</li>
+<li>更新時，系統只針對需要修改的要點產生一個微小的「Delta 檔」，再由非 LLM 的輕量級邏輯將其合併，從而避免了毀滅性的「全文重寫」。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白) 好的，我們剛剛看到了「脈絡崩潰」這個可怕的問題——整個知識庫可能在一瞬間灰飛煙滅。那麼，ACE 是如何從根本上解決這個問題的呢？答案就在它的第一個核心機制：<strong>增量 Delta 更新</strong>。這個想法的核心，就是放棄「一次性重寫所有內容」的笨重做法。</p>
+<h5>① 第一步：將脈絡「模組化」</h5>
+<p>首先，ACE 徹底改變了我們看待「脈絡」的方式。它不再是一個龐大、笨重的文字區塊 (a single monolithic prompt)。</p>
+<blockquote>
+<p>相反地，我們將它想像成一個由許多<strong>結構化的、項目化的要點 (structured, itemized bullets)</strong> 所組成的集合。</p>
+</blockquote>
+<p>你可以把它想像成一本活頁筆記本，每一頁就是一個獨立的知識點。這個要點可能是一個可重複使用的<strong>策略</strong>、一個專業的<strong>領域概念</strong>，或是一個常見的<strong>失敗模式</strong>。這種做法讓我們能夠對知識進行更精準的操作，而不是每次都得重讀、重寫整本書。</p>
+<h5>② 第二步：外科手術式的「增量更新」</h5>
+<p>有了模組化的結構後，更新過程就變得非常聰明且高效。整個流程就像一個團隊合作：</p>
+<ul>
+<li>首先，我們前面提到的「<strong>反思者 (Reflector)</strong>」在分析完一次任務後，會提出修改建議。但它不會去改寫整個筆記本，而是只寫一張小小的便利貼，這張便利貼就叫做 <code>delta context</code> (差異化脈絡)。上面只記錄了<strong>新增</strong>或<strong>需要修改</strong>的那幾個要點。</li>
+<li>接著，「<strong>策展人 (Curator)</strong>」登場。它的工作就像一個高效的圖書館員。它會拿起這張便利貼，然後用非常<strong>輕量級、非 LLM 的邏輯</strong>，直接、快速地把它合併回主要的脈絡中。</li>
+</ul>
+<p>這個過程就像是給筆記本換掉或增加其中幾頁，而不是把整本書重新抄寫一遍。最關鍵的是，這個合併過程是<strong>確定性的 (deterministic)</strong>，而且速度極快，因為它不需要動用昂貴的 LLM 來進行。</p>
+<h5>③ 最終成果：穩定且可擴展的知識庫</h5>
+<p>這種「增量更新」的設計，帶來了兩個巨大的好處：</p>
+<ol>
+<li><strong>徹底杜絕脈絡崩潰</strong>：因為我們永遠不會刪除或重寫整個知識庫，過去積累的寶貴知識得以被完整<strong>保留</strong>下來，新的見解則被穩定地<strong>附加</strong>進去。</li>
+<li><strong>實現了真正的可擴展性</strong>：由於更新是局部且輕量的，系統甚至可以並行處理多個「delta 更新」，讓整個脈絡的演進過程變得極其高效，為處理更大規模的應用打下了堅實的基礎。</li>
+</ol>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>視覺比喻</strong>：在講到「monolithic prompt」時，可以用手做出一個大方塊的手勢；在講到「itemized bullets」時，可以用手指做出點列的手勢，形成鮮明對比。</li>
+<li><strong>節奏提醒</strong>：在解釋「非 LLM 的輕量級邏輯」時，可以稍微加重語氣並放慢速度，強調這點是實現「效率」的關鍵技術細節。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>透過增量更新，我們確保了知識只會不斷累積而不會遺失。但這也帶來一個新問題：如果我們只進不出，這本「教戰手冊」會不會變得越來越臃腫、充滿重複的內容呢？下一頁，我們將介紹 ACE 的第二個核心機制：「成長-精煉」原則，來看看它是如何解決這個問題的。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-09">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 09</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-09">
+                    <h1>Core Mechanism 2: The Grow-and-Refine Principle</h1>
+<p>ACE ensures contexts remain relevant and non-redundant through a <strong>grow-and-refine</strong> mechanism.</p>
+<ol>
+<li>
+<p><strong>Grow:</strong></p>
+<ul>
+<li>New insights (bullets) are appended to the context.</li>
+<li>Existing bullets are updated in-place with new metadata (e.g., usage counters).</li>
+</ul>
+</li>
+<li>
+<p><strong>Refine:</strong></p>
+<ul>
+<li>A de-duplication step periodically prunes redundancy by comparing bullets using semantic embeddings.</li>
+</ul>
+</li>
+</ol>
+<p>This process allows the context to expand adaptively while maintaining compactness and relevance, avoiding the variance of complete rewrites.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 09</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 09 頁：Core_Mechanism_2_The_Grow-and-Refine_Principle</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>為了解決知識庫無限膨脹、充滿冗餘的問題，ACE 的第二個機制是「成長-精煉」原則。</li>
+<li><strong>成長 (Grow)</strong>：持續地增加新的知識要點，並更新既有要點的元數據（如使用次數）。</li>
+<li><strong>精煉 (Refine)</strong>：透過語意嵌入技術，定期執行「去重複」步驟，刪除或合併語意上重複的內容，保持知識庫的精簡與高效。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白) 好的，上一頁我們用「增量更新」確保了知識庫只會不斷累積、不會突然崩潰。但這也帶來一個很自然的問題：如果我們只是一味地增加內容 (Grow)，這本「教戰手冊」會不會變得越來越臃腫、充滿重複的資訊，反而降低了效率呢？這就是 ACE 第二個核心機制——<strong>「成長-精煉」(Grow-and-Refine) 原則</strong>——要解決的問題。</p>
+<h5>① 第一階段：有機地「成長 (Grow)」</h5>
+<p>這個階段很直觀。當系統學到新東西時，它會做兩件事：</p>
+<ol>
+<li><strong>附加新見解</strong>：如果是一個全新的知識點，就直接當成一個新的「要點 (bullet)」加到我們的教戰手冊裡。</li>
+<li><strong>更新舊知識</strong>：如果某個既有的策略在這次任務中被證明特別有用，系統不會再寫一條新的，而是在既有的要點上<strong>就地更新 (update in-place)</strong>。例如，在它的元數據裡把「被證明有用」的計數器加一。</li>
+</ol>
+<p>這個「成長」階段確保了我們的知識庫是動態的、與時俱進的，它能記住哪些策略是真正有價值的。</p>
+<h5>② 第二階段：智慧地「精煉 (Refine)」</h5>
+<p>但光會成長是不夠的，一個健康的生態系統還需要新陳代謝。這就是「精煉」階段的作用，它負責保持我們教戰手冊的<strong>緊湊和關聯性 (compact and relevant)</strong>。</p>
+<p>它的核心是一個**「去重複」步驟**。但它不是簡單地尋找一模一樣的文字。</p>
+<blockquote>
+<p>它會透過<strong>語意嵌入 (semantic embeddings)</strong> 技術，去理解每個知識點背後的「真實含義」。如果發現有兩個要點，雖然措辭不同，但本質上是同一個策略或概念，系統就會聰明地把它們修剪、合併，去除冗餘。</p>
+</blockquote>
+<p>最巧妙的是，這個「精煉」的動作非常有彈性。開發者可以設定成<strong>主動模式 (proactively)</strong>，也就是每次更新後都整理一次；也可以設定成<strong>懶人模式 (lazily)</strong>，只有當整個脈絡的長度快要超出上限時，才啟動一次大掃除。這讓開發者可以根據應用程式對<strong>延遲和準確度</strong>的不同需求，來做出最佳的權衡取捨。</p>
+<p>這個「成長」後再「精煉」的過程，讓我們的脈絡能夠自我適應地擴展，同時又保持高品質與高效率，徹底避免了「全文重寫」那種不穩定、充滿變數的風險。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>視覺比喻</strong>：在講「Grow」時，可以做出雙手向外擴張的手勢；在講「Refine」時，可以做出雙手向內擠壓、去蕪存菁的手勢。</li>
+<li><strong>節奏提醒</strong>：在解釋「語意嵌入」時，可以放慢速度，並強調它比較的不是「文字」而是「意思」，這是實現智慧去重的關鍵。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>好了，到這裡我們已經介紹完 ACE 的兩大核心武器：「增量更新」確保知識不流失，「成長-精煉」確保知識庫不臃腫。理論聽起來很完美，但大家肯定最好奇的是：這套機制在真實世界中的效果到底如何？它真的能打敗其他方法嗎？下一頁，我們就進入最精彩的部分——實際評測，看看 ACE 在那些要求最嚴苛的任務上，取得了多麼驚人的成果。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-10">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 10</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-10">
+                    <h1>Evaluation: Testing ACE on Demanding Benchmarks</h1>
+<p>ACE was evaluated on two categories of applications where comprehensive, evolving contexts are most critical:</p>
+<ol>
+<li>
+<p><strong>LLM Agent Benchmarks (AppWorld):</strong></p>
+<ul>
+<li>Requires multi-turn reasoning, tool use, and environment interaction.</li>
+<li>Agents can accumulate and reuse strategies across episodes.</li>
+</ul>
+</li>
+<li>
+<p><strong>Domain-Specific Benchmarks (Financial Analysis):</strong></p>
+<ul>
+<li>Tasks (FiNER, Formula) demand mastery of specialized concepts and tactics (e.g., XBRL).</li>
+<li>Success depends on a deep, explicit knowledge base.</li>
+</ul>
+</li>
+</ol>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 10</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 10 頁：Evaluation_Testing_ACE_on_Demanding_Benchmarks</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>為了證明 ACE 的實力，我們在兩類最嚴苛的應用場景中對其進行了評估。</li>
+<li><strong>場景一：LLM 智慧體 (Agent)</strong>，使用 AppWorld 基準測試，考驗其在複雜環境中的互動與策略重用能力。</li>
+<li><strong>場景二：專業領域知識</strong>，使用金融分析任務 (FiNER, Formula)，考驗其對專業術語和精準計算的掌握。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白) 好的，到目前為止，我們已經深入探討了 ACE 框架的設計理念和兩大核心機制。理論聽起來非常強大，但俗話說得好：「是騾子是馬，拉出來遛遛」。接下來，我們就要來看，當 ACE 面對真正困難的挑戰時，它的表現究竟如何。</p>
+<p>為了進行最嚴格的壓力測試，我們特意挑選了兩類對「脈絡」要求最高的應用場景。</p>
+<h5>① 第一類挑戰：複雜的智慧體任務 (Agent Benchmarks)</h5>
+<p>首先，我們把 ACE 丟進了一個叫做 <strong>AppWorld</strong> 的世界。</p>
+<blockquote>
+<p>AppWorld 不是一個簡單的問答遊戲，它是一個高度仿真的「應用程式世界」，裡面有我們日常會用到的各種工具，像是電子郵件、檔案系統等等。</p>
+</blockquote>
+<p>智慧體 (Agent) 在這裡必須要能夠理解 API 文件、自己寫程式碼，並且跟這些應用程式進行多回合的互動來完成任務。更重要的是，它需要能夠從過去的經驗中<strong>學習</strong>，並把成功的<strong>策略</strong>累積、重複使用。這就好像在訓練一位數位員工，讓他學會如何操作公司內部的各種軟體。</p>
+<p>這個基準測試非常困難，根據論文的描述，在當時，即便是最頂尖的系統，平均準確率也才剛過 60%。這恰好是檢驗 ACE 能否建立一個真正「有用」的教戰手冊的完美場地。</p>
+<h5>② 第二類挑戰：高專業度的領域知識 (Domain-Specific Benchmarks)</h5>
+<p>如果說 AppWorld 考驗的是「動手操作」的能力，那麼第二類挑戰，就是考驗「專業知識」的深度。我們選擇了<strong>金融分析</strong>領域。</p>
+<p>這裡有兩個具體的任務：<strong>FiNER</strong> 和 <strong>Formula</strong>。這兩個任務都圍繞著一種叫做 XBRL 的語言。各位可以把它理解為專門給財報用的「標準化語言」，全世界的上市公司都用它來提交財務數據，確保資訊的一致性。</p>
+<ul>
+<li>在 <strong>FiNER</strong> 任務中，模型需要像個會計師一樣，從 XBRL 文件中辨識出 139 種極其精細的財務實體類型。</li>
+<li>而在 <strong>Formula</strong> 任務中，模型則需要從這些文件中提取數值，並根據財務公式進行計算，回答問題。</li>
+</ul>
+<p>這類任務的成功，完全取決於模型是否能掌握並運用一個<strong>深刻、明確、而且不斷演進的知識庫</strong>。單靠幾個簡單的提示是絕對不夠的。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>類比說明</strong>：可以將 AppWorld 比喻為「數位世界的鐵人三項」，考驗的是綜合能力；將金融分析比喻為「專業資格考試」，考驗的是知識的深度與精度。</li>
+<li><strong>節奏提醒</strong>：在介紹完 AppWorld 的難度 (60% 準確率) 後，可以稍微停頓一下，讓聽眾感受到這個挑戰的份量。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>介紹完這兩個充滿挑戰的「考場」後，大家肯定都很好奇，ACE 的成績單到底長什麼樣子。下一頁，我們就先來揭曉它在 AppWorld 這個複雜的智慧體任務中，取得了多麼驚人的成果。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-11">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 11</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-11">
+                    <h1>Result 1: Superior Performance on Agent Tasks</h1>
+<p>On the AppWorld agent benchmark, ACE demonstrated significant improvements over strong baselines.</p>
+<ul>
+<li><strong>+10.6%</strong> average gain over methods like ICL and GEPA.</li>
+<li><strong>Outperformed Dynamic Cheatsheet</strong> by an average of 7.6% in online settings.</li>
+<li><strong>Matched the top-ranked agent</strong> (IBM CUGA, using GPT-4.1) on the public leaderboard, despite ACE using a smaller, open-source model.</li>
+<li><strong>Surpassed the top agent</strong> on the harder <code>test-challenge</code> split.</li>
+</ul>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 11</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 11 頁：Result 1: Superior Performance on Agent Tasks (AppWorld)</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>在 AppWorld 智慧體任務上，ACE 的表現平均比 ICL、GEPA 等強勁基線高出 <strong>10.6%</strong>。</li>
+<li>在線上學習情境中，ACE 的成效也比先前的自適應方法 Dynamic Cheatsheet 平均高出 <strong>7.6%</strong>。</li>
+<li>ACE 使用較小的開源模型，其整體表現卻能追平使用 GPT-4.1 的業界頂尖 Agent (IBM CUGA)。</li>
+<li>在更困難的 <code>test-challenge</code> 任務中，ACE 的表現甚至超越了排行榜的冠軍。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白) 上一頁我們介紹了 AppWorld 這個極具挑戰性的「考場」，現在，就讓我們來揭曉 ACE 的成績單。簡單來說，它不僅通過了考驗，而且是技驚四座。</p>
+<h5>① 首先，ACE 全面超越了現有的強勁方法。</h5>
+<p>不論是給予大量範例的 <strong>ICL</strong> (In-Context Learning)，還是基於反射性演化的提示詞優化器 <strong>GEPA</strong>，ACE 的平均表現都比它們高出了 <strong>10.6%</strong>。這證明了我們提出的「進化式教戰手冊」遠比靜態的指令或單次的優化更有效。</p>
+<p>更重要的是，在 <strong>線上學習 (Online Adaptation)</strong> 的場景中——也就是模型需要即時從新任務中學習——ACE 的表現也比前一個先進的自適應記憶方法 <strong>Dynamic Cheatsheet</strong> 平均高出 <strong>7.6%</strong>。這代表 ACE 不僅擅長「離線準備」，更擅長「即時進化」。</p>
+<h5>② 最令人興奮的，是與業界頂尖水準的正面对决。</h5>
+<p>但真正的高潮，是將 ACE 放到公開的 AppWorld 排行榜上，與全世界最好的 Agent 進行比較。</p>
+<blockquote>
+<p>在當時，排行榜的冠軍是由 IBM 開發的 <strong>CUGA Agent</strong>，它背後使用的是強大的 <strong>GPT-4.1 模型</strong>。而我們的 ACE，使用的僅僅是一個<strong>規模更小的開源模型</strong> (DeepSeek-V3.1)。</p>
+</blockquote>
+<p>這就像一場非對稱的競賽。然而結果出乎意料：在整體平均分上，我們的 ACE 竟然<strong>追平</strong>了這位冠軍！</p>
+<p>更不可思議的是，在那些專門設計來刁難 Agent、最困難的 <strong><code>test-challenge</code></strong> 任務上，ACE 的表現甚至<strong>超越</strong>了這位使用更大模型的冠軍。這強而有力地證明了：一個<strong>更聰明的策略框架</strong>，比單純依賴一個<strong>更龐大的模型</strong>，潛力可能來得更大。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在講到「ACE 使用更小的開源模型」時，可以稍微停頓，營造出「以小博大」的懸念感，然後再揭曉「追平、甚至超越冠軍」的結果，增強衝擊力。</li>
+<li><strong>補充案例</strong>：可以口頭強調，這個結果的意義在於，它為 AI 的發展提供了一條不完全依賴模型規模的「以智取勝」的道路，即透過優秀的「脈絡工程」(Context Engineering) 來實現效能的飛躍。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>在需要高度動態適應的智慧體任務上，ACE 證明了它的驚人實力。但我們前面還提到了另一個截然不同的考驗——一個需要極高專業知識與精準度的領域。那麼，在金融分析這個「專業資格考試」中，ACE 的表現又如何呢？下一頁，我們來見真章。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-12">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 12</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-12">
+                    <h1>Result 2: Mastering Domain-Specific Reasoning</h1>
+<p>On complex financial reasoning benchmarks, ACE delivered an average performance gain of <strong>+8.6%</strong> over strong baselines.</p>
+<ul>
+<li><strong>Offline:</strong> Surpassed ICL, MIPROv2, and GEPA by an average of 10.9%.</li>
+<li><strong>Online:</strong> Exceeded Dynamic Cheatsheet by an average of 6.2%.</li>
+</ul>
+<p>This highlights the effectiveness of ACE's structured, evolving playbooks for tasks requiring precise domain knowledge that goes beyond simple prompts.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 12</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 12 頁：Result 2: Mastering Domain-Specific Reasoning (Finance)</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>在複雜的金融推理基準測試中，ACE 的平均表現比強勁基線高出 <strong>+8.6%</strong>。</li>
+<li>在離線模式下，它的表現平均超越了 ICL、MIPROv2 和 GEPA 等方法 <strong>10.9%</strong>。</li>
+<li>在線上模式下，它的成效也比 Dynamic Cheatsheet 平均高出 <strong>6.2%</strong>。</li>
+<li>這證明了 ACE 的「進化式教戰手冊」對於需要精確領域知識的任務（如金融分析）極為有效。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白) 好，剛剛我們看到了 ACE 在 AppWorld 這種動態、需要即時反應的智慧體任務上，表現如同一個靈活的通才。但接下來，我們要把它放到一個完全不同的考場——一個極度專業、要求精準無比的領域：<strong>金融分析</strong>。</p>
+<p>這就像是從考駕照，直接跳到考會計師執照。那麼，ACE 在這個「專業資格考試」中表現如何呢？</p>
+<h5>① 什麼是「金融領域專業測試」？</h5>
+<p>首先，我們得知道這個考試的難度在哪。我們用了兩個專門的金融評測集，叫做 <strong>FiNER</strong> 和 <strong>Formula</strong>。這兩個任務都要求模型去讀懂一種叫做 <strong>XBRL</strong> 的專業財報語言。</p>
+<ul>
+<li><strong>FiNER</strong> 任務，是要求模型像個初級分析師一樣，從 XBRL 文件中精準地標記出 139 種不同的金融實體。</li>
+<li>而 <strong>Formula</strong> 任務更難，它要求模型不僅要提取數值，還要根據財報的規則進行<strong>計算</strong>，回答真金白銀的財務問題。</li>
+</ul>
+<p>這類任務，光靠通用知識是遠遠不夠的。</p>
+<h5>② ACE 的成績：不只是合格，更是優異！</h5>
+<p>結果顯示，ACE 在這個專業領域同樣取得了壓倒性的成功。</p>
+<p>首先，在「離線學習」階段，也就是讓它先讀書、準備考試。ACE 建構出來的金融知識教戰手冊，讓它的表現平均超越了其他主流方法 <strong>10.9%</strong>！特別是在需要動手計算的 <strong>Formula 任務上，效能提升甚至高達 18%</strong>！這證明 ACE 不只是在死記硬背，而是在真正學習如何「運用」這些金融規則。</p>
+<p>而在「線上學習」階段，也就是邊做邊學，ACE 的表現也比之前的自適應方法 Dynamic Cheatsheet 平均高出 <strong>6.2%</strong>。</p>
+<blockquote>
+<p>這清楚地凸顯了 ACE 的核心價值：對於那些需要<strong>精確、深入的領域知識</strong>才能完成的任務，一套結構化、不斷進化的「教戰手冊」，遠比簡單的提示詞或固定的範例來得更加強大。</p>
+</blockquote>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在提到「XBRL」這個專業術語時，可以稍微放慢速度，給聽眾一點時間來吸收這個概念。在公佈 Formula 任務「高達 18% 的提升」時，可以加強語氣，凸顯這個成果的驚人程度。</li>
+<li><strong>補充案例</strong>：可以口頭補充說：「這就像是給 AI 一本活的、會自己更新的金融法規全書和解題技巧，而不是一本死的教科書。」</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>到目前為止，我們看到 ACE 在兩個要求極高的領域都取得了亮眼的成績。但無論是智慧體任務還是金融分析，我們在訓練它時，都提供了標準答案（也就是 Ground-Truth Labels）。這引出了一個更關鍵的問題：如果沒有標準答案，AI 也能自我進化嗎？下一頁，我們將揭曉 ACE 最令人興奮的發現之一。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-13">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 13</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-13">
+                    <h1>Key Finding: Effective Self-Improvement Without Labels</h1>
+<p>One of the most significant findings is that ACE can construct effective contexts <strong>without any ground-truth supervision</strong>.</p>
+<ul>
+<li>It leverages natural <strong>execution feedback</strong> and <strong>environment signals</strong>—such as a code script succeeding or failing—to guide the Reflector and Curator.</li>
+<li>On the agent benchmark, ACE still achieved a <strong>+14.8%</strong> average improvement over the baseline without using labels.</li>
+</ul>
+<p>This capability is a key ingredient for building truly self-improving and autonomous AI systems.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 13</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 13 頁：Key Finding: Effective Self-Improvement Without Labels</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>ACE 最重要的發現之一是：它可以在沒有「標準答案」(Ground-Truth Supervision) 的情況下進行自我改進。</li>
+<li>它不依賴人工標籤，而是從「執行回饋」和「環境訊號」中學習，例如一段程式碼是成功執行還是失敗。</li>
+<li>僅憑這種自然回饋，ACE 就在智慧體基準測試中取得了 <strong>+14.8%</strong> 的效能提升。</li>
+<li>這種能力是打造真正能自我完善、自主運作的 AI 系統的關鍵要素。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白) 好的，到目前為止，我們看到的 ACE 就像一位非常聰明的學生，在有標準答案的模擬考中，取得了驚人的成績。但這引出了一個更深刻、也更重要的問題：如果我們把答案紙抽走，讓這位學生直接面對真實世界的挑戰，他還能學會嗎？他能<strong>自我進化</strong>嗎？</p>
+<p>這一頁，我們將揭曉 ACE 最令人興奮的發現：答案是肯定的。</p>
+<h5>① 什麼是「沒有標籤的學習」？</h5>
+<p>在傳統的機器學習中，我們需要給模型大量的「標籤」，也就是告訴它什麼是正確答案。但這種方式成本高昂，而且在很多真實場景中，我們根本沒有現成的標準答案。</p>
+<p>而 ACE 厲害的地方在於，它不需要這些人工標籤。它轉而利用一種更自然、更真實的回饋訊號：<strong>執行回饋 (Execution Feedback)</strong>。</p>
+<blockquote>
+<p>這就像人類學習新技能一樣。你不是靠別人一直告訴你「對」或「錯」，而是靠親自動手嘗試，從結果是「成功」還是「失敗」中學習。</p>
+</blockquote>
+<h5>② ACE 如何從「成敗」中學習？</h5>
+<p>這個機制非常直觀。在智慧體任務（Agent Task）中，<code>Generator</code> 會嘗試寫一段程式碼去完成某個指令。</p>
+<ul>
+<li>如果這段程式碼<strong>成功執行</strong>了，<code>Reflector</code> 就會把這次的策略記錄下來，當成一個「成功的經驗」。</li>
+<li>如果程式碼執行<strong>失敗或崩潰</strong>了，<code>Reflector</code> 同樣會記錄下來，但會標記為一個「要避開的坑」。</li>
+</ul>
+<p>透過這樣不斷地從真實的成功與失敗中總結經驗，<code>Curator</code> 就能持續地優化那本「教戰手冊」。這完全是一個自主學習的閉環，不需要任何人工介入。</p>
+<h5>③ 數據證明：自我進化的驚人效果</h5>
+<p>這個設計不是空想，數據給了我們非常有力的證明。在 AppWorld 這個智慧體測試平台上，即便我們完全不提供任何標準答案，ACE 依然讓模型的平均表現提升了 <strong>14.8%</strong>！</p>
+<p>這證明了 ACE 框架的穩健性。它為我們指明了一條通往<strong>真正自主 AI 系統</strong>的道路——一個能夠在沒有監督的情況下，透過與環境互動來自我不斷完善和進化的系統。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在講到「把答案紙抽走」時，可以做一個手勢，增加戲劇性。公佈「+14.8%」這個數字時，語氣要充滿自信和力量，讓聽眾感受到這個發現的重要性。</li>
+<li><strong>補充案例</strong>：可以舉例：「這就像訓練一個機器人修水管。你不用告訴它每一步的標準動作，你只需要讓它去修，如果水管修好了、不漏水了，它就知道自己做對了。如果淹水了，它就知道這個方法不行。ACE 就是在做類似的事情。」</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>所以，我們現在知道，ACE 不僅強大，而且還具備了在真實世界中自我學習的能力。這聽起來非常棒，但你可能會想：這麼厲害的學習過程，是不是既耗時又昂貴？下一頁，我們將深入分析 ACE 的效率與成本，看看這個「自我進化」的能力，代價到底有多高。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-14">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 14</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-14">
+                    <h1>Analysis: Significant Gains in Efficiency and Cost</h1>
+<p>By replacing expensive monolithic LLM rewrites with lightweight incremental updates, ACE dramatically reduces the cost and latency of context adaptation.</p>
+<p>Compared to prior methods, ACE achieved:</p>
+<ul>
+<li><strong>86.9% lower adaptation latency</strong> on average.</li>
+<li><strong>75.1% fewer rollouts</strong> in offline adaptation (vs. GEPA).</li>
+<li><strong>83.6% lower token dollar cost</strong> in online adaptation (vs. Dynamic Cheatsheet).</li>
+</ul>
+<p>This shows that scalable self-improvement can be achieved with both higher accuracy and lower overhead.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 14</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 14 頁：Analysis: Significant Gains in Efficiency and Cost</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>ACE 不僅更準確，而且在效率和成本上取得了驚人的突破。</li>
+<li>它用輕量級的「增量更新」，取代了昂貴的、由大型語言模型執行的「整體重寫」。</li>
+<li>數據顯示：平均適應延遲降低 <strong>86.9%</strong>，線下訓練的計算量減少 <strong>75.1%</strong>，線上學習的代幣成本降低 <strong>83.6%</strong>。</li>
+<li>這證明了「可擴展的自我改進」可以同時實現更高的準確性和更低的成本。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白) 剛才我們看到，ACE 能夠在沒有標準答案的情況下自我學習，效果非常驚人。但此刻，在座的各位，尤其是負責預算和算力的朋友，心裡可能都在想同一個問題：「這種不斷學習、自我進化的能力，聽起來一定<strong>又貴又慢</strong>吧？」</p>
+<p>這一頁，我們將用數據來回答這個問題。而答案，可能會讓你大吃一驚。ACE 不僅更強大，它還<strong>極其高效</strong>。</p>
+<h5>① 顛覆傳統的效率革命</h5>
+<p>傳統的上下文優化方法，就像是每次學到新東西，就要把整本書<strong>從頭到尾重抄一遍</strong>。這是一個由大型語言模型（LLM）執行的「整體重寫」，非常耗時且昂貴。</p>
+<p>ACE 徹底拋棄了這種笨方法。它的核心設計理念就是<strong>效率</strong>。</p>
+<h5>② 讓我們用數據說話</h5>
+<p>這不是空談，讓我們看看 ACE 與先前方法的直接對比。</p>
+<ul>
+<li>
+<p>首先是<strong>速度</strong>：ACE 的平均適應延遲，也就是完成一次學習和優化的時間，比過去的方法低了 <strong>86.9%</strong>！這意味著，一個原本需要花 10 個小時的優化過程，現在可能只要 1 個多小時就完成了。</p>
+</li>
+<li>
+<p>其次是<strong>計算量</strong>：在離線優化時，與像 GEPA 這樣優秀的方法相比，ACE 只需要 <strong>少了 75.1% 的計算次數（Rollouts）</strong> 就能達到更好的效果。</p>
+</li>
+<li>
+<p>最後，也是最直接的——<strong>金錢</strong>：在線上適應的場景中，與 Dynamic Cheatsheet 相比，ACE 的代幣成本，也就是付給 API 的錢，足足降低了 <strong>83.6%</strong>！這相當於原本要花 100 塊錢的工作，現在不到 20 塊就搞定了。</p>
+</li>
+</ul>
+<h5>③ 效率背後的秘密武器：增量更新 (Delta Updates)</h5>
+<p>這怎麼可能做到呢？ACE 的秘密武器，就是我們前面提到的<strong>增量更新</strong>。</p>
+<blockquote>
+<p>ACE 的核心優勢在於，它用輕量級的、確定性的「增量合併」邏輯，取代了由 LLM 執行的、昂貴的、充滿變數的「整體重寫」過程。</p>
+</blockquote>
+<p>換句話說，當需要更新知識時，ACE 不會讓 LLM 把整本「教戰手冊」重寫一遍。它只是精準地告訴手冊：「請在第三章第五節，增加這一條筆記。」這個「增加筆記」的動作，是由一個非常輕量、快速的非 LLM 邏輯執行的。這就是 ACE 能夠同時實現高性能、高效率和低成本的根本原因。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在公佈每一個百分比數字時，都可以稍微停頓，加重語氣，讓聽眾感受到這些數字帶來的衝擊力。</li>
+<li><strong>視覺化比喻</strong>：可以強調：「傳統方法是『重抄整本書』，而 ACE 是『貼一張便利貼』。這兩者在成本和速度上的差異，是天壤之別。」</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>所以，我們現在證明了，ACE 不僅讓模型變得更聰明、更能自我進化，還讓這個過程變得前所未有的快速和便宜。這就引出了一個更宏大的話題：當我們擁有這樣一個強大、高效且能持續學習的工具時，它將為 AI 的未來帶來什麼樣的變革？下一頁，我們將一起探討 ACE 對於「持續學習」的深遠影響。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-15">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 15</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-15">
+                    <h1>Discussion: The Future of Continuous Learning</h1>
+<p>The ACE framework has important implications for the future of AI.</p>
+<ul>
+<li><strong>Alternative to Fine-Tuning:</strong> Adapting contexts is a flexible and efficient alternative to retraining/fine-tuning models for continuous learning and handling distribution shifts.</li>
+<li><strong>Enables Selective Unlearning:</strong> Because contexts are human-interpretable and modular, specific pieces of outdated or incorrect information can be precisely removed without affecting the entire system.</li>
+</ul>
+<p>ACE provides a practical path toward more responsible and continuously evolving AI systems.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 15</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 15 頁：Discussion: The Future of Continuous Learning</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>ACE 提供了一種比傳統「模型微調 (Fine-Tuning)」更靈活、高效的「持續學習」路徑，能更好地應對真實世界的變化。</li>
+<li>由於 ACE 的上下文是人類可讀且模組化的，它實現了「選擇性遺忘 (Selective Unlearning)」，讓移除過時或錯誤的資訊變得簡單，是負責任 AI 的關鍵一步。</li>
+<li>總體而言，ACE 為建構更可靠、能持續演進的 AI 系統提供了實際可行的藍圖。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白) 好的，我們剛剛證明了，ACE 不僅效果卓越，而且在成本和效率上，也取得了巨大的突破。但這背後更深層的意義是什麼？當我們擁有一個既能快速學習、成本又低的框架時，這就為 AI 的一個終極夢想——<strong>真正的「持續學習」</strong>——打開了一扇大門。</p>
+<p>這一頁，我們來探討 ACE 將如何塑造 AI 的未來。</p>
+<h5>① 告別昂貴的微調：一種更聰明的學習方式</h5>
+<p>在傳統世界裡，如果我們想讓一個模型學習新知識，或適應新數據（也就是所謂的「分佈轉移 (distribution shifts)」），我們通常需要對模型進行<strong>微調 (Fine-Tuning)</strong>。這就像是你的汽車每次需要軟體更新，都得開回原廠，不僅成本高昂，而且曠日廢時。</p>
+<p>ACE 提供了一個截然不同的、更優雅的方案。</p>
+<blockquote>
+<p>正如論文所強調的：適應上下文，通常比更新模型權重要便宜得多 (adapting contexts is generally cheaper than updating model weights)。</p>
+</blockquote>
+<p>與其說是回廠大修，ACE 更像是一次「空中下載更新 (Over-the-Air Update)」。當世界變化時，我們不需要重新訓練模型，只需要更新它的「教戰手冊 (Playbook)」。這是一種<strong>靈活、高效且能即時反應</strong>的持續學習方式。</p>
+<h5>② AI 的「橡皮擦」：實現選擇性遺忘</h5>
+<p>另一個更具革命性的影響，是 ACE 實現了**「選擇性遺忘 (Selective Unlearning)」**。</p>
+<p>想像一下，如果 AI 學到了一些錯誤的資訊，或者，因為法律或隱私規定，我們必須讓它忘掉某些用戶數據，該怎麼辦？對於一個傳統的、權重已經混雜在一起的模型來說，這幾乎是不可能的任務，就像試圖從一個烤好的蛋糕裡，把某一顆糖分子拿出來一樣困難。</p>
+<p>但 ACE 的架構讓這一切變得異常簡單。因為它的知識庫是<strong>人類可讀、模組化的</strong>，那些知識點都是一個個獨立的「項目符號 (bullets)」。想讓它忘記什麼，我們只需要走過去，把那張寫著錯誤資訊的「便利貼」撕掉就行了。</p>
+<p>這在真實世界中有著巨大的價值。例如，為了遵守法律規範：</p>
+<blockquote>
+<p>如歐盟的《通用數據保護條例》(GDPR) 中所賦予的 <strong>「被遺忘權 (Right to erasure)」</strong>，或是加州的 <strong>「刪除權 (Right to delete)」</strong>。使用 ACE，我們只需從上下文中移除相關條目，就能輕鬆合規。</p>
+</blockquote>
+<p>這同樣適用於當領域專家發現模型學到了過時或不正確的策略時，我們可以精準地將其移除，而不會影響整個系統的運作。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在講到「回廠大修」和「空中下載更新」的比喻時，可以放慢速度，形成鮮明對比，讓聽眾感受到典範轉移。</li>
+<li><strong>強化概念</strong>：「選擇性遺忘」是一個非常強大的概念，可以加重語氣，並用「AI 的橡皮擦」或「便利貼」的比喻來讓它更形象化。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>所以，我們看到，ACE 不僅僅是一個提升性能的工具。它通過實現高效的「持續學習」和精準的「選擇性遺忘」，為我們指明了一條通往更負責任、更能適應變化的 AI 系統的道路。這正是我們追求的目標。最後一頁，讓我們總結一下 ACE 帶來的核心價值。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-16">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 16</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-16">
+                    <h1>Conclusion: Scalable, Efficient, and Self-Improving AI</h1>
+<p><strong>Agentic Context Engineering (ACE)</strong> provides a robust solution to the key limitations of current context adaptation methods.</p>
+<p>By treating contexts as <strong>comprehensive, evolving playbooks</strong> rather than static, concise prompts, ACE enables:</p>
+<ul>
+<li><strong>Scalability:</strong> Avoids context collapse via incremental updates.</li>
+<li><strong>Efficiency:</strong> Drastically reduces adaptation cost and latency.</li>
+<li><strong>Self-Improvement:</strong> Effectively learns from execution feedback without labels.</li>
+</ul>
+<p>This paradigm shift enables the development of more capable, reliable, and continuously learning AI systems with low overhead.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 16</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 16 頁：Conclusion: Scalable, Efficient, and Self-Improving AI</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>核心理念</strong>：代理式脈絡工程 (ACE) 的成功，源於將「上下文 (Context)」視為持續演進的「教戰手冊 (Playbook)」，而非靜態、簡潔的提示。</li>
+<li><strong>解決方案</strong>：透過「增量更新」，ACE 克服了「簡潔偏誤」與「脈絡崩潰」兩大挑戰，實現了系統的可擴展性。</li>
+<li><strong>關鍵成果</strong>：ACE 不僅大幅提升了 AI 性能，更顯著降低了適應過程中的成本與延遲，並能在無標籤數據的情況下實現「自我改進」。</li>
+<li><strong>未來展望</strong>：此範式轉移，為開發更強大、可靠且能持續學習的 AI 系統鋪平了道路。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白) 各位，我們走到了旅程的終點。從一開始我們探討的種種挑戰，到 ACE 框架的提出與驗證，現在，讓我們一同回顧這一切的核心價值。</p>
+<p>這張投影片，不僅僅是結論，它代表著我們對 AI 系統構建方式的一次 <strong>根本性反思</strong>。</p>
+<h5>① 重新定義「上下文」：從提示到教戰手冊</h5>
+<p>我們一開始就看到，傳統的脈絡適應方法，存在兩大致命傷：追求簡潔而犧牲細節的**「簡潔偏誤 (Brevity Bias)」<strong>，以及在反覆改寫中突然遺忘所有知識的</strong>「脈絡崩潰 (Context Collapse)」**。</p>
+<p>ACE 的核心洞見，就是徹底告別這種思維。</p>
+<blockquote>
+<p>我們不再將上下文視為需要壓縮的、靜態的簡潔提示，而是將其打造成一本<strong>全面、詳盡、並且不斷進化的「教戰手冊 (Playbook)」</strong>。</p>
+</blockquote>
+<p>這就是整個框架的基石。有了這個轉變，我們才能夠建立一個真正能夠成長的系統。</p>
+<h5>② 三大基石：可擴展、高效率、自改進</h5>
+<p>基於「教戰手冊」這個新典範，ACE 帶來了三個決定性的優勢：</p>
+<ul>
+<li>
+<p><strong>第一，可擴展性 (Scalability)。</strong> ACE 透過聰明的**「增量更新 (incremental updates)」**機制，只在需要的地方進行微調，而不是粗暴地重寫整個知識庫。這就從根本上避免了「脈絡崩潰」，確保系統在長期運行中，知識能夠穩定積累，越用越聰明。</p>
+</li>
+<li>
+<p><strong>第二，高效率 (Efficiency)。</strong> 正因為拋棄了昂貴的、由大型語言模型驅動的整體重寫，我們的實驗數據證明了 ACE 的驚人效率。相比於先前的方法，它平均降低了 <strong>86.9% 的適應延遲</strong>，並且在線上適應的場景中，節省了高達 <strong>83.6% 的 token 成本</strong>。這證明了自我改進不一定昂貴，反而可以更輕巧、更快速。</p>
+</li>
+<li>
+<p><strong>第三，也是最關鍵的，真正的自我改進 (Self-Improvement)。</strong> ACE 最令人興奮的一點，是它不需要依賴昂貴的人工標籤。它能從最自然的**「執行反饋」**中學習——比如一段代碼是否成功運行，一個指令是否達成目標。光是利用這些環境訊號，它就能自主地迭代、優化自己的教戰手冊。</p>
+</li>
+</ul>
+<p>這條路，通往的是一個能夠在真實世界中，獨立成長、持續學習的 AI。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在講述三大優勢時，每講完一點可以稍作停頓，並用手勢輔助，讓觀眾感受到這三點是層層遞進、穩固的結構。這是整場報告的最高潮，語氣應充滿自信與力量。</li>
+<li><strong>強化概念</strong>：可以再次強調「教戰手冊 (Playbook)」這個比喻，將其作為貫穿全場的核心概念，讓聽眾留下深刻印象。</li>
+<li><strong>最終結語 (Closing)</strong>：
+<blockquote>
+<p>總結來說，代理式脈絡工程 (ACE) 不僅僅是一個工具或一個框架。它是一種全新的思維方式，讓我們能夠打造出<strong>可擴展、高效率、並且能自我改進</strong>的新一代 AI 系統。這條道路已經開啟，而未來，正掌握在這些能夠不斷學習與演進的系統手中。謝謝各位的聆聽。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+</main>
+
+    <footer class="footer">
+        <div class="hr" style="margin: 40px 0 20px;"></div>
+        <div class="meta" style="justify-content: center; font-size: 14px;">
+            <span>Author: Chiakai Chang</span>
+            <a href="https://github.com/Chiakai-Chang/PPTPlaner" target="_blank">GitHub</a>
+            <a href="https://www.linkedin.com/in/chiakai-chang-htciu" target="_blank">LinkedIn</a>
+            <a href="mailto:lotifv@gmail.com">Email</a>
+        </div>
+        <p style="margin-top: 8px; font-size: 11px;">Copyright &copy; 2025 Chiakai Chang. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButtons = document.querySelectorAll('.toggle-view-btn');
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const pageId = this.dataset.pageId;
+                    const svgView = document.getElementById(`svg-view-${pageId}`);
+                    const textView = document.getElementById(`text-view-${pageId}`);
+
+                    if (svgView && textView) {
+                        const isSvgVisible = svgView.style.display !== 'none';
+                        if (isSvgVisible) {
+                            svgView.style.display = 'none';
+                            textView.style.display = 'block';
+                            this.textContent = '顯示圖像';
+                        } else {
+                            svgView.style.display = 'block';
+                            textView.style.display = 'none';
+                            this.textContent = '顯示文字';
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
