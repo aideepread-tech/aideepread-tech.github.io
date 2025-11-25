@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPTPlaner Guide</title>
+<style>
+  :root{
+    --bg:#ffffff; --fg:#0f172a; --muted:#64748b; --card:#f8fafc; --accent:#2563eb; --accent-2:#1d4ed8;
+    --border:#e2e8f0; --ok:#16a34a; --warn:#ca8a04; --bad:#dc2626; --pill:#e0e7ff;
+  }
+  .dark{
+    --bg:#0b1220; --fg:#e5e7eb; --muted:#94a3b8; --card:#0f172a; --accent:#60a5fa; --accent-2:#3b82f6;
+    --border:#1f2937; --ok:#22c55e; --warn:#f59e0b; --bad:#f87171; --pill:#172554;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",Arial,"Apple Color Emoji","Segoe UI Emoji"; background:var(--bg); color:var(--fg);}
+  header{position:sticky; top:0; z-index:10; backdrop-filter:saturate(180%) blur(10px); background:color-mix(in srgb, var(--bg) 88%, transparent); border-bottom:1px solid var(--border);}
+  .container{max-width:1100px; margin:0 auto; padding:16px;}
+  h1{margin:6px 0 2px; font-size:22px;}
+  p.subtitle{margin:0 0 10px; color:var(--muted); font-size:14px;}
+  .toolbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:8px 0 12px;}
+  button{padding:8px 12px; font-size: 14px; border:1px solid var(--border); border-radius:12px; background:var(--card); color:var(--fg); cursor:pointer;}
+  button:hover{background-color: var(--border);}
+  .hr{height:1px; background:var(--border); margin:10px 0;}
+  .footer{color:var(--muted); font-size:12px; padding:20px 0 40px; text-align:center;}
+  .meta{display:flex; flex-wrap:wrap; gap:10px; margin:6px 0 8px;}
+  .meta a{color:var(--accent); text-decoration:none;}
+  .meta a:hover{text-decoration:underline;}
+
+  /* --- Layout Styles for side-by-side view --- */
+  .page { display: flex; border-bottom: 1px solid var(--border); padding: 20px 0; margin-bottom: 20px; }
+  .slide { flex: 1; padding-right: 20px; border-right: 1px solid var(--border); min-width: 0; }
+  .notes { flex: 1; padding-left: 20px; min-width: 0; }
+  h2 { border-bottom: 1px solid var(--border); padding-bottom: 10px; color: var(--fg); font-size: 18px; margin-top: 0; }
+  pre { background: var(--card); padding: 15px; border-radius: 8px; white-space: pre-wrap; word-wrap: break-word; border: 1px solid var(--border); font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; }
+  
+  /* --- SVG & Toggle Styles --- */
+  .slide-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+
+  .svg-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background-color: var(--card);
+  }
+  .svg-container svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px -2px rgba(0,0,0,0.08);
+  }
+
+  .conceptual-svg-container {
+    width: 100%;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background-color: var(--card);
+    padding: 10px;
+    border: 1px solid var(--border);
+  }
+  .conceptual-svg-container svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .slide-view-svg .no-svg-placeholder { aspect-ratio: 16/9; background-color: var(--card); border: 2px dashed var(--border); border-radius: 8px; display: flex; justify-content: center; align-items: center; color: var(--muted); font-size: 14px; }
+
+  /* Generic styles for rendered markdown content */
+  .rendered-content h1, .rendered-content h2, .rendered-content h3, .rendered-content h4, .rendered-content h5, .rendered-content h6 { border-bottom: none; padding-bottom: 5px; margin-top: 20px; }
+  .rendered-content ul, .rendered-content ol { padding-left: 25px; }
+  .rendered-content code { background-color: var(--pill); padding: 2px 5px; border-radius: 3px; font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; }
+  .rendered-content blockquote { border-left: 4px solid var(--border); padding-left: 15px; color: var(--muted); margin-left: 0; }
+  .rendered-content table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+  .rendered-content th, .rendered-content td { border: 1px solid var(--border); padding: 8px; }
+  .rendered-content th { background-color: var(--card); }
+  .rendered-content img { max-width: 100%; height: auto; display: block; margin: 1em 0; border-radius: 8px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <h1>SAM 3: Segment Anything with Concepts</h1>
+    <p class="subtitle">SAM 3 將圖像分割提升到全新水平，它能根據文字短語或圖像範例等「概念提示」，在圖像和影片中偵測、分割並追蹤任何物件。此統一模型不僅將現有系統的準確率提高一倍，更超越了前代 SAM 的視覺分割能力，為多模態 AI 應用開創了新篇章。</p>
+    
+    <em style="font-size: 15px; color: var(--muted);">By Nicolas Carion, Laura Gustafson, Yuan-Ting Hu, Shoubhik Debnath, Ronghang Hu, Didac Suris, Chaitanya Ryali, Kalyan Vasudev Alwala, Haitham Khedr, Andrew Huang, Jie Lei, Tengyu Ma, Baishan Guo, Arpit Kalla, Markus Marks, Joseph Greer, Meng Wang, Peize Sun, Roman Rädle, Triantafyllos Afouras, Effrosyni Mavroudi, Katherine Xu, Tsung-Han Wu, Yu Zhou, Liliane Momeni, Rishi Hazra, Shuangrui Ding, Sagar Vaze, Francois Porcher, Feng Li, Siyuan Li, Aishwarya Kamath, Ho Kei Cheng, Piotr Dolkar, Nikhila Ravi, Kate Saenko, Pengchuan Zhang, Christoph Feichtenhofer, Meta Superintelligence Labs</em>
+    
+  </div>
+</header>
+
+<main class="container">
+  
+  <div class="rendered-content" style="font-size: 15px; padding: 15px 0;">
+      <p>SAM 3 是一個統一模型，旨在解決前代 SAM 無法處理的通用性任務：根據抽象概念（如「所有的貓」）在圖像和影片中寻找並分割所有實例。為此，研究團隊提出了「可提示概念分割」（PCS）任務，模型能接受簡短名詞短語或圖像範例作為輸入，並回傳所有匹配物件的分割遮罩與獨特身份。SAM 3 的架構包含一個用於圖像的偵測器和一個基於記憶體的影片追蹤器，兩者共享單一骨幹。為了實現卓越性能，團隊建立了高效的數據引擎，生成包含 400 萬個獨特概念標籤的高品質數據集。實驗證明，SAM 3 在圖像和影片 PCS 任務上的準確率是現有系統的兩倍，並在多項視覺分割基準測試中樹立了新的技術水平。Meta 已開源 SAM 3 模型及全新的 SA-Co 基準測試。</p>
+
+  </div>
+  <div class="hr"></div>
+  
+  
+  
+        <div class="page" id="page-01">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 01</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-01">
+                    <h1>SAM 3: Segment Anything with Concepts</h1>
+<p><strong>Nicolas Carion, Laura Gustafson, Yuan-Ting Hu, et al.</strong></p>
+<p><em>Meta Superintelligence Labs</em></p>
+<hr />
+<p><strong>Abstract:</strong> We present Segment Anything Model (SAM) 3, a unified model that detects, segments, and tracks objects in images and videos based on <strong>concept prompts</strong> (e.g., noun phrases, image exemplars). SAM 3 doubles the accuracy of existing systems in both image and video Promptable Concept Segmentation (PCS) and improves upon previous SAM capabilities. We open source SAM 3 and the new <strong>Segment Anything with Concepts (SA-Co)</strong> benchmark.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 01</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 1 頁：SAM 3: Segment Anything with Concepts</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>模型介紹</strong>：發布名為 SAM 3 (Segment Anything Model 3) 的統一模型。</li>
+<li><strong>核心功能</strong>：能根據「概念提示」(Concept Prompts)——如文字短語或圖片範例——在圖片和影片中偵測、分割並追蹤所有符合概念的物件。</li>
+<li><strong>主要貢獻</strong>：將現有系統在「可提示概念分割」(PCS) 任務上的準確率提高一倍，並開源模型與全新的 SA-Co (Segment Anything with Concepts) 評測基準。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+大家好，今天我們要探討的是視覺辨識領域的一大步——想像一下，你不再需要用滑鼠辛苦地點出圖片中的某一個物件，而是可以直接告訴電腦：「找出這張照片裡『所有』的蘋果」，它就能立刻幫你把每一個都圈出來。這就是我們今天要介紹的主角所實現的未來。</p>
+<h5>① 核心發布：SAM 3</h5>
+<p>今天為各位介紹的，是 Meta 超級智慧實驗室 (Meta Superintelligence Labs) 的最新研究成果——<strong>SAM 3: Segment Anything with Concepts</strong>。這份論文由 Nicolas Carion, Laura Gustafson, Yuan-Ting Hu 等眾多核心貢獻者共同完成，可以說是繼 SAM 1 和 SAM 2 之後的又一次重大突破。</p>
+<h5>② 何謂「概念提示」？</h5>
+<p>過去的 SAM 模型很強大，但通常需要我們用點、框或遮罩來「提示」它我們要分割的<strong>單一</strong>物件。</p>
+<blockquote>
+<p>SAM 3 則引入了一個更符合人類直覺的互動方式，我們稱之為「概念提示」(Concept Prompts)。</p>
+</blockquote>
+<p>這代表什麼？你可以用一段簡單的文字，例如 <strong>「黃色校車」</strong>，或是一張「範例圖片」，甚至是兩者結合，來告訴模型你想找的是<strong>哪一類</strong>的東西。模型就會自動在圖片或影片中，偵測、分割、甚至追蹤所有符合這個「概念」的物件實體。</p>
+<h5>③ 關鍵成果</h5>
+<p>根據論文摘要，SAM 3 的表現非常驚人。它在圖片和影片的「可提示概念分割」(Promptable Concept Segmentation, 簡稱 PCS) 任務上，準確率達到了現有系統的<strong>兩倍</strong>。同時，它也改善了前代 SAM 在傳統視覺分割任務上的能力。更重要的是，Meta 不僅開源了 SAM 3 模型本身，還提供了一個全新的、專為此任務設計的評測基準——<strong>SA-Co (Segment Anything with Concepts) Benchmark</strong>，來推動整個社群的發展。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>作者資訊</strong>：開場時可以提及這項研究來自 Meta 的團隊，並點出幾位核心作者 (如 Nicolas Carion, Laura Gustafson 等)，以表彰研究團隊的貢獻。</li>
+<li><strong>節奏提醒</strong>：講到「概念提示」時，可以稍微停頓，讓聽眾思考一下這與過去「視覺提示」的區別。</li>
+<li><strong>關鍵詞強調</strong>：本頁的核心是 <code>Concept Prompts</code> 和 <code>Promptable Concept Segmentation (PCS)</code>。請務必確保聽眾理解這兩個新名詞的意義，它們是貫穿整場報告的關鍵。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>了解了 SAM 3 的核心目標後，大家可能會好奇：這種從「視覺提示」到「概念提示」的轉變，究竟解決了什麼根本問題？下一頁，我們就來深入探討 SAM 系列的演進，以及這次範式轉移的重大意義。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-02">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 02</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-02">
+                    <h1>From Visual Prompts to Concept Prompts</h1>
+<p><strong>The Evolution of SAM:</strong></p>
+<ul>
+<li>
+<p><strong>SAM 1 &amp; 2 (Promptable Visual Segmentation - PVS):</strong></p>
+<ul>
+<li>Focused on segmenting a <strong>single object</strong> per prompt.</li>
+<li>Used <strong>visual prompts</strong>: points, boxes, or masks.</li>
+<li>Achieved a breakthrough but didn't address finding <em>all</em> instances of a concept.</li>
+</ul>
+</li>
+<li>
+<p><strong>SAM 3 (Promptable Concept Segmentation - PCS):</strong></p>
+<ul>
+<li>Introduces <strong>concept prompts</strong>: text phrases (e.g., &quot;all cats&quot;) or image exemplars.</li>
+<li><strong>Finds and segments all instances</strong> of a concept in an image or video.</li>
+<li>Represents a paradigm shift from local visual cues to global conceptual understanding.</li>
+</ul>
+</li>
+</ul>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 02</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 02 頁：From_Visual_Prompts_to_Concept_Prompts</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>回顧 SAM 1 與 2 的核心任務：<strong>PVS (Promptable Visual Segmentation)</strong>，也就是透過點、框等「視覺提示」來分割「單一物件」。</li>
+<li>介紹 SAM 3 帶來的革命性轉變：<strong>PCS (Promptable Concept Segmentation)</strong>，也就是透過文字、圖片範例等「概念提示」來分割「所有符合概念的物件」。</li>
+<li>強調這代表一種從「局部視覺線索」到「全域概念理解」的典範轉移。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>大家好，在深入 SAM 3 的技術細節之前，讓我們先花一分鐘來理解它所帶來的根本性轉變。這張投影片，可以說是整個 SAM 系列演進的核心。</p>
+<p>我們得從 SAM 1 和 SAM 2 的時代說起。</p>
+<h5>① SAM 1 &amp; 2 的世界：一次處理一個的「視覺提示」(PVS)</h5>
+<p>過去，當我們談到 SAM，我們指的是 <strong>Promptable Visual Segmentation</strong>，簡稱 <strong>PVS</strong>。這是一個巨大的突破，正如論文中所說，它讓模型能根據使用者給予的「視覺提示」，例如<strong>一個點、一個方框、或是一個粗略的遮罩</strong>，去精準地分割出<strong>單一</strong>的物件。</p>
+<p>這就像是你指著一張照片裡的一隻貓，AI 就能完美地把它圈選出來。非常強大，但它有一個核心限制：它一次只能處理你指向的那一個物件。它無法回答一個更通用的問題：「這張照片裡<strong>所有</strong>的貓在哪裡？」</p>
+<h5>② SAM 3 的新紀元：一次掌握全部的「概念提示」(PCS)</h5>
+<p>這就是 SAM 3 登場的地方。它引入了一個全新的任務，叫做 <strong>Promptable Concept Segmentation</strong>，也就是 <strong>PCS</strong>。</p>
+<blockquote>
+<p>這代表著一個典範轉移：我們不再只是給予局部的視覺線索，而是給予一個抽象的「概念」。</p>
+</blockquote>
+<p>什麼是概念呢？它可以是一段簡短的文字，比如直接輸入「所有的貓」或「黃色校車」；也可以是一個「圖片範例」，你圈出一隻狗，SAM 3 就會去找出畫面中所有的狗。</p>
+<p>這徹底改變了互動的方式。我們從「分割<strong>這個</strong>物件」變成了「找出<strong>所有符合這個概念</strong>的物件」。這不只是量的增加，更是質的飛躍。</p>
+<h5>③ 典範轉移：從「局部反應」到「全域理解」</h5>
+<p>這個轉變的核心，是從對<strong>局部視覺線索 (local visual cues)</strong> 的反應，演進為對<strong>全域概念 (global conceptual understanding)</strong> 的理解。</p>
+<p>SAM 1 和 2 比較像一個反應很快的工具，你點哪裡，它就處理哪裡。但 SAM 3 必須先在內部「理解」什麼是貓，這個概念包含了各種姿態、品種、以及被遮擋的貓，然後在整個影像或影片中去搜尋、識別並分割出每一個符合這個概念的實例。這需要更高層次的認知與推理能力。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在講完 PVS 和 PCS 的區別後，可以稍微停頓一下，讓聽眾體會這兩者之間從「單一」到「全體」的巨大差異。</li>
+<li><strong>關鍵詞強調</strong>：請務必加重 <code>Promptable Visual Segmentation (PVS)</code> 和 <code>Promptable Concept Segmentation (PCS)</code> 這兩個術語的語氣，因為它們是理解 SAM 演進的關鍵。</li>
+<li><strong>補充案例</strong>：可以口頭補充：「這種『概念提示』甚至可以是負面的，比如你給它一張『橘貓』的圖片，並標示為『不要的』，它就能更精準地找出你想要的『非橘貓』。」</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>那麼，這個強大的新任務「概念提示分割」(PCS) 究竟是如何被精確定義的？它接受哪些輸入、又該輸出什麼結果呢？下一頁，我們將深入探討 PCS 的正式定義。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-03">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 03</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-03">
+                    <h1>Defining the Task: Promptable Concept Segmentation (PCS)</h1>
+<p><strong>Objective:</strong> Given an image or video, detect, segment, and track all instances of a visual concept.</p>
+<p><strong>Allowed Prompts:</strong></p>
+<ol>
+<li><strong>Text:</strong> A short noun phrase (NP) describing the concept (e.g., &quot;red apple&quot;, &quot;striped cat&quot;).</li>
+<li><strong>Image Exemplars:</strong> Bounding boxes on specific frames, marked as positive or negative examples.</li>
+<li><strong>Combination:</strong> Use both text and image exemplars for refinement.</li>
+</ol>
+<p><strong>Output:</strong> Instance masks and unique tracking IDs for every object matching the concept prompt, preserving identity across video frames.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 03</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 03 頁：Defining the Task: Promptable Concept Segmentation (PCS)</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>任務目標</strong>：在圖片或影片中，偵測、分割並追蹤一個「視覺概念」下的所有實例。</li>
+<li><strong>輸入提示 (Prompts)</strong>：可以使用三種類型：簡短的文字名詞片語 (NP)、正或負的圖片範例 (Exemplars)，或是兩者結合。</li>
+<li><strong>輸出結果 (Output)</strong>：為每個符合概念的物件生成實例遮罩 (Instance masks)，並在影片中提供獨一的追蹤 ID。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+上一頁我們提到了從「視覺提示」到「概念提示」的範式轉移。那麼，這個被我们稱為 <strong>Promptable Concept Segmentation</strong>，簡稱 <strong>PCS</strong> 的新任務，到底是什麼意思呢？它又如何運作？</p>
+<p>簡單來說，PCS 的目標非常直觀且強大：<strong>給定一張圖片或一段短影片（論文中定義為 30 秒內），我們的模型需要能夠偵測、分割、並追蹤這個視覺概念下的『所有』實例</strong>。</p>
+<p>那麼，我們要如何告訴模型我們想找什麼呢？這就是「提示 (Prompt)」發揮作用的地方，主要有三種方式：</p>
+<h5>① 文字提示 (Text Prompt)</h5>
+<p>最直接的方式，就是透過文字。但這裡的文字不是複雜的句子，而是我們所說的「简单名詞片語」，也就是 <strong>simple noun phrases (NPs)</strong>。基本上就是一個核心名詞，配上一或多個形容詞。例如，你想找所有『紅色的蘋果』(red apple)，或是『有条紋的貓』(striped cat)。</p>
+<h5>② 圖片範例提示 (Image Exemplars)</h5>
+<p>第二種方式，是給予<strong>圖片範例</strong>。這在互動修正時非常實用！你可以直接在畫面中的某個物件上框出一個 bounding box，並標示它是「正面的」还是「負面的」範例。</p>
+<ul>
+<li><strong>正面範例</strong>：比如，模型一開始漏掉了一隻狗，你只要框選那隻狗作為正面範例，模型就会去找出所有符合這個範例的、其他的狗。</li>
+<li><strong>負面範例</strong>：反之，如果模型把一隻狼錯誤地識別成狗，你也可以在狼身上框一個負面範例来修正它。
+這在處理稀有概念，或是模型初步辨識不清時，特別有用。</li>
+</ul>
+<h5>③ 組合提示 (Combination)</h5>
+<p>當然，你也可以將文字和圖片範例結合使用，進行更精細的篩選和修正，讓模型更準確地理解你的意圖。</p>
+<h5>④ 輸出結果</h5>
+<p>當模型理解了你的概念提示後，它會為每一個匹配的物件，生成專屬的<strong>實例分割遮罩 (instance masks)</strong>。如果輸入的是影片，它還會為每個物件分配一個<strong>獨一無二的追蹤 ID</strong>，確保在影片播放過程中，这隻貓從頭到尾都還是這隻貓，不會和旁邊的另一隻搞混。</p>
+<blockquote>
+<p>這裡有一個非常重要的規則：<strong>所有提示的定義必須保持一致</strong>。例如，你不能用「魚」(fish) 這個文字提示，然後接著用一個「魚尾」的圖片範例来修正。模型的行為會因此變得無法預測。正確的做法應該是更新你的文字提示，讓它更精確。</p>
+</blockquote>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在講完三種提示類型後，可以稍微停頓，讓聽眾消化「輸入」與「輸出」的概念。</li>
+<li><strong>關鍵詞強調</strong>：本頁的核心是 <strong>Promptable Concept Segmentation (PCS)</strong>，請務必清楚解釋這個任務的定義，因為它是 SAM 3 的核心創新。唸到 &quot;Promptable Concept Segmentation&quot; 時可以放慢速度、加重語氣。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>我們定義了一個強大的任務，讓模型能理解「概念」。但「概念」本身是模糊的。這就引出了一個核心挑戰：模型要如何處理視覺和語意上的各種模糊地带呢？下一頁，我們就来深入探討這個問題。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-04">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 04</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-04">
+                    <h1>The Core Challenge: Navigating Visual and Semantic Ambiguity</h1>
+<p>The open-vocabulary nature of PCS introduces significant ambiguity that the model must handle:</p>
+<ul>
+<li>
+<p><strong>Semantic Ambiguity:</strong></p>
+<ul>
+<li><strong>Polysemy:</strong> Phrases with multiple meanings (e.g., &quot;mouse&quot; as an animal vs. a device).</li>
+<li><strong>Subjectivity:</strong> Descriptors that are subjective (e.g., &quot;large car&quot;, &quot;cozy room&quot;).</li>
+</ul>
+</li>
+<li>
+<p><strong>Visual Ambiguity:</strong></p>
+<ul>
+<li><strong>Boundary Definition:</strong> Where does an object end (e.g., does a 'mirror' include its frame?).</li>
+<li><strong>Physical Factors:</strong> Occlusion, blur, and lighting can obscure object boundaries.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Our Approach:</strong> We address this through multi-expert annotations, adapted evaluation metrics, and a dedicated ambiguity module in the model.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 04</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 04 頁：The Core Challenge: Navigating Visual and Semantic Ambiguity</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>PCS 的核心挑戰是處理由「開放詞彙」特性所引發的<strong>語意</strong>與<strong>視覺</strong>歧義。</li>
+<li>語意歧義包括一詞多義 (Polysemy) 和主觀描述，例如「滑鼠」和「老鼠」的區別。</li>
+<li>視覺歧義來自於物體邊界定義不清，以及遮蔽、模糊、光照等物理因素。</li>
+<li>SAM 3 透過多專家標註、特製的評估指標，以及模型內建的歧義模組來應對這項挑戰。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+好，我們剛剛定義了這個強大的新任務：Promptable Concept Segmentation (PCS)。但究竟是什麼讓它比過去的方法更具挑戰性？我們可以說，我們最大的敵人，就是「歧義」(Ambiguity)。當我們能用任何詞彙去命令模型時，模糊不清的問題就隨之而來。</p>
+<p>今天，我想把這個核心挑戰拆解成兩個主要層面來看：<strong>語意上</strong>的，和<strong>視覺上</strong>的。</p>
+<h5>① 第一個挑戰：語意歧義 (Semantic Ambiguity)</h5>
+<p>首先，是語意上的模糊。當你給出一個詞，電腦不一定能像人類一樣理解你到底要什麼。</p>
+<p>這包含了幾種情況：</p>
+<ul>
+<li>
+<p>第一種是 <strong>Polysemy</strong>，也就是「一詞多義」。這在自然語言處理中是個經典難題，現在也延伸到了視覺領域。論文裡提到一個絕佳的例子：當我們說 &quot;mouse&quot; 時，我們指的究竟是桌上的<strong>電腦滑鼠</strong>，還是牆角跑過去的<strong>老鼠</strong>？模型必須根據上下文去判斷。</p>
+</li>
+<li>
+<p>第二種是<strong>主觀性 (Subjectivity)</strong>。很多形容詞是因人而異的。你說要找一間 &quot;<strong>cozy room</strong> (舒適的房間)&quot;，或者一輛 &quot;<strong>large car</strong> (大型車)&quot;，但「舒適」和「大型」的標準是什麼？這對機器來說非常難以界定。</p>
+</li>
+<li>
+<p>甚至還有更進一步的，論文中提到的一些<strong>模糊或依賴情境的詞彙 (vague or context-dependent phrases)</strong>，例如 &quot;<strong>brand identity</strong> (品牌識別)&quot;，這種抽象概念根本無法在畫面上直接圈出來。</p>
+</li>
+</ul>
+<blockquote>
+<p>換句話說，語意歧義挑戰的是模型「理解你意圖」的能力。它必須從單純的文字匹配，進化到真正的語意理解。</p>
+</blockquote>
+<h5>② 第二個挑戰：視覺歧義 (Visual Ambiguity)</h5>
+<p>就算模型理解了你要找「什麼」，但在「哪裡」找出它，又是另一個難關。這就是視覺上的歧義。</p>
+<ul>
+<li>
+<p>最常見的是<strong>邊界定義 (Boundary Definition)</strong> 的問題。論文中舉了 &quot;<strong>mirror</strong> (鏡子)&quot; 的例子：當你說要框選出鏡子時，應該包含鏡子的<strong>外框</strong>嗎？或者只框選鏡面本身？不同的人來標註，可能就會有不同的答案。</p>
+</li>
+<li>
+<p>再來就是各種<strong>物理因素 (Physical Factors)</strong> 的干擾。</p>
+<ul>
+<li>物體可能被部分遮擋，這就是 <strong>Occlusion (遮蔽)</strong>。</li>
+<li>它可能因為失焦或快速移動而變得模糊，也就是 <strong>blur (模糊)</strong>。</li>
+<li>或者，現場的<strong>光照 (lighting)</strong> 條件可能很複雜，產生了奇怪的陰影或反光，讓物體的輪廓變得難以辨識。</li>
+</ul>
+</li>
+</ul>
+<h5>③ 我們的應對策略</h5>
+<p>面對這麼複雜的歧義問題，SAM 3 團隊提出了一套組合拳。正如簡報所說，我們透過<strong>多位專家進行標註</strong>來捕捉不同的合理解釋、設計了<strong>更適合這項任務的評估指標</strong>，並且在模型內部建立了一個<strong>專門處理歧義的模組</strong>。這些細節我們稍後會再深入探討。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：講到這裡，可以稍微停頓，讓聽眾消化一下語意和視覺歧義的區別。可以問：「大家可以想想，平時我們跟別人溝通時，是不是也常常遇到類似的模糊地帶？」</li>
+<li><strong>關鍵詞強調</strong>：本頁的核心概念是 <strong>Ambiguity</strong>。在提到 <strong>Polysemy</strong>、<strong>Occlusion</strong>、<strong>blur</strong> 等專有名詞時，請務必保留英文原文，並稍微加重語氣，這能讓具備相關背景的聽眾產生共鳴。</li>
+<li><strong>補充案例</strong>：如果時間允許，可以補充論文提到的 LVIS 資料集，說明即使是現有的詞彙庫，也需要透過精心策劃來緩解歧義問題，而開放詞彙讓這個問題變得更加棘手。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>了解了 PCS 任務的「困難點」之後，下一頁，我們就來揭曉 SAM 3 的核心架構，看看它是如何從設計層面來正面迎戰這些挑戰的。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-05">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 05</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-05">
+                    <h1>SAM 3: Unified Architecture (Detector and Tracker)</h1>
+<p>SAM 3 employs a dual encoder-decoder transformer architecture built upon the SAM and DETR series.</p>
+<p><strong>Core Components:</strong></p>
+<ul>
+<li><strong>Shared Backbone (Perception Encoder - PE):</strong> A single, powerful vision-language encoder that processes both image/video frames and text prompts.</li>
+<li><strong>Detector (for Images):</strong> A DETR-based model that performs open-vocabulary detection and segmentation based on concept prompts.</li>
+<li><strong>Tracker (for Videos):</strong> Inherits from SAM 2's architecture, responsible for propagating masks and maintaining object identities over time.</li>
+</ul>
+<p>This decoupled design avoids task conflict, allowing the detector to be identity-agnostic while the tracker focuses on separating identities.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 05</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 05 頁：SAM 3: Unified Architecture (Detector and Tracker)</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>SAM 3 的核心是一個統一的雙編碼器-解碼器 Transformer 架構，繼承並整合了 SAM 與 DETR 系列的優點。</li>
+<li>架構包含三大組件：一個共享的 <strong>Perception Encoder (PE)</strong> 視覺語言骨幹、一個用於圖像的 <strong>DETR-based Detector</strong>，以及一個繼承自 SAM 2 的 <strong>Tracker</strong>。</li>
+<li>關鍵設計理念是「解耦」(decoupled)，讓偵測器專注於「辨識」，追蹤器專注於「區分個體」，以避免任務衝突。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>好，我們已經了解了 SAM 3 所要解決的任務，以及它面臨的挑戰。那麼，這一切在技術上是如何實現的呢？現在，就讓我們一起深入 SAM 3 的核心，看看它的架構設計。</p>
+<p>各位看到的這張圖，是 SAM 3 的整體架構藍圖。它的核心是一個非常強大的 <strong>雙編碼器-解碼器 Transformer 架構</strong>，這個架構巧妙地建立在兩個巨人，也就是 SAM 系列和 DETR 系列的肩膀上。整個模型大約有 8.5 億個參數，是一個相當龐大的系統。</p>
+<h5>① 統一的基礎：共享骨幹 (Shared Backbone)</h5>
+<p>首先，這一切的基礎，是中間這個 <strong>Shared Backbone</strong>，我們稱之為 <strong>Perception Encoder</strong>，或簡稱 <strong>PE</strong>。這是一個非常關鍵的組件。</p>
+<p>它是一個單一、但極其強大的「視覺-語言」聯合編碼器，可以同時理解圖像、影片幀和文字指令。無論是處理圖片還是影片，所有的視覺和語言輸入都會先經過這個 PE 骨幹。可以把它想像成是 SAM 3 的「感知中樞」，為後續所有任務提供統一且高品質的特徵理解。</p>
+<h5>② 偵測器 (Detector)：在圖像中尋找概念</h5>
+<p>有了 PE 提供的特徵後，第一個登場的關鍵角色是 <strong>Detector (偵測器)</strong>。</p>
+<p>這個偵測器是專門為「圖像」設計的，它的任務，就是根據我們給的「概念提示」(concept prompts)，在圖片中找出所有符合條件的物體。它的技術基礎是基於一個非常有名的模型家族：<strong>DETR</strong> (DEtection TRansformer)。它會進行開放詞彙的偵測與分割，把符合概念的物體一個個標記出來。</p>
+<h5>③ 追蹤器 (Tracker)：在影片中維持身分</h5>
+<p>當我們處理的不是單張圖片，而是影片時，就需要第二個關鍵角色：<strong>Tracker (追蹤器)</strong>。</p>
+<p>這個追蹤器的設計很聰明，它基本上<strong>繼承了 SAM 2 成熟的追蹤架構</strong>。它的核心任務非常專一：一旦在影片中鎖定了一個物體，就要負責在接下來的每一幀中，持續傳播它的遮罩 (mask) 並維持它的身分識別，確保不會跟丟，也不會跟其他物體搞混。</p>
+<h5>④ 核心設計：解耦以避免任務衝突</h5>
+<p>而這個架構最精妙的設計，就在於投影片最後提到的「解耦」(decoupled design)。</p>
+<blockquote>
+<p>偵測器 (Detector) 和追蹤器 (Tracker) 的任務其實存在根本性的衝突。偵測器需要做到 <strong>identity-agnostic</strong> (身分無關)，它的問題是「這是不是一隻貓？」。而追蹤器的核心目標，卻是 <strong>separate identities</strong> (區分身分)，它的問題是「這是不是上一幀的那隻貓？」</p>
+</blockquote>
+<p>如果讓單一模型同時處理這兩個目標，很容易發生混亂。因此，SAM 3 把它們分開，讓偵測器專心辨識「什麼是目標」，而追蹤器專心處理「哪個是哪個」，完美地避免了任務衝突 (task conflict)，讓兩者都能發揮最大的效能。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：這頁的資訊量比較大，可以稍微放慢速度，依序介紹 PE、Detector、Tracker 這三個組件。在解釋「任務衝突」時，可以加重語氣，讓聽眾理解這個設計的巧妙之處。</li>
+<li><strong>關鍵詞強調</strong>：請務必清楚地唸出這幾個關鍵術語：<code>Perception Encoder (PE)</code>、<code>DETR</code> (直接唸 D-E-T-R)，以及 <code>decoupled design</code> (解耦設計)。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>了解了這個「偵測器」與「追蹤器」分工合作的宏觀架構後，下一頁，我們將深入「偵測器」內部，探討它如何透過一項巧妙的創新，來解決辨識 (Recognition) 與定位 (Localization) 之間的矛盾。這就是我們的第一個架構創新——<strong>Presence Token</strong>。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-06">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 06</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-06">
+                    <h1>Innovation 1: Decoupling Recognition with a Presence Token</h1>
+<p><strong>Problem:</strong> A single object query struggles to simultaneously recognize <strong>(what)</strong> and localize <strong>(where)</strong> an object, as recognition requires global context while localization is inherently local.</p>
+<p><strong>Solution: The Presence Token</strong></p>
+<ul>
+<li>We introduce a learned, global <strong>presence token</strong>.</li>
+<li><strong>Responsibility:</strong> Its sole job is to predict whether the target concept (noun phrase) is present <em>anywhere</em> in the image.</li>
+<li><strong>Object Queries:</strong> Freed from the recognition task, object queries can focus purely on the localization problem: <code>p(query is a match | concept is present)</code>.</li>
+</ul>
+<p>This decoupling significantly improves detection accuracy, especially for challenging negative phrases.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 06</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 06 頁：創新一：透過「存在權杖」解耦辨識與定位</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>問題核心</strong>：傳統的物件查詢器 (Object Query) 需同時處理「辨識」(這是什麼) 和「定位」(它在哪) 兩個任務，但這兩者所需的上下文尺度不同 (全域 vs. 局部)，導致效能瓶頸。</li>
+<li><strong>解決方案</strong>：引入一個專職的、全域的「存在權杖」(Presence Token)，專門用來判斷目標概念是否存在於圖像中。</li>
+<li><strong>帶來的好處</strong>：將辨識與定位任務解耦 (Decoupling)。一旦「存在權杖」確認物件存在，其他的查詢器就能專注於精確定位，大幅提升了偵測準確率，特別是能有效過濾具挑戰性的「困難負樣本」(Hard Negatives)。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>各位好，在這一頁，我們要深入探討 SAM 3 架構中的第一個關鍵創新。這是一個非常聰明的設計，解決了一個長期以來困擾物件偵測模型的根本性矛盾。</p>
+<p>這個矛盾是什麼呢？想像一下，你要求一個 AI 助理去「辨識」照片裡有沒有一隻貓，同時還要「圈出」這隻貓在哪裡。</p>
+<h5>① 根本性的矛盾：「全域辨識」 vs. 「局部定位」</h5>
+<p>傳統的模型讓每一個小小的「查詢器 (Query)」同時承擔這兩個任務。但問題來了，「辨識」貓需要看到整張圖的上下文——這是一間臥室，那個毛茸茸的東西看起來像寵物。這是一個<strong>全域 (global) 任務</strong>。</p>
+<p>然而，「定位」貓的精確輪廓，卻是一個極其<strong>局部 (local) 的任務</strong>，需要專注在像素級別的邊界上。如論文所說，強迫一個查詢器同時理解全域上下文又專注於局部細節，是<strong>事倍功半 (counterproductive)</strong> 的。</p>
+<h5>② 我們的解方：引入「存在權杖 (Presence Token)」</h5>
+<p>為了解決這個矛盾，我們引入了一個全新的元件，叫做「存在權杖」。</p>
+<blockquote>
+<p>你可以把它想像成一個專職的「偵察官」。它的任務非常單純，就是掃描完整個圖像後，只回答一個是非題：「這張圖裡，有我們要找的概念（比如『黃色校車』）嗎？」</p>
+</blockquote>
+<p>一旦這個「存在權杖」回報「有」，其他的查詢器——那些「定位專家」——才會開始行動。它們的任務也因此變得單純多了：既然已經知道目標存在，它們只需要專心解決「在哪裡？」這個問題。</p>
+<h5>③ 解耦帶來的顯著成效</h5>
+<p>這種職責分離的「解耦」設計，帶來了巨大的好處。論文中的公式 <code>p(query is a match | concept is present)</code> 清楚地表達了這一點：查詢器現在是在「概念已存在」的條件下去計算匹配機率。</p>
+<p>這不僅僅是理論上優雅，實際效果也非常驚人。</p>
+<ul>
+<li>從實驗數據來看（Ablation Study），光是加入這個「存在權杖」，模型的關鍵效能指標 <strong><code>cgF1</code> 就提升了 1.5 分</strong>。</li>
+<li>尤其重要的是，它大幅改善了模型處理「困難負樣本」的能力——也就是那些看起來很像、但其實不是目標的干擾項。這讓模型的圖像級別辨識能力（IL_MCC 指標）從 0.44 大幅提升到 <strong>0.68</strong>。</li>
+</ul>
+<p>這個設計，也讓模型在應用上更有彈性。例如在做物件計數時，我們已經知道物件存在，這時就可以直接將「存在分數」設為 1，讓模型全力專注在定位每一個實例上。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在解釋完「全域 vs. 局部」的矛盾後，可以稍微停頓，讓聽眾思考這個根本性問題。</li>
+<li><strong>關鍵詞強調</strong>：請務必加重「<strong>Presence Token</strong>」和「<strong>解耦 (Decoupling)</strong>」這兩個詞的語氣，它們是本頁的核心。</li>
+<li><strong>補充案例</strong>：可以舉例，在「在一群斑馬中找長頸鹿」的場景下，「存在權杖」會先快速判斷「圖中有沒有長頸鹿？」，如果答案是「沒有」，模型就可以直接停止，避免了後續查詢器在斑馬條紋中徒勞地尋找長頸鹿輪廓，大幅提升效率與準確性。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>了解了模型如何更聰明地「看見」物件後，下一個問題是：我們使用者該如何更有效地與模型「溝通」？如果文字不夠精準，我們還能用什麼方式引導它？下一頁，我們將探討 SAM 3 的第二項創新：利用<strong>圖像範例 (Image Exemplars)</strong> 進行互動式優化。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-07">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 07</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-07">
+                    <h1>Innovation 2: Interactive Refinement with Image Exemplars</h1>
+<p>SAM 3 enhances interactivity beyond the visual prompts of SAM 1 &amp; 2.</p>
+<ul>
+<li><strong>Prompt Type:</strong> Users can provide bounding boxes labeled as <strong>positive</strong> or <strong>negative</strong> examples.</li>
+<li><strong>Function:</strong> Unlike PVS where a prompt yields one mask, an exemplar prompt in PCS guides the model to find <strong>all instances</strong> that match the example.
+<ul>
+<li><strong>Example:</strong> Providing a positive box on one dog prompts the model to detect <em>all</em> dogs in the image.</li>
+</ul>
+</li>
+<li><strong>Use Case:</strong> Ideal for resolving ambiguities or correcting errors (false positives/negatives) from an initial text prompt.</li>
+<li><strong>Interactivity:</strong> Exemplars can be added iteratively to refine the results.</li>
+</ul>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 07</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 07 頁：Innovation 2: Interactive Refinement with Image Exemplars</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>SAM 3 引入了全新的互動方式：<strong>圖片範例 (Image Exemplars)</strong>，使用者可以提供標記為「正面」或「負面」的邊界框。</li>
+<li>此功能的核心突破在於，一個範例就能引導模型找出<strong>所有</strong>符合該概念的物件，而不像 PVS 只處理單一物件。</li>
+<li>實驗證明此方法極其高效，只需 3 次點擊修正，<code>cgF1</code> 分數就比純文字提示高出 <strong>21.6</strong> 點，超越了傳統的修正方法。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>各位，我們剛剛看到了 SAM 3 如何透過文字提示來理解我們的需求。但如果模型給出的結果不夠完美，例如漏掉了一些物件，或是把不相關的東西也圈進來了，我們該怎麼辦？</p>
+<p>這就是 SAM 3 的第二項關鍵創新發揮作用的地方：<strong>互動式修正 (Interactive Refinement)</strong>，而且是用一種全新的工具——我們稱之為「圖片範例」，也就是 <strong>Image Exemplars</strong>。</p>
+<h5>① 什麼是圖片範例 (Image Exemplars)？</h5>
+<p>這不再只是像 SAM 1 或 2 那樣，用點或框來指定「單一」物件。現在，你可以提供一個「帶有標籤的範例」。</p>
+<p>具體來說，你可以畫一個框，然後告訴模型，這個框裡的東西是**「對的」(positive)<strong>，或者</strong>「錯的」(negative)**。</p>
+<p>最神奇的地方在於它的「功能」。就像投影片上的例子，假設你用文字搜尋「狗」，但模型漏掉了一隻。你只要在那隻被漏掉的狗身上畫一個框，並標記為「positive example」，SAM 3 不會只分割你框選的這一隻，它會立刻理解你的意圖，去<strong>找出圖片裡所有同類型的狗</strong>。</p>
+<blockquote>
+<p>這正是 SAM 3 從 <strong>Promptable Visual Segmentation (PVS)</strong> 邁向 <strong>Promptable Concept Segmentation (PCS)</strong> 的典範轉移。PVS 處理的是單一實例，你點哪裡、它就切哪裡；而 PCS 則是從一個範例中去<strong>學習和推廣一個「概念」</strong>。</p>
+</blockquote>
+<h5>② 為什麼這種方式更高效？</h5>
+<p>這個功能在「修正錯誤」時特別強大。想像一下，你搜尋「蘋果」，但模型把一顆番茄也標示進來了。你只需要在番茄上畫一個框，標示為 <strong>negative exemplar</strong>，模型就會移除所有被誤判為蘋果的番茄。</p>
+<p>研究團隊做了一個模擬實驗來驗證這點。他們比較了兩種修正方式：一種是傳統 PVS 的做法，一個一個手動修正錯誤；另一種就是用 Image Exemplar。</p>
+<p>結果發現，用 Image Exemplar 的效率遠高於前者。因為 PVS 只是在「修改單一錯誤」，而 Image Exemplar 是在「教導模型一個概念」。你給它一個反例，它會學到不只避開這一個，而是避開<strong>所有類似的錯誤物件</strong>。</p>
+<p>數據會說話：僅僅經過 <strong>3 次</strong>點擊修正，模型的 <code>cgF1</code> 分數就比純文字提示提升了 <strong>21.6 個點</strong>，也比傳統的 PVS 修正方式高出 2.0 個點。這證明了它能用更少的互動，達到更好的修正效果。</p>
+<p>甚至，只給圖片範例本身就是一種強大的提示。在實驗中，單獨使用圖片範例的表現也大幅超越了像 <strong>T-Rex2</strong> 這樣的頂尖模型。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在解釋 PVS 和 PCS 的本質差異時，可以稍微停頓，讓聽眾消化「單一實例」和「概念推廣」的區別。</li>
+<li><strong>關鍵詞強調</strong>：本頁的核心是 <strong>Image Exemplars</strong>，以及它所帶來的「概念學習」能力。提到 <code>+21.6 cgF1</code> 這個數據時，請加重語氣，這是非常有說服力的證據。</li>
+<li><strong>補充案例</strong>：如果時間允許，可以舉例：用文字搜 &quot;chair&quot;，如果模型漏掉了某種特殊設計的椅子，只要給一個 positive exemplar，就能把它們全部找回來。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>我們看到了 SAM 3 如何在靜態圖片中，結合強大的偵測與高效的互動式修正。那麼，當場景動起來，變成影片時，它又是如何同時處理「偵測新物件」與「追蹤舊物件」這兩個看似衝突的任務呢？下一頁，我們將深入探討它的影片處理架構。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-08">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 08</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-08">
+                    <h1>The Video Architecture: Combining Detection and Tracking</h1>
+<p>SAM 3 processes videos by integrating its detector and tracker in a frame-by-frame loop:</p>
+<ol>
+<li><strong>Detect:</strong> On the current frame <code>t</code>, the <strong>detector</strong> finds all new objects <code>O_t</code> matching the concept prompt.</li>
+<li><strong>Propagate:</strong> The <strong>tracker</strong> takes the existing tracked masks (masklets) from the previous frame <code>M_{t-1}</code> and predicts their new locations <code>M_hat_t</code> on the current frame.</li>
+<li><strong>Match &amp; Update:</strong> A matching function associates the propagated masks <code>M_hat_t</code> with the new detections <code>O_t</code>.
+<ul>
+<li>Matched objects are updated.</li>
+<li>Unmatched new detections spawn new masklets.</li>
+</ul>
+</li>
+</ol>
+<p>To handle ambiguities in crowded scenes, the system uses temporal disambiguation strategies and periodically re-prompts the tracker with high-confidence detections.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 08</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 08 頁：The_Video_Architecture_Combining_Detection_and_Tracking</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>SAM 3 透過「偵測-傳播-匹配更新」的三步驟循環來處理影片。</li>
+<li>偵測器負責在每一幀尋找符合概念的新物件。</li>
+<li>追蹤器則負責將前一幀已追蹤的物件（稱為 masklets）傳播到當前幀。</li>
+<li>匹配函式整合兩者結果：更新已有的追蹤，並為新出現的物件啟動新的追蹤。</li>
+<li>為了處理遮擋和擁擠場景，系統採用時間性消歧策略，並定期用高可信度的偵測結果「重新提示」追蹤器。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>我們已經了解 SAM 3 如何處理單張圖片，但影片帶來了時間維度的挑戰。那麼，SAM 3 是如何偵測、分割並**「追蹤」**影片中的概念呢？答案就在這個精巧的影片處理架構中。</p>
+<p>它的核心是一個非常聰明且高效的逐幀循環，我們可以把它想像成一場分工合作的接力賽。</p>
+<h5>① 「偵測、傳播、匹配」三步驟循環</h5>
+<p>首先，在影片的每一幀畫面上，這個循環會啟動：</p>
+<ol>
+<li><strong>偵測 (Detect)</strong>：<strong>偵測器</strong>會先上場，它的任務是找出當前畫面 <code>t</code> 中，所有符合概念提示（例如「所有的狗」）的「新」物件 <code>O_t</code>。</li>
+<li><strong>傳播 (Propagate)</strong>：與此同時，<strong>追蹤器</strong>正在處理前一幀的結果。它會「預測」那些已經在追蹤的物件遮罩（我們稱之為 <strong>masklets</strong>），到了當前畫面的新位置。</li>
+<li><strong>匹配與更新 (Match &amp; Update)</strong>：最後，一個<strong>匹配函式</strong>會扮演裁判的角色。它會比對「偵測器找到的新物件」和「追蹤器預測的舊物件」。如果它們的 IoU（交集與聯集比）夠高，就確認是同一個物件並更新其軌跡。如果偵測器發現了一個全新的物件，系統就會為它生成一個新的追蹤 ID，也就是一個新的 masklet，開始一段新的追蹤旅程。</li>
+</ol>
+<p>這個流程在論文中被精煉地總結為這個公式：</p>
+<blockquote>
+<p><code>M_t = match_and_update(propagate(M_{t-1}), detect(I_t, P))</code>
+簡單來說，就是用當前的偵測結果，去更新從前一幀傳播過來的追蹤結果。</p>
+</blockquote>
+<h5>② 處理真實世界的混亂：消歧與校正</h5>
+<p>但真實世界的影片充滿了混亂，比如物件被<strong>遮擋</strong>或場景<strong>非常擁擠</strong>。如果只靠這個簡單循環，追蹤很快就會失敗。為此，SAM 3 設計了幾個關鍵的「除錯」機制。</p>
+<ul>
+<li>
+<p>首先，它會計算一個「<strong>masklet detection score</strong>」。這個分數衡量一個被追蹤的物件在過去一段時間內，是否「持續地」被偵測器確認存在。如果一個物件的得分太低，比如它時常與偵測結果對不上，系統就會暫時壓制它，避免它變成一個亂飄的「鬼影」。</p>
+</li>
+<li>
+<p>更重要的是，系統會「<strong>定期用高可信度的偵測結果，重新提示 (re-prompt) 追蹤器</strong>」。想像一下，追蹤器可能會因為被其他物體遮擋而跟丟目標，導致預測的遮罩開始偏移。這時，偵測器就像一個外部的「教練」，每隔幾幀就跳出來說：「嘿，你追蹤的那個物件，現在確切位置在這裡！」然後直接用這個準確的偵測結果來校正追蹤器的記憶庫。這確保了追蹤器的記憶永遠有最新、最可靠的參考資訊。</p>
+</li>
+</ul>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：這頁的技術細節比較多，講到三步驟循環時，可以放慢速度，搭配動畫或圖示會更容易理解。</li>
+<li><strong>比喻輔助</strong>：可以用「接力賽」或「偵探與線人」的比喻來解釋偵測器和追蹤器的協作關係，讓概念更直觀。</li>
+<li><strong>關鍵詞強調</strong>：本頁的 <code>masklet</code>、<code>masklet detection score</code> 和 <code>re-prompt</code> 是核心技術點，唸到時請加重語氣或稍作停頓解釋。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>我們看到了這個精巧的偵測與追蹤架構，但要讓它學會這一切，需要極其龐大且高品質的「影片」標註資料。下一頁，我們就來揭曉 SAM 3 背後那個強大的「資料引擎」是如何做到的。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-09">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 09</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-09">
+                    <h1>The Data Engine: A Human-AI Loop for Scalable Annotation</h1>
+<p>Achieving high performance in PCS requires a massive, diverse dataset. We built an efficient data engine to create it.</p>
+<p><strong>Core Principle:</strong> A synergistic feedback loop that leverages the strengths of models and humans.</p>
+<p><strong>Workflow:</strong></p>
+<ol>
+<li><strong>Propose:</strong> AI models propose noun phrases (NPs) and candidate masks for a given image/video.</li>
+<li><strong>Verify:</strong> A mix of AI and human verifiers check mask quality and exhaustivity (if all instances are found).</li>
+<li><strong>Correct:</strong> Humans focus on correcting the difficult cases identified by the verifiers.</li>
+<li><strong>Train:</strong> The corrected data is used to train the next version of SAM 3.</li>
+<li><strong>Iterate:</strong> The improved SAM 3 is integrated back into the engine to propose better masks.</li>
+</ol>
+<p>This virtuous cycle actively mines challenging data and continuously improves the model.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 09</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 09 頁：The_Data_Engine_A_Human-AI_Loop_for_Scalable_Annotation</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>要實現高品質的「概念分割」(PCS)，必須仰賴一個規模空前、極度多樣化的數據集。</li>
+<li>為此，我們打造了一個高效的「數據引擎」(Data Engine)，其核心是一個結合 AI 與人類專家的協同回饋循環 (Synergistic Feedback Loop)。</li>
+<li>這個引擎的工作流程包含五個階段：AI 提議、AI/人類驗證、人類修正、模型訓練，以及將更新後的模型再次投入引擎，形成一個不斷挖掘困難案例並自我進化的「良性循環」。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>各位前面聽了這麼多模型架構的創新，但再好的演算法，也需要海量且高品質的數據來餵養。特別是對於一個像「可提示概念分割」(Promptable Concept Segmentation, PCS) 這樣全新的、開放詞彙的任務，我們該如何從零開始，打造一個前所未有的龐大數據集呢？</p>
+<p>我們的答案，就是這套「數據引擎」(Data Engine)。</p>
+<h5>① 核心原則：人機協作的增強迴路 (Human-AI Loop)</h5>
+<p>這個引擎的核心精神，並不是要用 AI 完全取代人類，而是建立一個「人機協同」的增強回饋循環，讓 AI 和人類專家各司其職。</p>
+<blockquote>
+<p>我們的目標是將人類寶貴的專業知識，集中在解決那些最困難、最細微、也最有價值的標註問題上。</p>
+</blockquote>
+<p>在這個模式下，我們讓 AI 處理大量重複性的初步標註與驗證工作，而人類專家則專注於修正 AI 犯錯的困難案例。根據我們的統計，這種模式讓我們數據標註的總體吞吐量 (throughput)，比純人工的流程<strong>提升了一倍以上</strong>。</p>
+<h5>② 數據引擎工作流程 (The Workflow)</h5>
+<p>這個良性循環的具體工作流程，如投影片所示，分為五個步驟：</p>
+<ol>
+<li>
+<p><strong>提議 (Propose)</strong>：首先，我們會讓 AI 模型（包含前一版的 SAM 3）針對一張圖片，自動產生它認為值得標註的「名詞短語」(noun phrases, NPs)，並生成對應的候選遮罩 (candidate masks)。</p>
+</li>
+<li>
+<p><strong>驗證 (Verify)</strong>：接著，這些提議會進入驗證階段。我們有一組 AI 驗證者與人類驗證者，分工進行兩項關鍵檢查：第一，是<strong>遮罩品質驗證 (Mask Verification)</strong>，確保遮罩本身畫得夠準確；第二，是<strong>窮盡性驗證 (Exhaustivity Verification)</strong>，檢查圖片裡所有符合這個概念的物件，是不是都已經被標註出來了。</p>
+</li>
+<li>
+<p><strong>修正 (Correct)</strong>：對於那些沒有通過驗證的「困難案例」，系統會自動把它們分派給人類專家。專家們會使用我們的標註工具（例如用 SAM 1 點擊輔助），來手動修正、補上遺漏的遮罩。</p>
+</li>
+<li>
+<p><strong>訓練 (Train)</strong>：這些經過高質量修正的數據，會被用來訓練下一代的 SAM 3 模型，讓它變得更強大。</p>
+</li>
+<li>
+<p><strong>迭代 (Iterate)</strong>：最後，這個更強大的新版 SAM 3 模型，會被立刻部署回我們的數據引擎中，成為新的「提議者」。它能夠產生更高品質的候選遮罩，並且更有能力去<strong>主動挖掘 (actively mine)</strong> 它自己還不擅長的、更具挑戰性的數據。</p>
+</li>
+</ol>
+<p>這就形成了一個不斷自我進化、自我完善的<strong>良性循環 (virtuous cycle)</strong>，讓我們的模型和數據集一起教學相長、持續進步。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：這套數據引擎是我們能實現 PCS 任務效能躍進的關鍵基礎設施。講者可以稍微加重語氣，強調它作為整個專案「後勤中樞」的重要性。</li>
+<li><strong>關鍵詞強調</strong>：請務必清晰地唸出英文原文術語，例如 &quot;<strong>Data Engine</strong>&quot;、&quot;<strong>Synergistic Feedback Loop</strong>&quot;、&quot;<strong>virtuous cycle</strong>&quot;，因為這些是本研究的核心概念。</li>
+<li><strong>補充案例</strong>：如果時間允許，可以補充說明：「我們透過這個引擎，最終打造出 <code>SA-Co/HQ</code> 這個高品質數據集，它包含了超過 400 萬個獨特的視覺概念標籤。」</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>了解了這個人機協作的數據工廠後，下一頁我們將深入剖析其中最關鍵的創新之一：我們是如何訓練出「AI 標註員」與「AI 驗證者」，並讓它們達到近乎人類的準確率，進而將數據生產效率翻倍的。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-10">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 10</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-10">
+                    <h1>Key Data Engine Features: AI Annotators and Verifiers</h1>
+<p>We delegate key annotation tasks to specialized AI models, dramatically increasing efficiency.</p>
+<ul>
+<li>
+<p><strong>AI Annotators (Proposers):</strong></p>
+<ul>
+<li>Leverage Multimodal LLMs to generate diverse and relevant <strong>noun phrases (NPs)</strong> for images.</li>
+<li>Propose <strong>hard negatives</strong> (adversarial phrases that are not in the image) to improve model robustness.</li>
+</ul>
+</li>
+<li>
+<p><strong>AI Verifiers (Checkers):</strong></p>
+<ul>
+<li>Fine-tuned MLLMs that perform <strong>Mask Verification (MV)</strong> and <strong>Exhaustivity Verification (EV)</strong> with near-human accuracy.</li>
+<li>Automatically filter correctly labeled examples, focusing human effort on fixing complex errors.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Impact:</strong> The introduction of AI verifiers <strong>doubled the data engine's throughput</strong> compared to a human-only pipeline.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 10</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 10 頁：Key Data Engine Features: AI Annotators and Verifiers</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>為了高效產出海量資料，我們將關鍵的標註任務委派給了「AI 標註員」與「AI 驗證員」。</li>
+<li><strong>AI 標註員 (Proposers)</strong>：利用大型多模態模型 (MLLM) 為圖像生成多樣化的「名詞片語 (NPs)」，並主動提出「困難負樣本 (Hard Negatives)」，以增強模型的穩健性。</li>
+<li><strong>AI 驗證員 (Checkers)</strong>：經過微調的 MLLM，能以接近人類的準確率執行兩項關鍵驗證：<strong>遮罩品質驗證 (Mask Verification, MV)</strong> 與 <strong>窮盡性驗證 (Exhaustivity Verification, EV)</strong>。</li>
+<li><strong>核心影響</strong>：AI 驗證員的導入，讓我們的資料引擎吞吐量<strong>翻了一倍</strong>，因為它能自動過濾掉簡單正確的樣本，讓人類專家專注於修正最困難的錯誤。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>好，我們剛剛談到了，要讓 SAM 3 實現概念分割，需要一個龐大且高品質的資料集。但問題來了，標註資料既昂貴又耗時。如果完全依賴人工，我們可能永遠無法達到所需的規模。所以，我們設計了一套全新的策略，讓 AI 成為我們標註團隊的核心成員。</p>
+<p>這就是我們資料引擎最關鍵的兩個角色：<strong>AI 標註員 (Proposers)</strong> 和 <strong>AI 驗證員 (Checkers)</strong>。</p>
+<h5>① 首先，是擔任「提案者」角色的 AI 標註員</h5>
+<p>傳統上，我們需要由人類來決定一張圖裡該標註什麼。但現在，我們利用像 Llama 這樣的大型多模態模型 (MLLM)，讓它來為圖像生成多樣化且有意義的「名詞片語 (NPs)」，也就是標註的目標。</p>
+<blockquote>
+<p>更重要的是，它還會主動提出所謂的 <strong>「困難負樣本」(Hard Negatives)</strong>。</p>
+</blockquote>
+<p>什麼是困難負樣本？簡單來說，就是那些<strong>沒有出現在圖片中，但很容易讓模型混淆的概念</strong>。例如，圖片裡有一隻「暹羅貓」，AI 標註員可能會故意提出「虎斑貓」這個標籤。透過在這種對抗性的樣本上進行訓練，我們能大幅提升模型的辨識穩健性，讓它不會輕易地張冠李戴。</p>
+<h5>② 接著，是擔任「品保」角色的 AI 驗證員</h5>
+<p>當有了初步的標註後，品保就非常重要了。我們同樣訓練了 AI 來做這件事。它們主要負責兩項檢查工作：</p>
+<ul>
+<li>第一，<strong>遮罩品質驗證 (Mask Verification, MV)</strong>：檢查單一遮罩畫得好不好、有沒有對應到正確的物件。</li>
+<li>第二，<strong>窮盡性驗證 (Exhaustivity Verification, EV)</strong>：檢查圖片裡<strong>所有</strong>符合這個概念的物件，是不是都已經被標註出來了，有沒有漏網之魚。</li>
+</ul>
+<p>我們透過在第一階段收集的人類標註資料，對 Llama 3.2 這樣的模型進行微調，最終訓練出的 AI 驗證員，準確率幾乎與人類專家不相上下。</p>
+<h5>③ 最終的影響是什麼？</h5>
+<p>透過讓 AI 處理大量、重複性的驗證工作，把人類專家的寶貴時間，集中用在處理那些 AI 也覺得棘手的複雜案例上。這樣的人機協作流程，最終讓我們整個資料引擎的標註效率，<strong>直接翻了一倍</strong>。這也是我們能夠在短時間內，建立起如此龐大規模高品質資料庫的關鍵。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在講到「效率直接翻了一倍」時，可以稍微停頓，讓聽眾感受這個數字帶來的震撼。</li>
+<li><strong>關鍵詞強調</strong>：本頁的「AI Annotators (標註員)」和「AI Verifiers (驗證員)」是核心概念，特別是 <code>Mask Verification (MV)</code> 和 <code>Exhaustivity Verification (EV)</code>，唸到時請稍微加重語氣。</li>
+<li><strong>補充案例</strong>：如果時間允許，可以簡單解釋「困難負樣本」的例子，例如圖片裡有蘋果，AI 就故意提問「橘子在哪裡」，來訓練模型的辨識能力。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>那麼，有了這個強大的資料引擎，我們產出了規模空前的資料集。但下一個問題是：我們該如何公正、全面地評估一個模型在「概念分割」這項新任務上的表現呢？這就引導我們建立了全新的評估基準——也就是下一頁要介紹的 <strong>SA-Co Benchmark</strong>。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-11">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 11</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-11">
+                    <h1>Introducing the SA-Co Benchmark for Evaluation</h1>
+<p>To rigorously evaluate Promptable Concept Segmentation, we created the <strong>Segment Anything with Concepts (SA-Co) Benchmark</strong>.</p>
+<p><strong>Key Statistics:</strong></p>
+<ul>
+<li><strong>207,000</strong> unique concept phrases</li>
+<li><strong>121,000</strong> images and <strong>1,700</strong> videos</li>
+<li><strong>&gt;50x more concepts</strong> than existing benchmarks like LVIS.</li>
+<li>Exhaustive masks and a high volume of hard negative labels.</li>
+</ul>
+<p><strong>Evaluation Splits:</strong></p>
+<ul>
+<li><strong>SA-Co/Gold:</strong> Highest quality, with 3 independent annotations per sample to measure human performance and handle ambiguity.</li>
+<li><strong>SA-Co/Silver, Bronze, Bio:</strong> Cover a wide range of 10+ domains (e.g., driving, medical, robotics).</li>
+<li><strong>SA-Co/VEval:</strong> Dedicated split for video evaluation.</li>
+</ul>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 11</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 11 頁：Introducing the SA-Co Benchmark for Evaluation</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>為了嚴謹地評估全新的「概念提示分割 (PCS)」任務，我們建立了 <strong>SA-Co (Segment Anything with Concepts) Benchmark</strong>。</li>
+<li>此基準測試規模龐大，包含 <strong>20.7 萬</strong>個獨立的概念詞彙、<strong>12.1 萬</strong>張圖片與 <strong>1,700</strong> 部影片，概念數量比現有的 LVIS 資料集多出 50 倍以上。</li>
+<li>SA-Co 包含多個評估集 (Splits)，其中 <strong>SA-Co/Gold</strong> 擁有三組獨立人工標註，用以處理模糊性並衡量人類表現的基準。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>俗話說：「如果你無法衡量它，你就無法改進它。」 當我們提出一個全新的任務——Promptable Concept Segmentation (PCS) 時，我們面臨的第一個問題就是：該如何公正、嚴謹地評估一個模型到底做得好不好？現有的基準已經不夠用了。</p>
+<h5>① 為何需要新的 Benchmark？</h5>
+<p>過去像 LVIS 這樣的資料集，雖然在當時很出色，但它們所涵蓋的概念詞彙量，已經無法滿足我們對開放世界理解的需求。為了真正測試一個模型能否「分割萬物」的能力，我們需要一個規模、深度和廣度都遠超以往的全新標準。</p>
+<blockquote>
+<p>這就是我們打造 <strong>SA-Co (Segment Anything with Concepts) Benchmark</strong> 的初衷。它的目標，就是為 PCS 這個新任務樹立一個黃金標準。</p>
+</blockquote>
+<h5>② SA-Co 的驚人規模</h5>
+<p>現在，讓我們看看 SA-Co 的具體數據，各位就能感受到它的與眾不同。</p>
+<p>首先，它包含了 <strong>207,000</strong> 個獨一無二的概念詞彙。這不是錯字，是二十萬七千個！這個數量是現有 LVIS 資料集的 <strong>50 倍</strong>以上。這意味著我們能測試模型對長尾、罕見、甚至是非常細微概念的理解能力。</p>
+<p>其次，這些概念分布在 <strong>121,000</strong> 張圖片和 <strong>1,700</strong> 部影片中。我們不只關注靜態圖像，也將挑戰延伸到了動態的影片場景。</p>
+<p>最關鍵的一點是，我們確保了 <strong>窮盡式標註 (Exhaustive masks)</strong>，並納入了大量的 <strong>困難負樣本 (hard negative labels)</strong>。這能有效地測試模型是否真的「認識」一個概念，而不是在猜測。</p>
+<h5>③ 嚴謹的評估分集 (Evaluation Splits)</h5>
+<p>為了應對不同的評估需求，我們將 SA-Co 設計成幾個層次：</p>
+<ul>
+<li><strong>SA-Co/Gold</strong>：這是我們的「黃金標準」評估集。最特別的是，裡面的每一個樣本都經過 <strong>3 位標註員獨立標註</strong>。這讓我們能夠量化任務本身的模糊性，並建立一個可靠的「人類表現」上限。</li>
+<li><strong>SA-Co/Silver, Bronze, Bio</strong>：這些分集涵蓋了超過 10 個不同的專業領域，例如<strong>自動駕駛、醫療影像、機器人技術</strong>等，用來測試模型在特定領域的泛化能力。</li>
+<li><strong>SA-Co/VEval</strong>：這是一個專為<strong>影片</strong>分割任務設計的獨立評估集。</li>
+</ul>
+<p>總之，SA-Co 不只是一個更大的資料集，它是一個經過精心設計、用來驅動下一代視覺分割模型發展的評估體系。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在講到 &quot;207,000&quot; 和 &quot;50倍&quot; 這兩個數字時，請稍微加重語氣並停頓一下，讓聽眾感受到這個量級的震撼。</li>
+<li><strong>關鍵詞強調</strong>：提到 <code>SA-Co/Gold</code> 時，可以強調它是用來解決「模糊性」問題的關鍵設計，這能與前面提到的挑戰相呼應。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>有了如此嚴謹的評估基準，下一個問題自然就是：我們該用什麼指標來打分數？傳統的 AP 分數已經不再適用，因此，我們也為此設計了全新的評估指標。下一頁，我們就來談談 <code>cgF1</code>。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-12">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 12</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-12">
+                    <h1>New Metrics: Classification-gated F1 (cgF1)</h1>
+<p>Traditional metrics like Average Precision (AP) are not ideal for open-vocabulary tasks with vast label spaces and high class imbalance.</p>
+<p><strong>We propose <code>cgF1</code> to better measure PCS performance:</strong></p>
+<p><code>cgF1 = 100 * pmF1 * IL_MCC</code></p>
+<ul>
+<li>
+<p><strong>Localization (<code>pmF1</code> - positive micro F1):</strong></p>
+<ul>
+<li>Measures mask quality (F1 score) <em>only</em> on positive image-phrase pairs.</li>
+</ul>
+</li>
+<li>
+<p><strong>Classification (<code>IL_MCC</code> - Image-Level Matthews Correlation Coefficient):</strong></p>
+<ul>
+<li>Measures the model's ability to correctly predict the <em>presence or absence</em> of a concept in an image, regardless of mask quality.</li>
+</ul>
+</li>
+</ul>
+<p>This composite metric rewards both accurate localization and correct recognition.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 12</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 12 頁：New_Metrics_Classification-gated_F1_(cgF1)</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>傳統指標如 Average Precision (AP) 不適用於具有龐大詞彙庫和類別不平衡的開放詞彙任務。</li>
+<li>為此，我們提出了新的複合指標 <code>cgF1</code>，它結合了「定位」與「分類」兩個維度的評估。</li>
+<li><code>cgF1</code> 由 <code>pmF1</code> (測量定位品質) 和 <code>IL_MCC</code> (測量概念是否存在) 兩部分相乘構成，能更公允地衡量模型在 PCS 任務上的綜合表現。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+好，我們建立了這個宏大的 PCS 任務，但問題來了：我們該如何公正地評量一個模型做得好不好？大家熟悉的傳統指標，例如 <strong>Average Precision (AP)</strong>，在這裡其實會失靈。</p>
+<p>為什麼呢？這背後有幾個關鍵原因。</p>
+<h5>① 傳統指標的困境</h5>
+<p>首先，像 AP 這樣的指標，是為封閉詞彙集設計的。當你的詞彙庫從幾十、幾百個類別，爆炸性增長到數十萬、甚至數百萬個「概念」時，AP 的計算會被大量只出現一兩次的罕見概念所干擾，變得充滿噪聲。</p>
+<blockquote>
+<p>更致命的是，AP 並不關心模型的「校準度 (calibration)」。一個模型可能對自己的預測沒什麼信心，但只要排序正確，依然能得到高 AP 分數，這在實際應用中是非常危險的。</p>
+</blockquote>
+<p>最後，AP 在處理大量的「負樣本」時也顯得笨拙。如果一張圖裡根本沒有「貓」，模型正確地什麼都沒預測，AP 不會給予獎勵。但如果它錯誤地預測了一個東西是貓，分數就會下降。這在負樣本遠多於正樣本的開放世界裡，會嚴重扭曲評估結果。</p>
+<h5>② 我們的解方：<code>cgF1</code></h5>
+<p>為了解決這些問題，我們提出了一個全新的指標，叫做 <strong><code>cgF1</code></strong>，也就是「分類閘控的 F1 分數 (Classification-gated F1)」。</p>
+<p>它的核心思想很簡單：把一個複雜的問題拆解成兩個獨立、清晰的子任務來評估——<strong>「定位 (Localization)」</strong> 和 <strong>「分類 (Classification)」</strong>。</p>
+<p><code>cgF1</code> 的公式如投影片所示：<code>100 * pmF1 * IL_MCC</code>。我們來看看這兩部分各自代表什麼。</p>
+<h5>③ <code>pmF1</code>：專注於「定位」品質</h5>
+<p>首先是 <code>pmF1</code>，全名是 &quot;positive micro F1&quot;。它的任務很單純：<strong>只在那些</strong>我們確定「有」這個物件的圖片上，去評估模型畫出來的 mask 品質有多好。</p>
+<ul>
+<li><code>positive</code> 的意思就是我們排除了所有負樣本的干擾，專注評估「找得到，且畫得準」的能力。</li>
+<li>而且，為了更嚴謹，我們不只用單一的 IoU 閾值，而是計算从 0.5 到 0.95 多個閾值下的 F1 分數，再取平均，確保其穩健性。</li>
+</ul>
+<h5>④ <code>IL_MCC</code>：專注於「分類」判斷</h5>
+<p>接著是 <code>IL_MCC</code>，全名是 &quot;Image-Level Matthews Correlation Coefficient&quot;。它的任務更簡單：完全不管 mask 畫得好不好，只回答一個是非題：「<strong>這張圖片裡，到底有沒有這個概念？</strong>」</p>
+<blockquote>
+<p>它衡量的是模型在圖片層級的二元分類能力，也就是「存在」或「不存在」的判斷準確度。我們選用 MCC 這個指標，是因為它在處理正負樣本極度不平衡的情況下，比單純的準確率或 F1 分數更為可靠。</p>
+</blockquote>
+<h5>⑤ 綜合評估</h5>
+<p>所以，<code>cgF1</code> 把這兩者結合起來，代表一個模型必须<strong>同時擅長</strong>「判斷存在」和「精準定位」，才能得到高分。你不能只會猜，也不能只會畫。此外，我们在实际计算时，只考虑置信度高于 0.5 的预测，这更贴近真实世界的使用场景。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在解釋完 AP 的三個缺點後，可以稍作停頓，讓聽眾思考一下這些問題的嚴重性，再引出 <code>cgF1</code> 作為解決方案。</li>
+<li><strong>關鍵詞強調</strong>：請務必加重 <code>cgF1</code>、<code>pmF1</code>、<code>IL_MCC</code>、<code>Localization</code>、<code>Classification</code> 等術語的語氣，並清楚地唸出它們的英文全稱，幫助聽眾建立概念。</li>
+<li><strong>補充案例</strong>：可以口頭舉例：「就像考試，<code>IL_MCC</code> 是判斷題，考你知不知道答案；<code>pmF1</code> 是簡答題，考你能不能把答案寫得又對又好。<code>cgF1</code> 要求你兩科都得高分。」</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>那麼，有了這個更公平、更全面的評量標準之後，SAM 3 的表現究竟如何呢？下一頁，我們就來看看它在各大基準測試上的成績。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-13">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 13</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-13">
+                    <h1>Performance: State-of-the-Art in Image PCS</h1>
+<p><strong>SAM 3 sets a new state-of-the-art in zero-shot image concept segmentation.</strong></p>
+<ul>
+<li>
+<p><strong>SA-Co/Gold Benchmark:</strong></p>
+<ul>
+<li>Achieves a <code>cgF1</code> score of <strong>54.1</strong>, more than <strong>double</strong> the strongest baseline (OWLv2* at 24.6).</li>
+<li>Reaches <strong>74%</strong> of estimated human-level performance.</li>
+</ul>
+</li>
+<li>
+<p><strong>LVIS Benchmark:</strong></p>
+<ul>
+<li>Significantly outperforms prior best on mask AP (<strong>48.5</strong> vs. 38.5 from DINO-X).</li>
+</ul>
+</li>
+<li>
+<p><strong>Semantic Segmentation:</strong></p>
+<ul>
+<li>Outperforms strong specialist baselines on datasets like ADE-847 and Cityscapes.</li>
+</ul>
+</li>
+</ul>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 13</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 13 頁：Performance: State-of-the-Art in Image PCS</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>SAM 3 在「零樣本 (zero-shot)」圖像概念分割任務上，確立了新的技術頂尖標準 (State-of-the-Art)。</li>
+<li>在我們最嚴苛的 <strong>SA-Co/Gold</strong> 基準測試中，SAM 3 的 <code>cgF1</code> 分數是先前最強基線模型的兩倍以上。</li>
+<li>在業界公認的 <strong>LVIS</strong> 基準測試中，SAM 3 在遮罩平均精度 (mask AP) 指標上創下新紀錄。</li>
+<li>SAM 3 的能力不僅限於實例分割，在語義分割任務上的表現也超越了許多專用模型。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>好的，理論和架構都介紹完了，那麼 SAM 3 的實際表現究竟如何？</p>
+<p>簡單來說，結果非常驚人。SAM 3 在 <strong>零樣本 (zero-shot)</strong> 的圖像概念分割任務上，全面樹立了新的技術標竿。這意味著它在從未見過的數據集上也能直接展現出強大的性能。</p>
+<h5>① 在最嚴苛的 SA-Co/Gold 基準上實現翻倍超越</h5>
+<p>首先，讓我們看看在我們自己建立的、最困難的基準測試 SA-Co/Gold 上的表現。這個數據集充滿了各種模糊和細微的概念，並經過三位專家標註，是個極具挑戰性的考驗。</p>
+<blockquote>
+<p>在這個考驗上，SAM 3 拿下了 <strong>54.1</strong> 的 <code>cgF1</code> 分數。</p>
+</blockquote>
+<p>這個數字本身可能有點抽象，但對比一下就非常清楚了：目前最強的基線模型 OWLv2*，分數只有 24.6。也就是說，SAM 3 的性能是它的<strong>兩倍以上</strong>。更令人振奮的是，這個成績已經達到了人類專家預估表現的 <strong>74%</strong>，這代表我們的模型正在快速追趕人類在複雜視覺理解上的能力。</p>
+<h5>② 在 LVIS 等業界標準上創下新紀錄</h5>
+<p>當然，SAM 3 不僅僅在我們自己的數據集上表現出色。在像 LVIS 這樣被廣泛使用的學術基準上，它同樣打破了紀錄。</p>
+<p>在 LVIS 的實例分割任務中，SAM 3 的 <strong>mask AP (遮罩平均精度) 達到了 48.5</strong>。這顯著地超越了由 DINO-X 保持的先前最佳紀錄 38.5。這證明了 SAM 3 的卓越性能是具有普遍性的。</p>
+<h5>③ 跨足語義分割，同樣頂尖</h5>
+<p>最後，SAM 3 的強大之處還體現在它的多功能性。我們將它應用於語義分割任務——也就是將圖像中的每個像素分類到特定類別。</p>
+<p>結果發現，即便與那些專為此任務設計的<strong>專家模型</strong>（如 APE）相比，SAM 3 在 ADE-847 和 Cityscapes 等數據集上的表現也更勝一籌。這證明了 SAM 3 擁有的不僅是分割能力，更是一種對視覺場景深刻、全面的理解力。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：這是一頁充滿關鍵數據的投影片。在報告每個數字和比較時，可以稍微放慢語速，並在數字後稍作停頓，讓聽眾有時間吸收這些成果。</li>
+<li><strong>關鍵詞強調</strong>：務必強調 <strong>&quot;zero-shot&quot; (零樣本)</strong> 這個詞。這代表模型無需針對特定測試數據進行訓練，就能直接應用，這是其泛化能力的最佳證明。</li>
+<li><strong>補充案例</strong>：如果聽眾對比的模型不熟，可以簡要說明 &quot;OWLv2&quot; 和 &quot;DINO-X&quot; 都是當前非常強大的開源詞彙檢測與分割模型，這能更凸顯 SAM 3 的突破性。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>在靜態圖像上證明了如此頂尖的性能後，一個自然的問題是：面對充滿動態與時序複雜性的影片，SAM 3 的表現又會如何呢？下一頁，我們將看到，它的統治力在影片領域同樣得到了延續。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-14">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 14</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-14">
+                    <h1>Performance: State-of-the-Art in Video PCS</h1>
+<p><strong>SAM 3 also establishes a new SOTA for open-vocabulary video instance segmentation.</strong></p>
+<ul>
+<li>
+<p><strong>SA-Co/VEval Benchmark:</strong></p>
+<ul>
+<li>Largely outperforms baselines like GLEE and systems using other detectors (LLMDet).</li>
+<li>Achieves over <strong>80% of human performance</strong> on the pHOTA metric.</li>
+<li>Excels in both frame-level detection (pDetA) and cross-frame association (pAssA).</li>
+</ul>
+</li>
+<li>
+<p><strong>Public Benchmarks:</strong></p>
+<ul>
+<li>Achieves new SOTA results on <strong>LVVIS</strong> (36.3 mAP) and <strong>OVIS</strong> (60.5 mAP).</li>
+<li>Shows strong performance on BURST, YTVIS21, and others.</li>
+</ul>
+</li>
+</ul>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 14</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 14 頁：Performance: State-of-the-Art in Video PCS</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>SAM 3 為開放詞彙的影片實例分割 (open-vocabulary video instance segmentation) 樹立了新的技術標竿 (SOTA)。</li>
+<li>在我們專為此任務設計的 <strong>SA-Co/VEval</strong> 基準測試中，SAM 3 的表現大幅超越 GLEE 等現有模型，達到人類表現的 80% 以上。</li>
+<li>在 <strong>LVVIS</strong> 和 <strong>OVIS</strong> 等公開基準測試上，SAM 3 同樣創下了新的 SOTA 紀錄。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+各位，我們剛剛看到了 SAM 3 在靜態圖片上的驚人表現。但真正的考驗，來自於動態、充滿變化的影片。現在，就讓我們來看看 SAM 3 如何應對在影片中分割概念這項艱鉅的挑戰。</p>
+<h5>① 在全新 SA-Co/VEval 基準上的壓倒性優勢</h5>
+<p>首先，我們在自己建立的 <code>SA-Co/VEval</code> 基準上進行了嚴格測試。這個基準測試包含了數千個名詞片語，專為評估開放詞彙的影片分割能力而設計。</p>
+<p>結果非常明確：SAM 3 的表現遠遠超過了先前的模型。我們將它與 GLEE，以及一個結合了強大偵測器 LLMDet 與我們追蹤器的混合系統進行比較，SAM 3 都展現了絕對的優勢。</p>
+<blockquote>
+<p>最令人振奮的是，在 <strong>pHOTA</strong> 這個同時衡量「偵測」與「追蹤」品質的綜合指標上，SAM 3 達到了超過 <strong>80% 的人類水準</strong>。</p>
+</blockquote>
+<p>這意味著什麼呢？這代表 SAM 3 不僅在單一畫格中能準確地「偵測」到物件 (也就是高 <code>pDetA</code> 分數)，更能穩定地在時間軸上「關聯」這些物件，維持其身分識別 (高 <code>pAssA</code> 分數)。這兩項能力的結合，正是它在影片任務中如此出色的關鍵。</p>
+<h5>② 在公開基準測試上刷新紀錄</h5>
+<p>當然，我們也必須在學術界公認的戰場上證明自己。當我們將 SAM 3 放到公開的影片基準測試上時，它再次確立了新的技術標竿。</p>
+<ul>
+<li>在 <strong>LVVIS</strong> 這個大型詞彙影片分割資料集上，SAM 3 達到了 <strong>36.3 mAP</strong>，創下新紀錄。</li>
+<li>在 <strong>OVIS</strong> 這個針對遮蔽場景的資料集上，它更是以 <strong>60.5 mAP</strong> 的高分，刷新了 SOTA 成績。</li>
+<li>此外，在 BURST、YTVIS21 等多個基準測試中，SAM 3 也都展現了極具競爭力的強大性能。</li>
+</ul>
+<p>這些數據共同證明，SAM 3 不僅是一個新能力的開創者，更是一個在既有賽道上全面超越的領跑者。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在提到「達到人類表現的 80% 以上」時，可以稍作停頓，讓聽眾感受這個數字的重要性。強調 SOTA 時，語氣可以更肯定。</li>
+<li><strong>關鍵詞強調</strong>：請務必清晰地唸出各個基準測試的名稱，如 <code>SA-Co/VEval</code>、<strong>LVVIS</strong> (<code>L-V-V-I-S</code>) 和 <strong>OVIS</strong> (<code>O-vis</code>)。另外，<code>pHOTA</code> (<code>p-HOTA</code>) 是本頁的核心評量指標。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>SAM 3 顯然已經掌握了在影片中追蹤「概念」的強大能力。但 SAM 系列最經典的任務——用「視覺提示」(如點擊) 來追蹤特定物件——表現又如何呢？下一頁，我們將看到 SAM 3 不僅開創了新局，更強化了過去的核心功能。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-15">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 15</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-15">
+                    <h1>Improving on the Past: Enhanced Visual Prompting (PVS)</h1>
+<p>In addition to the new PCS task, SAM 3 also improves upon the core visual prompting capabilities of SAM 1 &amp; 2.</p>
+<ul>
+<li>
+<p><strong>Video Object Segmentation (VOS):</strong></p>
+<ul>
+<li>SAM 3 achieves significant improvements over SAM 2 on most benchmarks.</li>
+<li>On the challenging <strong>MOSEv2</strong> dataset, SAM 3 outperforms prior work by <strong>6.5 points</strong> (60.3 vs 53.8 J&amp;F).</li>
+</ul>
+</li>
+<li>
+<p><strong>Interactive Image Segmentation:</strong></p>
+<ul>
+<li>Evaluated on the extensive 37-dataset benchmark.</li>
+<li>SAM 3 outperforms SAM 2.1 in segmentation accuracy (mIoU) with 3 or more clicks.</li>
+</ul>
+</li>
+</ul>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 15</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 15 頁：Improving on the Past: Enhanced Visual Prompting (PVS)</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>SAM 3 不僅開創了新的 PCS 任務，也顯著提升了 SAM 1 &amp; 2 的核心能力，即 <strong>Promptable Visual Segmentation (PVS)</strong>。</li>
+<li>在<strong>影片物件分割 (VOS)</strong> 任務上，SAM 3 在多個指標上超越了 SAM 2，尤其在具挑戰性的 <strong>MOSEv2</strong> 資料集上，J&amp;F 分數大幅提升了 6.5 分。</li>
+<li>在<strong>互動式圖片分割</strong>任務上，SAM 3 在經過 3 次以上的點擊修正後，其分割精確度 (mIoU) 超越了 SAM 2.1，展現了更強的互動理解能力。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+大家可能會想，有了這麼強大的「概念分割」(PCS) 能力，SAM 3 是不是就忘本了？完全沒有。事實上，SAM 3 不僅開創了新大陸，它也回頭把自己原本的看家本領，也就是從 SAM 1 和 SAM 2 繼承來的 <strong>Promptable Visual Segmentation (PVS)</strong>，練得更強了。這一頁，我們就來看看它在「舊任務」上的新高度。</p>
+<h5>① 首先，在影片領域：影片物件分割 (Video Object Segmentation, VOS)</h5>
+<p>這個任務很經典：在影片的第一幀給定一個物件的遮罩，模型需要把它一路追蹤下去。這非常考驗模型對動態、遮蔽的理解。</p>
+<p>我們在多個公開的 benchmark 上進行了測試，而 SAM 3 的表現非常出色。特別是在一個公認極具挑戰性的資料集 <strong>MOSEv2</strong> 上，它取得了驚人的進步。</p>
+<blockquote>
+<p>我們可以看到，相較於先前最強的模型，SAM 3 在 J&amp;F 這個關鍵指標上，直接從 53.8 分躍升到了 <strong>60.3</strong> 分，整整拉開了 <strong>6.5</strong> 分的差距！這證明 SAM 3 的追蹤能力和穩健性，都達到了新的水平。</p>
+</blockquote>
+<h5>② 其次，在互動式圖片分割方面</h5>
+<p>這就是大家最熟悉的 SAM 功能：用滑鼠點幾下，告訴模型哪裡沒分好，讓它修正。我們在一個包含 37 個不同資料集的龐大 benchmark 上進行了評測。</p>
+<p>結果顯示，當使用者提供更多次點擊來修正時，SAM 3 的理解力更勝一籌。具體來說：</p>
+<ul>
+<li>在經過 <strong>3 次或更多次</strong>的點擊後，SAM 3 的分割準確度 (<code>mIoU</code>) 就超越了 SAM 2.1。例如在 5 次點擊後，SAM 3 達到了 85.1 的 mIoU，優於 SAM 2.1 的 84.3。這代表它能更精準地理解使用者的意圖。</li>
+<li>當然，這也伴隨著一個權衡。為了達到更高的精度，SAM 3 的運算速度（FPS）會比前代稍慢一些，但換來的是更可靠的分割結果。</li>
+</ul>
+<p>總結來說，SAM 3 不僅是個開拓者，也是一個繼承者。它在視覺提示分割這個基礎任務上，無論是動態的影片還是靜態的圖片，都實現了全面的進化。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在公佈 MOSEv2 的 6.5 分提升時，可以稍作停頓，讓聽眾感受這個數字的份量。這是一個非常顯著的進步。</li>
+<li><strong>補充案例</strong>：如果時間允許，可以補充說明「互動式分割」的細節：SAM 3 在第一次點擊時與 SAM 2.1 表現相當，但隨著互動增加，優勢才顯現出來。這體現了它更強的「學習與修正」能力。</li>
+<li><strong>關鍵詞強調</strong>：請務必保留並強調這些英文術語 <code>Promptable Visual Segmentation (PVS)</code>、<code>Video Object Segmentation (VOS)</code>、<code>MOSEv2</code> 和 <code>mIoU</code>，這些是領域內的標準詞彙。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>這些核心分割能力的增強，不僅讓 SAM 3 在傳統任務上更出色，更為它解鎖了全新的應用場景。接下來我們將看到，當一個模型能如此精準地「分割萬物」時，它還能做些什麼？例如，舉一反三的「小樣本學習」和「物件計數」。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-16">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 16</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-16">
+                    <h1>Extending Capabilities: Few-Shot Adaptation and Counting</h1>
+<p>SAM 3 demonstrates strong transfer learning and extended abilities.</p>
+<ul>
+<li>
+<p><strong>Few-Shot Object Detection:</strong></p>
+<ul>
+<li>Evaluated on diverse, in-the-wild datasets (ODinW13, RF100-VL).</li>
+<li>Achieves <strong>state-of-the-art 10-shot performance</strong>, surpassing specialized detection models like gDino and in-context learning with Gemini.</li>
+</ul>
+</li>
+<li>
+<p><strong>Object Counting:</strong></p>
+<ul>
+<li>Evaluated on CountBench and PixMo-Count.</li>
+<li>Achieves excellent accuracy, outperforming several MLLMs (e.g., Gemini 2.5 Pro, Qwen2-VL-72B).</li>
+<li>A key advantage: SAM 3 provides not just the count, but also the segmentation masks for each counted object.</li>
+</ul>
+</li>
+</ul>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 16</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 16 頁：Extending Capabilities: Few-Shot Adaptation and Counting</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>SAM 3 不僅僅是個分割模型，它在<strong>遷移學習</strong>與<strong>擴展應用</strong>上展現了強大的潛力。</li>
+<li><strong>少樣本物件偵測 (Few-Shot Object Detection)</strong>：僅需 10 個範例，SAM 3 在新領域的物件偵測任務上就達到了業界頂尖（SOTA）水準，超越了 <code>gDino</code> 等專業模型。</li>
+<li><strong>物件計數 (Object Counting)</strong>：SAM 3 在計數準確度上優於多個大型多模態模型 (MLLM)，更關鍵的是，它能同時提供每個被計數物件的<strong>分割遮罩</strong>，而不只是一個數字。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>各位，到目前為止，我們已經看到了 SAM 3 在核心的「概念分割」任務上有多麼強大。但一個真正基礎的模型，它的價值不僅僅在於完成單一任務，更在於它能多快、多好地<strong>適應新挑戰</strong>。這一頁，我們就來看看 SAM 3 在兩個擴展能力上的驚人表現：少樣本適應和物件計數。</p>
+<h5>① 首先，是「少樣本物件偵測 (Few-Shot Object Detection)」</h5>
+<p>想像一下，你今天需要讓一個模型去辨識一個它從未見過的、非常專業的物件，比如某種特定的工業零件或稀有鳥類。傳統上，你需要數千張圖片來訓練它。但 SAM 3 改變了這個遊戲規則。</p>
+<p>我們在兩個極具挑戰性的「真實世界」資料集 <code>ODinW13</code> 和 <code>RF100-VL</code> 上進行了測試。結果顯示，在所謂的 <strong>&quot;10-shot performance&quot;</strong>——也就是只給模型看 10 個新物件的範例後——SAM 3 的表現就達到了業界的頂尖水準。</p>
+<blockquote>
+<p>它不僅超越了像 <code>gDino</code> 這樣的專業物件偵測模型，也勝過了 <code>Gemini</code> 模型在上下文學習中的表現。這證明了 SAM 3 具備極強的遷移學習能力，能以極低的成本快速部署到新的、垂直的應用領域。</p>
+</blockquote>
+<h5>② 接下來，我們來看「物件計數 (Object Counting)」</h5>
+<p>問一個模型「圖片中有幾隻羊？」聽起來很簡單。很多多模態大模型（MLLM）都能給出一個數字。但這裡的魔鬼藏在細節裡：你怎麼知道它數對了？它數的是哪些羊？</p>
+<p>我們在 <code>CountBench</code> 和 <code>PixMo-Count</code> 這兩個標準的計數評測集上，將 SAM 3 與 <code>Gemini 2.5 Pro</code>、<code>Qwen2-VL-72B</code> 等頂尖 MLLM 進行了比較。結果 SAM 3 的準確度名列前茅。</p>
+<p>但這還不是最關鍵的。SAM 3 最大的優勢在於：它不只回傳一個冰冷的數字，而是同時給出<strong>每一個被計數物件的分割遮罩</strong>。這意味著，它不僅告訴你「有 5 隻羊」，它還能精確地把這 5 隻羊分別圈出來給你看。這是一種<strong>可驗證、可解釋</strong>的計數能力，是目前絕大多數 MLLM 都無法提供的。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：講完「少樣本偵測」後可以稍作停頓，這個概念比較技術性，給聽眾一點時間消化「僅用 10 個範例就能達到 SOTA」這個驚人的成果。</li>
+<li><strong>關鍵詞強調</strong>：在講計數時，請務必加重「<strong>分割遮罩 (segmentation masks)</strong>」這個詞，這是 SAM 3 與其他模型最核心的區別。強調它從「回答問題」變成了「展示證據」。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>我們看到了 SAM 3 在學習新物件和計數方面的驚人潛力。但如果我們不只把它當作一個模型，而是把它變成一個可供呼叫的「視覺工具」，交給更大型的語言模型來指揮，又會發生什麼事呢？下一頁，我們將探討這種組合的可能性：SAM 3 Agent。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-17">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 17</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-17">
+                    <h1>The SAM 3 Agent: Combining with MLLMs for Complex Reasoning</h1>
+<p>To handle queries beyond simple noun phrases, we use SAM 3 as a tool within a larger agentic system.</p>
+<p><strong>How it Works:</strong></p>
+<ol>
+<li>An <strong>MLLM (e.g., Gemini, Llama) acts as the 'brain'</strong>.</li>
+<li>It receives a complex user query (e.g., &quot;the car door the owner is least likely to use&quot;).</li>
+<li>The MLLM breaks the problem down and proposes simple <strong>noun phrase queries</strong> to SAM 3.</li>
+<li>SAM 3 executes the query and returns masks.</li>
+<li>The MLLM analyzes the masks and iterates until the user's goal is met.</li>
+</ol>
+<p><strong>Performance:</strong> This <strong>SAM 3 Agent</strong> achieves new <strong>zero-shot SOTA</strong> results on reasoning segmentation benchmarks like <strong>ReasonSeg</strong> and <strong>OmniLabel</strong>.</p>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 17</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 17 頁：The SAM 3 Agent: Combining with MLLMs for Complex Reasoning</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>SAM 3 的能力可被擴展：透過作為一個「視覺工具」，讓多模態大型語言模型 (MLLM) 來指揮，以解決複雜的推理問題。</li>
+<li>這個組合被稱為「SAM 3 Agent」，其中 MLLM 扮演「大腦」，將複雜的人類查詢分解成 SAM 3 能理解的簡單名詞片語。</li>
+<li>此 Agent 架構在沒有針對性訓練的情況下，於 <code>ReasonSeg</code> 和 <code>OmniLabel</code> 等高難度推理分割基準測試中，達到了<strong>零樣本 (zero-shot) 的頂尖水平 (SOTA)</strong>。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+到目前為止，我們看到 SAM 3 能精準地處理像「黃色校車」這樣的具體概念。但現實世界的問題遠比這複雜。如果我問：「圖片中，車主最<strong>不可能</strong>從哪個車門上車？」這需要推理，而不僅僅是辨識。這，就是 <strong>SAM 3 Agent</strong> 發揮作用的地方。</p>
+<p>我們不把 SAM 3 當作一個孤立的模型，而是將它變成一個強大的<strong>視覺工具</strong>，由一個多模態大型語言模型 (MLLM) 來指揮，形成一個完整的代理系統 (Agentic System)。</p>
+<h5>① 運作模式：一個扮演「大腦」，一個扮演「眼睛」</h5>
+<p>這個系統的運作方式，就像一個團隊合作。</p>
+<ul>
+<li><strong>MLLM 擔任「大腦」</strong>：它可以是 Gemini、Llama 或 Qwen。當它收到一個複雜的查詢，例如：「找出圖中不靠電力或汽油的交通工具。」</li>
+<li><strong>SAM 3 擔任「眼睛」與「手」</strong>：負責執行具體的視覺任務。</li>
+</ul>
+<p>整個流程是一個「感知-行動循環 (perception-action loop)」。首先，MLLM 作為「規劃者 (planner)」，會把複雜問題拆解成一連串的簡單指令。例如，它會呼叫一個名為 <code>segment Phrase</code> 的工具，然後對 SAM 3 下指令：「分割出『腳踏車』」、「分割出『汽車』」、「分割出『電動滑板車』」。</p>
+<p>SAM 3 會回傳它找到的所有物體的遮罩 (masks)。接著，MLLM 會「審視」這些結果，判斷哪些符合「不靠電力或汽油」的邏輯，並迭代這個過程，直到它認為已經完美解答了使用者的問題。</p>
+<h5>② 處理真正複雜的推理</h5>
+<p>這個架構的威力在於，它能處理極其細膩和抽象的視覺推理。</p>
+<blockquote>
+<p>根據論文中的案例，SAM 3 Agent 能夠回答像「在這張圖片裡，什麼特徵顯示出這隻動物是雄性？」或「如果警察想識別這輛車，圖片的哪個部分會包含有用資訊？」這類需要背景知識和多步推理的問題。</p>
+</blockquote>
+<p>這意味著，我們從「這是什麼？」的層次，躍升到了「這意味著什麼？」的層次。MLLM 的常識推理能力，與 SAM 3 精準的視覺定位能力，兩者結合，釋放出了一加一大於二的強大潛力。</p>
+<h5>③ 驚人的效能：零樣本下的頂尖水準</h5>
+<p>最令人驚訝的是，這個 SAM 3 Agent 系統在完全<strong>沒有</strong>針對「推理分割 (Reasoning Segmentation)」或「指代表達式 (Referring Expression)」等任務進行任何訓練的情況下，直接達到了頂尖水平。</p>
+<ul>
+<li>在 <code>ReasonSeg</code> 和 <code>OmniLabel</code> 這兩個極具挑戰性的基準測試中，它的 <strong>zero-shot</strong> 表現超越了之前所有經過專門訓練的模型。</li>
+<li>論文也展示了，這個 Agent 可以搭配不同的 MLLM 大腦，例如 <code>Gemini 2.5 Pro</code>、<code>Llama4 Maverick</code> 和 <code>Qwen2.5-VL 72B</code>，都展現了強大的泛用性。這證明了 SAM 3 作為一個視覺工具的穩健性。</li>
+</ul>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：「大腦」與「眼睛」的比喻非常重要，講到這裡可以稍微停頓，讓聽眾吸收這個合作的概念。</li>
+<li><strong>補充案例</strong>：可以從論文 <code>Figure 25</code> 中挑選一兩個有趣的例子，比如「圖片中哪裡好笑又不合時宜？」或「這個人的婚姻狀況可能反映在哪個物體上？」，來加深聽眾印象。</li>
+<li><strong>關鍵詞強調</strong>：請務必加重「<strong>Agentic System</strong>」、「<strong>Zero-shot SOTA</strong>」、「<strong>Reasoning Segmentation</strong>」這幾個詞的語氣，它們是本頁的核心貢獻。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>這種 Agent 架構的強大表現，是建立在一個堅實的模型基礎之上。那麼，究竟是哪些關鍵的設計與資料，造就了 SAM 3 如此出色的性能？下一頁，我們將透過一系列的<strong>消融實驗 (Ablation Studies)</strong>，來深入剖析 SAM 3 成功的秘訣。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-18">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 18</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-18">
+                    <h1>Ablation Studies: What Makes SAM 3 Effective?</h1>
+<p>We conducted extensive ablations to validate our design choices.</p>
+<p><strong>Key Findings:</strong></p>
+<ul>
+<li>
+<p><strong>Presence Head:</strong> Decoupling recognition and localization boosts <code>cgF1</code> by <strong>+1.5 points</strong> by significantly improving image-level recognition (IL_MCC).</p>
+</li>
+<li>
+<p><strong>Hard Negatives:</strong> Training with adversarial negative phrases is crucial for classification, improving IL_MCC from <strong>0.44 to 0.68</strong>.</p>
+</li>
+<li>
+<p><strong>Training Data:</strong></p>
+<ul>
+<li>Our high-quality human-in-the-loop data (<strong>SA-Co/HQ</strong>) provides the biggest performance lift.</li>
+<li>Large-scale synthetic data (<strong>SA-Co/SYN</strong>) also provides significant gains over external datasets.</li>
+</ul>
+</li>
+</ul>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 18</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 18 頁：Ablation_Studies_What_Makes_SAM_3_Effective</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li>這是一系列實驗，旨在拆解 SAM 3 的成功要素，驗證哪些設計選擇最為關鍵。</li>
+<li><strong>Presence Head</strong>：這個創新的模組專門負責判斷「概念是否存在」，成功地將「識別」與「定位」解耦，顯著提升了 <code>cgF1</code> 分數。</li>
+<li><strong>Hard Negatives</strong>：訓練模型去分辨那些「看似存在卻不存在」的誤導性概念，對於提升分類能力至關重要，使 <code>IL_MCC</code> 指標從 0.44 大幅躍升至 0.68。</li>
+<li><strong>Training Data</strong>：數據品質決定了模型性能的上限。實驗證明，經過人工驗證的高品質數據 (<code>SA-Co/HQ</code>) 帶來的效益最大。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+一個成功的模型，往往不是單一的靈光乍現，而是一系列關鍵設計決策的結晶。那麼，究竟是哪些環節，讓 SAM 3 的性能產生了質的飛躍？我們的 ablation studies，也就是「消融實驗」，將為我們揭曉答案。</p>
+<h5>① 第一個關鍵：用 <code>Presence Head</code> 解耦識別與定位</h5>
+<p>首先，我們來談談一個核心的架構創新：<strong>Presence Head</strong>。</p>
+<p>過去的模型在處理一個物件時，常常會面臨一個兩難的困境：它既要辨識出這是「什麼」東西 (what)，又要同時定位出它在「哪裡」 (where)。辨識需要全域的上下文，而定位則是極其局部的任務，這兩者在本質上是有衝突的。</p>
+<p>為了解決這個問題，我們引入了一個學習而來的全域性標記，我們稱之為 <code>Presence Token</code>。</p>
+<blockquote>
+<p>它的唯一職責，就是預測使用者提示的概念（例如「貓」）是否存在於這張圖片中。</p>
+</blockquote>
+<p>一旦 <code>Presence Token</code> 確認「貓」在這裡，其他的物件查詢器（Object Queries）就可以專心解決定位問題，也就是「找出所有貓的位置」。這種分工合作的策略，讓 <code>cgF1</code> 分數提升了 <strong>+1.5</strong> 個百分點，尤其是在圖像級別的辨識能力 <code>IL_MCC</code> 上，帶來了顯著的改善。</p>
+<h5>② 第二個關鍵：用 <code>Hard Negatives</code> 教會模型「不要看錯」</h5>
+<p>接下來，是我們在數據策略上的一大突破：大量使用 <strong>Hard Negatives</strong> 進行訓練。</p>
+<p>什麼是 <code>Hard Negatives</code>？它們是「對抗性的負樣本」。簡單來說，就是那些<strong>圖片裡明明沒有，但模型卻很容易誤認為有</strong>的概念。例如，給模型一張有「橘貓」的圖片，一個 <code>Hard Negative</code> 可能就是「狐狸」。</p>
+<p>訓練模型去分辨這些極具迷惑性的負樣本，效果是驚人的。實驗數據顯示，加入 <code>Hard Negatives</code> 訓練後，模型的圖像級別分類能力指標 <code>IL_MCC</code>，從 <strong>0.44</strong> 一路飆升到 <strong>0.68</strong>！這意味著模型在判斷一個物件「存不存在」這件事上，變得更加精準與自信，大大減少了「幻覺」的產生。</p>
+<h5>③ 第三個關鍵：數據品質才是王道</h5>
+<p>最後，但也是最重要的，是訓練數據的品質。我們的實驗清晰地揭示了一個層次關係。</p>
+<ul>
+<li>單純使用外部現有的數據集 (<code>External Datasets</code>) 作為起點，性能有限。</li>
+<li>在此基礎上，加入我們大規模生成的<strong>合成數據 (<code>SA-Co/SYN</code>)</strong>，性能會獲得一次顯著的飛躍。</li>
+<li>然而，真正帶來最大性能提升的，是我們透過「人機協同」數據引擎產出的、經過嚴格人工校正的<strong>高品質數據 (<code>SA-Co/HQ</code>)</strong>。</li>
+</ul>
+<p>這證明了，儘管大規模合成數據很有用，但高品質、高信噪比的人工標註數據，依然是將模型性能推向極致的決定性因素。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在講到 <code>Hard Negatives</code> 將 <code>IL_MCC</code> 從 0.44 提升到 0.68 時，可以稍微停頓，加重語氣。這個數據對比非常有力，能讓聽眾感受到其重要性。</li>
+<li><strong>關鍵詞強調</strong>：本頁有三個核心術語，<code>Presence Head</code>、<code>Hard Negatives</code> 與 <code>SA-Co/HQ</code>。在講到它們時，請務必發音清晰並稍作強調。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>我們已經看到，高品質的「人工」數據是性能的保證。但這也引出了一個關鍵問題：我們能否在沒有昂貴人工標註的情況下，讓模型適應全新的領域？下一頁，我們將探討如何利用合成數據，實現驚人的「自動領域自適應」。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-19">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 19</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-19">
+                    <h1>Automatic Domain Adaptation with Synthetic Data</h1>
+<p><strong>Challenge:</strong> How to adapt SAM 3 to a new, specialized domain (e.g., &quot;Food&amp;Drink&quot;) without costly human annotation?</p>
+<p><strong>Solution:</strong> Use the data engine to generate <strong>domain-specific synthetic data</strong>.</p>
+<ul>
+<li>The SAM 3 teacher model and AI verifiers, even without being trained on the new domain, can generate a large-scale, high-quality synthetic dataset (SA-Co/SYN-Food).</li>
+</ul>
+<p><strong>Result:</strong></p>
+<ul>
+<li>Fine-tuning on this synthetic data shows a <strong>similar scaling behavior and performance</strong> as fine-tuning on expensive, human-annotated data (SA-Co/HQ-Food).</li>
+<li>This demonstrates a scalable path to improve performance on new data distributions with zero human annotation cost.</li>
+</ul>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 19</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 19 頁：Automatic Domain Adaptation with Synthetic Data</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>挑戰</strong>：將一個大型 AI 模型擴展到新的專業領域（如特定的食物或飲料），通常需要昂貴且耗時的人工標註。</li>
+<li><strong>解決方案</strong>：利用 SAM 3 自身的資料引擎，以 AI 教師（Teacher System）的角色，自動生成針對新領域的「合成訓練資料」(Synthetic Data)，完全無需人工介入。</li>
+<li><strong>驚人成果</strong>：實驗證明，使用這些 AI 生成的合成資料進行微調，其性能提升曲線與使用昂貴的人工標註資料幾乎完全相同，實現了零成本的領域適應。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+好，我們已經看到了 SAM 3 強大的能力，以及我們如何透過 AI 和人力協作來打造它。但這裡有一個更深層的問題：當我們想讓模型學會一個全新的、非常專業的領域時——比如說，辨識上百種不同的乳酪或特定品牌的運動鞋——難道我們每次都得重新投入大量的人力去標註資料嗎？那樣的成本太高了。這一頁，我們將展示一個非常聰明的解決方案。</p>
+<h5>① 挑戰：新領域的適應成本</h5>
+<p>首先，讓我們明確這個挑戰。正如投影片所說，要讓 SAM 3 適應一個像「Food&amp;Drink」這樣充滿細微差別的新領域，傳統方法需要人工標註成千上萬張新圖片。這是一個巨大的瓶頸，既昂貴又緩慢。</p>
+<h5>② 我們的解法：用 AI 教 AI</h5>
+<p>我們的解決方案是：讓系統自我進化。我們利用已經訓練好的 SAM 3 模型和 AI 驗證器，組成一個「AI 教師系統」。這個系統的任務，就是為「Food&amp;Drink」這個新領域，自動生成一個大規模、高品質的合成資料集，我們稱之為 <code>SA-Co/SYN-Food</code>。</p>
+<p>整個過程，從生成標籤到驗證品質，完全由 AI 自動完成，<strong>實現了零人工標註成本 (zero human annotation cost)</strong>。</p>
+<h5>③ 成果：合成資料 vs. 人工資料</h5>
+<p>那麼，用 AI 教出來的學生，表現如何呢？結果非常驚人。</p>
+<p>請大家看論文中的這張圖表 (Figure 8)。我們比較了兩種情況：一種是使用昂貴的<strong>人工標註資料</strong> (<code>SA-Co/HQ-Food</code>) 來微調模型，另一種是使用我們<strong>零成本的 AI 合成資料</strong> (<code>SA-Co/SYN-Food</code>)。</p>
+<p>各位可以看到，這兩條性能提升曲線幾乎是重疊的！這意味著，由 AI 自動生成的合成資料，其訓練效果幾乎和真人專家標註的資料一樣好。我們在論文中是這樣總結的：</p>
+<blockquote>
+<p>This points to a scalable way to improve performance on new data distributions.
+(這為提升模型在新資料分佈上的性能，指明了一條可規模化的道路。)</p>
+</blockquote>
+<p>這證明了我們的資料引擎不僅能สร้าง資料，更能「智慧地」為特定領域生成高品質的教學材料，讓模型能夠快速、低成本地掌握新知識。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在講到「零人工標註成本」時，請加重語氣並稍作停頓，這是本頁最關鍵的亮點之一。</li>
+<li><strong>視覺輔助</strong>：講到兩種資料 (<code>SA-Co/SYN-Food</code> vs. <code>SA-Co/HQ-Food</code>) 的比較時，可以伸手指向螢幕上圖表（如果有的話）或示意論文中的圖表，引導聽眾感受兩條曲線的相似性。</li>
+<li><strong>關鍵詞強調</strong>：「AI 教師系統 (Teacher System)」和「合成資料 (Synthetic Data)」是本頁的核心術語，請確保發音清晰。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>了解了 SAM 3 如何能自我進化、適應新領域後，我們來做個總結。下一頁，我們將回顧這趟旅程的核心貢獻，並坦誠地面對這個模型仍然存在的挑戰與局限。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-20">
+            <div class="slide">
+                <div class="slide-toolbar">
+                    <h2>Slide 20</h2>
+                    
+                </div>
+
+                
+                
+                <div class="slide-view-text rendered-content" id="text-view-20">
+                    <h1>Conclusion: Contributions and Limitations</h1>
+<p><strong>Principal Contributions:</strong></p>
+<ol>
+<li><strong>New Task &amp; Benchmark:</strong> Introduced the Promptable Concept Segmentation (PCS) task and the large-scale SA-Co benchmark for evaluation.</li>
+<li><strong>Novel Architecture:</strong> A unified model that decouples recognition, localization, and tracking to solve PCS while improving on PVS.</li>
+<li><strong>Scalable Data Engine:</strong> An efficient human-AI feedback loop for generating high-quality training data at scale.</li>
+</ol>
+<p><strong>Limitations:</strong></p>
+<ul>
+<li>Struggles to generalize to fine-grained, out-of-domain concepts without fine-tuning.</li>
+<li>Video inference cost scales linearly with the number of tracked objects.</li>
+<li>Does not natively support complex reasoning or referring expressions (requires MLLM agent).</li>
+</ul>
+
+                </div>
+                
+            </div>
+            <div class="notes">
+                <h2>Notes for Slide 20</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 20 頁：Conclusion_Contributions_and_Limitations</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>三大貢獻</strong>：定義了新的 PCS 任務與 SA-Co 基準；提出了創新的解耦架構；並打造了高效的 AI-人協作數據引擎。</li>
+<li><strong>主要限制</strong>：模型在未經微調的細粒度、跨領域概念上泛化能力有限；影片推論成本隨追蹤物件數量線性增長；原生不支持複雜的推理查詢，需依賴 MLLM 代理。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>(開場白)
+好的，各位，我們的分享即將進入尾聲。在這最後一頁，讓我們一同回顧 SAM 3 所帶來的核心貢獻，並坦誠地面對它目前的局限性，展望未來的可能性。</p>
+<h5>① 首先，是我們的三大核心貢獻。</h5>
+<p>第一，我們<strong>定義了一個全新的任務，並為它打造了專屬的競技場</strong>。過去的 SAM 模型專注於 <code>PVS</code> (Promptable Visual Segmentation)，也就是一次只處理一個視覺提示。但我們意識到，真正的智慧應用需要理解「概念」。因此，我們提出了 <code>PCS</code>，也就是 <strong>Promptable Concept Segmentation</strong> 的任務，讓模型能夠一次性找出並分割出圖像或影片中「所有」符合概念描述的物件。為了公平地衡量進展，我們建立了 <code>SA-Co</code> 這個大規模的基準測試集 (benchmark)，它的概念數量，比現有的 LVIS 資料集多了超過 <strong>50 倍</strong>，為這個領域的研究立下了新的里程碑。</p>
+<p>第二，我們設計了一套<strong>創新的模型架構</strong>。我們深知，在一個模型中，「辨識 (Recognition)」、「定位 (Localization)」和「追蹤 (Tracking)」這三項任務有時會互相衝突。為此，我們將它們巧妙地解耦。透過獨特的 <code>Presence Token</code> 設計，模型可以先判斷「概念是否存在」，再讓其他的查詢專心處理「物件在哪裡」。這種架構不僅成功解決了 PCS 任務，更反過來提升了 SAM 既有的 PVS 視覺提示分割能力。</p>
+<p>第三，我們建立了一套<strong>可規模化的數據引擎</strong>。要訓練如此強大的模型，數據的質與量缺一不可。我們沒有採用純人工或純自動的方式，而是打造了一個高效的「人機協作」 (<code>human-AI</code>) 回饋循環。AI 負責生成候選標註與進行初步驗證，而人類專家則專注於修正最困難、最模稜兩可的案例。這套系統讓我們的數據標註吞吐量<strong>翻了一倍</strong>，是我們能取得突破性成果的關鍵基礎設施。</p>
+<h5>② 當然，沒有任何模型是完美的。我們也必須誠實地面對 SAM 3 目前的幾個主要限制。</h5>
+<p>首先是<strong>對未知領域的泛化能力</strong>。對於訓練數據中未曾見過、非常細粒度的概念，例如特定的飛機型號或專業醫學術語，SAM 3 在零樣本 (zero-shot) 情況下的表現仍然有限。這需要透過針對性的微調，或是利用我們的數據引擎進行自動化的領域擴展來解決。</p>
+<p>其次是<strong>影片處理的成本</strong>。目前的架構在處理影片時，其推論成本會隨著追蹤物件的數量<strong>線性增長</strong>。舉個具體的例子，在一張 H200 GPU 上，處理大約 5 個同步物件可以接近即時效能，但若物件增多，例如在擁擠的場景中，成本就會顯著增加。</p>
+<p>最後，模型原生<strong>不支持複雜的語言推理</strong>。SAM 3 擅長理解「名詞短語」，但無法直接處理像是「車主最不可能從哪個車門上車？」這種需要多步推理的複雜查詢。為了解決這個問題，我們展示了將 SAM 3 作為一個「視覺工具」，整合到一個由多模態大語言模型 (MLLM) 驅動的 <strong>Agent</strong> 系統中，這條路徑展現了巨大的潛力。</p>
+<p>總結來說，我們相信 SAM 3 與 SA-Co 基準，將成為電腦視覺領域重要的里程碑，為未來的研究與應用鋪平道路。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在講完「三大核心貢獻」後，可以稍作停頓，讓聽眾吸收一下。接著用「當然，沒有任何模型是完美的…」來自然地過渡到「限制」部分。</li>
+<li><strong>關鍵詞強調</strong>：請務必加重 <code>Promptable Concept Segmentation (PCS)</code>、<code>SA-Co benchmark</code>、<code>解耦 (decouple)</code> 以及 <code>人機協作 (human-AI) </code> 這幾個詞的語氣，它們是 SAM 3 的核心創新。</li>
+<li><strong>態度口吻</strong>：在講「貢獻」時，應充滿自信與熱情；在講「限制」時，則應展現出坦誠、務實且對未來充滿期待的態度。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>(作為整場簡報的結尾) 謝謝各位的聆聽。我們對 SAM 3 所開啟的可能性感到非常興奮，也期待看到社群利用這些工具，創造出更多令人驚豔的應用。現在，我們很樂意回答大家的問題。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+</main>
+
+    <footer class="footer">
+        <div class="hr" style="margin: 40px 0 20px;"></div>
+        <div class="meta" style="justify-content: center; font-size: 14px;">
+            <span>Author: Chiakai Chang</span>
+            <a href="https://github.com/Chiakai-Chang/PPTPlaner" target="_blank">GitHub</a>
+            <a href="https://www.linkedin.com/in/chiakai-chang-htciu" target="_blank">LinkedIn</a>
+            <a href="mailto:lotifv@gmail.com">Email</a>
+        </div>
+        <p style="margin-top: 8px; font-size: 11px;">Copyright &copy; 2025 Chiakai Chang. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButtons = document.querySelectorAll('.toggle-view-btn');
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const pageId = this.dataset.pageId;
+                    const svgView = document.getElementById(`svg-view-${pageId}`);
+                    const textView = document.getElementById(`text-view-${pageId}`);
+
+                    if (svgView && textView) {
+                        const isSvgVisible = svgView.style.display !== 'none';
+                        if (isSvgVisible) {
+                            svgView.style.display = 'none';
+                            textView.style.display = 'block';
+                            this.textContent = '顯示圖像';
+                        } else {
+                            svgView.style.display = 'block';
+                            textView.style.display = 'none';
+                            this.textContent = '顯示文字';
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
