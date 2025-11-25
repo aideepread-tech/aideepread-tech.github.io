@@ -40,9 +40,10 @@
 aideepread-tech.github.io/
 ├── index.html          # 知識庫首頁 (Vue.js Frontend)
 ├── content/            # 內容存放區
-│   └── AI/             # 分類：人工智慧
-│       ├── .../guide.html  # 結構化簡報頁面
-│       └── .../slides/     # 原始 Markdown 投影片
+│   └── AI/             # 分類，如：人工智慧
+│       └── 每份文獻一個資料夾  # 如: 20251122_120117_Agentic_Context_Engineering
+│              ├── .../guide.html  # 結構化簡報頁面
+│              └── .../slides/     # 原始 Markdown 投影片
 └── README.md           # 專案說明文件
 ````
 
