@@ -44,3 +44,18 @@ aideepread-tech.github.io/
 │       ├── .../guide.html  # 結構化簡報頁面
 │       └── .../slides/     # 原始 Markdown 投影片
 └── README.md           # 專案說明文件
+````
+
+## 🔗 相關連結 (Links)
+
+  * **📺 YouTube 頻道**: [DeepRead AI](https://www.youtube.com/@DeepReadAI-CK) - 觀看搭配視覺化解說的影片摘要。
+  * **🌐 知識庫網站**: [DeepRead Tech Feed](https://aideepread-tech.github.io/) - 瀏覽完整的簡報、筆記與原始文獻來源。
+  * **📝 許願池(待更新)**: [提交您想了解的主題]() - 告訴我們您想看什麼，我們會優先製作。
+
+## ⚠️ 免責聲明 (Disclaimer)
+
+本專案內容皆基於公開來源情報（OSINT）與學術文獻整理。所有原始文獻的著作權歸原作者所有，本專案僅進行整理、摘要與翻譯以促進知識傳播。引用來源皆已在各別頁面中標註。
+
+-----
+
+*Created by DeepRead AI Team.*
