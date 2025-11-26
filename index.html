@@ -3,26 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeepRead AI | 您的 AI 知識幕僚</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <title>DeepRead AI | 深度閱讀與科技快訊</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* --- 設計系統 (Design System) --- */
+        /* --- 核心變數 --- */
         :root {
-            /* 品牌色：沈穩的深藍與智庫灰，搭配強調重點的琥珀色 */
-            --brand-primary: #0f172a; /* Slate 900 */
-            --brand-secondary: #334155; /* Slate 700 */
-            --accent-color: #2563eb; /* Royal Blue */
-            --highlight-color: #f59e0b; /* Amber 500 */
-            
             --bg-body: #f8fafc;
-            --bg-card: #ffffff;
             --text-main: #1e293b;
             --text-muted: #64748b;
-            --border-light: #e2e8f0;
-            
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --card-bg: #ffffff;
+            --accent: #2563eb; /* 科技藍 */
+            --accent-hover: #1d4ed8;
+            --tag-bg: #f1f5f9;
+            --radius: 16px;
         }
 
         body {
@@ -31,353 +24,345 @@
             color: var(--text-main);
             margin: 0;
             padding: 0;
-            line-height: 1.7;
+            line-height: 1.6;
         }
 
-        /* --- Header: 強調知識幕僚與理念 --- */
+        /* --- Header: 簡約大器 --- */
         header {
-            background: #ffffff;
-            border-bottom: 1px solid var(--border-light);
-            padding: 3rem 1.5rem;
+            background: #fff;
+            padding: 2.5rem 1.5rem;
             text-align: center;
+            border-bottom: 1px solid #e2e8f0;
         }
 
-        .brand-title {
-            font-size: 2.25rem;
+        .brand {
+            font-size: 2rem;
             font-weight: 800;
-            color: var(--brand-primary);
+            letter-spacing: -0.5px;
             margin: 0;
-            letter-spacing: -0.02em;
+            color: #0f172a;
         }
 
-        .brand-slogan {
-            font-family: 'Inter', sans-serif;
-            font-size: 1.1rem;
-            color: var(--accent-color);
-            font-weight: 600;
-            margin: 0.5rem 0 1.5rem 0;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .mission-box {
-            max-width: 700px;
-            margin: 0 auto;
+        .tagline {
             color: var(--text-muted);
+            margin-top: 0.5rem;
             font-size: 1rem;
             font-weight: 400;
         }
 
-        .mission-highlight {
-            color: var(--brand-secondary);
-            font-weight: 600;
-        }
-
-        .social-links {
-            margin-top: 1.5rem;
+        .social-nav {
+            margin-top: 1rem;
             display: flex;
             justify-content: center;
             gap: 15px;
         }
-
-        .social-btn {
-            display: inline-flex;
-            align-items: center;
-            padding: 6px 12px;
-            border-radius: 6px;
+        
+        .social-link {
             text-decoration: none;
-            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
             font-weight: 600;
-            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.2s;
         }
+        .social-link:hover { color: var(--accent); }
 
-        .social-btn:hover { opacity: 0.8; }
-        .btn-yt { background-color: #ef4444; color: white; }
-        .btn-gh { background-color: #24292e; color: white; }
-
-        /* --- 容器與導航 --- */
-        .container {
-            max-width: 850px;
-            margin: 0 auto;
-            padding: 2rem 1.5rem;
-            min-height: 70vh;
-        }
-
-        .nav-pills {
+        /* --- 導航切換 (Tabs) --- */
+        .tab-container {
             display: flex;
             justify-content: center;
-            background: #e2e8f0;
-            width: fit-content;
-            margin: 0 auto 2.5rem auto;
-            padding: 4px;
-            border-radius: 50px;
+            margin: 2rem 0;
+            gap: 10px;
         }
 
-        .nav-item {
-            padding: 10px 24px;
-            border-radius: 50px;
-            border: none;
+        .tab-btn {
             background: transparent;
+            border: 1px solid #cbd5e1;
             color: var(--text-muted);
-            font-size: 0.95rem;
-            font-weight: 600;
+            padding: 8px 24px;
+            border-radius: 50px;
             cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
             transition: all 0.3s ease;
         }
 
-        .nav-item.active {
-            background: #ffffff;
-            color: var(--brand-primary);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        .tab-btn.active {
+            background: #0f172a;
+            color: #fff;
+            border-color: #0f172a;
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2);
         }
 
-        /* --- 文章卡片: 結構化摘要風格 --- */
-        .article-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-light);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.2s ease;
+        /* --- 主容器 --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 40px 20px;
+        }
+
+        /* --- 網格佈局 (Grid System) --- */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        /* --- IG/YouTube 風格卡片 --- */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #f1f5f9;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.01);
+        }
+
+        /* 縮圖區域 */
+        .card-image-wrapper {
             position: relative;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            background: #e2e8f0;
             overflow: hidden;
         }
 
-        .article-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-hover);
-            border-color: #cbd5e1;
-        }
-
-        /* 左側強調線 */
-        .article-card::before {
-            content: '';
+        .card-image {
             position: absolute;
-            left: 0;
             top: 0;
-            bottom: 0;
-            width: 4px;
-            background-color: var(--accent-color);
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        .article-card:hover::before { opacity: 1; }
-
-        .meta-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            font-size: 0.85rem;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
         }
 
-        .meta-category {
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--accent-color);
-            font-weight: 700;
+        .card:hover .card-image {
+            transform: scale(1.05); /* 圖片微放大效果 */
         }
 
-        .meta-date {
-            color: #94a3b8;
-        }
-
-        .card-title {
-            margin: 0 0 1rem 0;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--brand-primary);
-            line-height: 1.3;
-        }
-
-        .tag-cloud {
-            margin-bottom: 1.25rem;
-        }
-
-        .tag-pill {
-            display: inline-block;
-            background: #f1f5f9;
-            color: var(--brand-secondary);
+        .card-category {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(0,0,0,0.75);
+            color: #fff;
             padding: 4px 10px;
             border-radius: 6px;
             font-size: 0.75rem;
-            margin-right: 6px;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+        }
+
+        /* 卡片內容 */
+        .card-body {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-date {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* 限制標題兩行 */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: var(--text-main);
+        }
+
+        .card-tags {
+            margin-bottom: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            color: var(--accent);
+            background: #eff6ff;
+            padding: 3px 8px;
+            border-radius: 4px;
             font-weight: 500;
         }
 
         .card-summary {
+            font-size: 0.95rem;
             color: var(--text-muted);
-            margin-bottom: 1.5rem;
-            font-size: 1rem;
-            line-height: 1.7;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex-grow: 1;
         }
 
-        .action-row {
-            display: flex;
-            gap: 12px;
+        /* 按鈕區 */
+        .card-footer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
             margin-top: auto;
-            padding-top: 1rem;
-            border-top: 1px solid #f1f5f9;
         }
 
-        .btn-action {
+        .btn {
             text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 6px;
+            padding: 10px;
+            border-radius: 8px;
             font-size: 0.9rem;
             font-weight: 600;
+            text-align: center;
             transition: background 0.2s;
             display: flex;
+            justify-content: center;
             align-items: center;
             gap: 6px;
         }
 
-        .btn-primary { background: var(--brand-primary); color: white; }
-        .btn-primary:hover { background: #334155; }
-        
-        .btn-secondary { background: #fff; border: 1px solid var(--border-light); color: var(--text-muted); }
-        .btn-secondary:hover { background: #f8fafc; color: var(--text-main); }
+        .btn-primary {
+            background-color: var(--text-main);
+            color: #fff;
+        }
+        .btn-primary:hover { background-color: #000; }
 
-        /* --- 許願池樣式 --- */
-        .wishlist-hero {
+        .btn-outline {
+            border: 1px solid #e2e8f0;
+            color: var(--text-main);
+            background: #fff;
+        }
+        .btn-outline:hover { background-color: #f8fafc; border-color: #cbd5e1; }
+
+
+        /* --- 許願池列表樣式 (保持清單易讀性) --- */
+        .wishlist-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .wishlist-cta {
             text-align: center;
-            padding: 2rem;
-            background: white;
-            border-radius: 12px;
-            border: 1px dashed var(--border-light);
-            margin-bottom: 2rem;
+            background: #fff;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            border: 1px dashed #cbd5e1;
         }
-        
-        .wish-cta-btn {
-            display: inline-block;
-            background-color: var(--highlight-color);
-            color: white;
-            padding: 10px 24px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            margin-top: 10px;
-            box-shadow: 0 2px 5px rgba(245, 158, 11, 0.3);
-            transition: transform 0.2s;
-        }
-        .wish-cta-btn:hover { transform: scale(1.05); }
 
-        .wish-list-container { display: flex; flex-direction: column; gap: 12px; }
-
-        .wish-row {
+        .wish-item {
             display: flex;
             align-items: center;
-            background: white;
-            padding: 16px 20px;
-            border-radius: 10px;
-            border: 1px solid var(--border-light);
-            transition: transform 0.2s;
+            background: #fff;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
-        
-        .wish-rank {
-            font-size: 1.1rem;
-            font-weight: 800;
-            width: 40px;
-            height: 40px;
+
+        .rank-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            color: #64748b;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
-            background: #f1f5f9;
-            color: #94a3b8;
-            margin-right: 16px;
+            font-weight: 800;
+            margin-right: 15px;
             flex-shrink: 0;
         }
-
-        .rank-top-1 { background: linear-gradient(135deg, #FFD700 0%, #FDB931 100%); color: #854d0e; box-shadow: 0 2px 6px rgba(253, 185, 49, 0.3); }
-        .rank-top-2 { background: linear-gradient(135deg, #E0E0E0 0%, #CFD8DC 100%); color: #475569; }
-        .rank-top-3 { background: linear-gradient(135deg, #e4a277 0%, #d97742 100%); color: #7c2d12; }
+        
+        /* 前三名顏色 */
+        .rank-1 { background: #fef3c7; color: #d97706; }
+        .rank-2 { background: #f1f5f9; color: #475569; }
+        .rank-3 { background: #ffedd5; color: #c2410c; }
 
         .wish-info { flex-grow: 1; }
-        .wish-topic { font-weight: 600; color: var(--text-main); margin-bottom: 2px; }
-        .wish-meta { font-size: 0.8rem; color: #94a3b8; }
-        
-        .wish-stat {
-            text-align: right;
-            min-width: 60px;
-        }
-        .vote-num { font-size: 1.2rem; font-weight: 700; color: var(--accent-color); }
-        .vote-txt { font-size: 0.75rem; color: var(--text-muted); }
+        .wish-title { font-weight: 600; margin-bottom: 2px; }
+        .vote-badge { background: #fee2e2; color: #ef4444; padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; }
 
         /* Loading */
-        .loader {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--accent-color);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-state { text-align: center; padding: 60px; color: var(--text-muted); }
 
         /* Footer */
         footer {
             text-align: center;
-            padding: 3rem 1rem;
-            color: var(--text-muted);
+            padding: 40px;
+            color: #94a3b8;
             font-size: 0.85rem;
-            border-top: 1px solid var(--border-light);
-            margin-top: 3rem;
-            background: white;
+            border-top: 1px solid #e2e8f0;
+            background: #fff;
+            margin-top: 40px;
         }
 
         @media (max-width: 600px) {
-            .brand-title { font-size: 1.75rem; }
-            .action-row { flex-direction: column; }
-            .btn-action { justify-content: center; width: 100%; box-sizing: border-box; }
+            .grid-layout { grid-template-columns: 1fr; } /* 手機單欄 */
+            .card-title { font-size: 1.25rem; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1 class="brand-title">DeepRead AI</h1>
-        <p class="brand-slogan">Unlocking Knowledge, One Slide at a Time.</p>
-        <div class="mission-box">
-            <p>我們致力於解決資訊過載與工具焦慮。<br>透過<span class="mission-highlight">時間套利 (Time Arbitrage)</span>，將數小時的晦澀文獻，轉化為您 10 分鐘可吸收的結構化決策情報。</p>
-        </div>
-        <div class="social-links">
-            <a href="https://www.youtube.com/@DeepReadAI-CK" target="_blank" class="social-btn btn-yt">▶ YouTube 頻道</a>
-            <a href="https://aideepread-tech.github.io/" class="social-btn btn-gh">🌐 GitHub Repo</a>
+        <h1 class="brand">DeepRead AI</h1>
+        <p class="tagline">Unlocking Knowledge, One Slide at a Time.</p>
+        <div class="social-nav">
+            <a href="https://www.youtube.com/@DeepReadAI-CK" target="_blank" class="social-link">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                YouTube
+            </a>
+            <a href="https://aideepread-tech.github.io/" class="social-link">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                GitHub
+            </a>
         </div>
     </header>
 
     <div class="container">
-        <div class="nav-pills">
-            <button class="nav-item active" onclick="switchTab('articles')">⚡ 科技快訊 & 深度分析</button>
-            <button class="nav-item" onclick="switchTab('wishlist')">💡 許願排行榜</button>
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="switchTab('articles')">📰 最新情報</button>
+            <button class="tab-btn" onclick="switchTab('wishlist')">✨ 許願排行榜</button>
         </div>
 
-        <div id="loading" style="text-align:center; padding: 40px;">
-            <div class="loader"></div>
-            <p style="color:var(--text-muted)">正在同步最新情報...</p>
+        <div id="loading" class="loading-state">
+            <p>正在載入知識庫...</p>
         </div>
 
-        <div id="articles-view" style="display: none;">
+        <div id="articles-view" class="grid-layout" style="display: none;">
             </div>
 
-        <div id="wishlist-view" style="display: none;">
-            <div class="wishlist-hero">
-                <h3>想看什麼主題？由您決定</h3>
-                <p style="color:var(--text-muted); margin-bottom:15px;">我們將優先製作票數最高的主題。這是一個由社群驅動的學習路徑。</p>
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeFvIvo8i4tpglifjcnXn_R_cFy4csRPZEOzNxf07QFmguvmA/viewform?usp=sharing" target="_blank" class="wish-cta-btn">📝 提交許願 / 投票</a>
+        <div id="wishlist-view" class="wishlist-wrapper" style="display: none;">
+            <div class="wishlist-cta">
+                <h3>想看什麼主題？</h3>
+                <p style="color:var(--text-muted)">您的投票決定我們的下一個研究主題。</p>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeFvIvo8i4tpglifjcnXn_R_cFy4csRPZEOzNxf07QFmguvmA/viewform?usp=sharing" target="_blank" class="btn btn-primary" style="display:inline-flex; width:auto; padding: 10px 30px;">前往許願池 →</a>
             </div>
-            
-            <div id="wishlist-container" class="wish-list-container">
+            <div id="wishlist-container">
                 </div>
         </div>
     </div>
 
     <footer>
-        <p><b>DeepRead AI Team</b></p>
-        <p>Turning complexity into clarity.<br>Data sourced from public OSINT & Academic Papers.</p>
+        <p>&copy; 2025 DeepRead AI Team. <br> Powered by Google Sheets & GitHub Pages.</p>
     </footer>
 
     <script>
@@ -397,11 +382,11 @@
                 renderArticles(data.content);
                 renderWishlist(data.wishlist);
 
-                document.getElementById('articles-view').style.display = 'block';
+                document.getElementById('articles-view').style.display = 'grid'; // 注意: 這裡設為 grid
 
             } catch (error) {
                 console.error('Error:', error);
-                document.getElementById('loading').innerHTML = '<p>暫時無法取得資料，請稍後再試。</p>';
+                document.getElementById('loading').innerHTML = '<p>資料讀取失敗</p>';
             }
         }
 
@@ -410,96 +395,94 @@
             articles.sort((a, b) => new Date(b.date) - new Date(a.date));
 
             if(articles.length === 0) {
-                container.innerHTML = '<p class="text-center">目前尚無分析報告。</p>';
+                container.innerHTML = '<p>No content available.</p>';
                 return;
             }
 
             const html = articles.map(article => {
-                // 標籤處理
-                const tagsHtml = article.tags 
-                    ? article.tags.split(' ').map(tag => `<span class="tag-pill">${tag.replace('#','')}</span>`).join('')
-                    : '';
+                // 產生 YouTube 縮圖連結
+                const thumbUrl = article.youtube_id 
+                    ? `https://img.youtube.com/vi/${article.youtube_id}/maxresdefault.jpg`
+                    : 'https://via.placeholder.com/640x360?text=DeepRead+AI'; // 備用圖
                 
-                // 日期
+                // 標籤只顯示前兩個，保持版面整潔
+                const tagsRaw = article.tags ? article.tags.split(' ') : [];
+                const tagsHtml = tagsRaw.slice(0, 3).map(tag => 
+                    `<span class="tag">${tag.replace('#','')}</span>`
+                ).join('');
+
                 const dateStr = new Date(article.date).toLocaleDateString('zh-TW');
 
                 return `
-                    <article class="article-card">
-                        <div class="meta-header">
-                            <span class="meta-category">${article.category || 'Deep Analysis'}</span>
-                            <span class="meta-date">${dateStr}</span>
+                    <article class="card">
+                        <div class="card-image-wrapper">
+                            <img src="${thumbUrl}" alt="${article.title}" class="card-image">
+                            <div class="card-category">${article.category}</div>
                         </div>
-                        <h2 class="card-title">${article.title}</h2>
-                        <div class="tag-cloud">${tagsHtml}</div>
-                        <p class="card-summary">${article.summary}</p>
-                        
-                        <div class="action-row">
-                            <a href="${article.guide_link}" target="_blank" class="btn-action btn-primary">
-                                📖 閱讀結構化報告
-                            </a>
-                            ${article.youtube_id ? `
-                                <a href="https://youtu.be/${article.youtube_id}" target="_blank" class="btn-action btn-secondary">
-                                    📺 觀看解說影片
+                        <div class="card-body">
+                            <div class="card-date">${dateStr}</div>
+                            <h3 class="card-title">${article.title}</h3>
+                            <div class="card-tags">${tagsHtml}</div>
+                            <p class="card-summary">${article.summary}</p>
+                            
+                            <div class="card-footer">
+                                <a href="${article.guide_link}" target="_blank" class="btn btn-primary">
+                                    📖 閱讀報告
+                                </a>
+                                ${article.youtube_id ? `
+                                <a href="https://youtu.be/${article.youtube_id}" target="_blank" class="btn btn-outline">
+                                    📺 影片
                                 </a>` : ''}
-                             ${article.source_url ? `
-                                <a href="${article.source_url}" target="_blank" class="btn-action btn-secondary" style="font-size:0.8rem">
-                                    🔗 原始文獻
-                                </a>` : ''}
+                            </div>
                         </div>
                     </article>
                 `;
             }).join('');
+
             container.innerHTML = html;
         }
 
         function renderWishlist(wishlist) {
             const container = document.getElementById('wishlist-container');
-            if (!wishlist || wishlist.length === 0) {
-                container.innerHTML = '<p style="text-align:center">目前清單為空。</p>';
-                return;
-            }
+            if (!wishlist) return;
 
             wishlist.sort((a, b) => b['票數'] - a['票數']);
 
             const html = wishlist.map((item, index) => {
                 const rank = index + 1;
-                let rankClass = '';
-                if(rank === 1) rankClass = 'rank-top-1';
-                else if(rank === 2) rankClass = 'rank-top-2';
-                else if(rank === 3) rankClass = 'rank-top-3';
-
+                const rankClass = rank <= 3 ? `rank-${rank}` : '';
+                
                 return `
-                    <div class="wish-row">
-                        <div class="wish-rank ${rankClass}">${rank}</div>
+                    <div class="wish-item">
+                        <div class="rank-circle ${rankClass}">${rank}</div>
                         <div class="wish-info">
-                            <div class="wish-topic">${item['主題']}</div>
-                            <div class="wish-meta">社群期待值</div>
+                            <div class="wish-title">${item['主題']}</div>
                         </div>
-                        <div class="wish-stat">
-                            <div class="vote-num">${item['票數']}</div>
-                            <div class="vote-txt">votes</div>
+                        <div class="wish-votes">
+                            <span class="vote-badge">${item['票數']} 票</span>
                         </div>
                     </div>
                 `;
             }).join('');
+            
             container.innerHTML = html;
         }
 
         function switchTab(tabName) {
             const articlesView = document.getElementById('articles-view');
             const wishlistView = document.getElementById('wishlist-view');
-            const btns = document.querySelectorAll('.nav-item');
+            const btns = document.querySelectorAll('.tab-btn');
 
-            btns.forEach(btn => btn.classList.remove('active'));
+            btns.forEach(b => b.classList.remove('active'));
 
             if (tabName === 'articles') {
                 btns[0].classList.add('active');
-                articlesView.style.display = 'block';
+                articlesView.style.display = 'grid'; // Grid 佈局
                 wishlistView.style.display = 'none';
             } else {
                 btns[1].classList.add('active');
                 articlesView.style.display = 'none';
-                wishlistView.style.display = 'block';
+                wishlistView.style.display = 'block'; // Block 佈局
             }
         }
     </script>
