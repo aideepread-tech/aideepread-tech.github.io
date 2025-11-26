@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeepRead AI | 您的 AI 知識幕僚</title>
+    <title>DeepRead AI | 您的專屬 AI 知識幕僚</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -86,37 +86,39 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <a href="https://github.com/aideepread-tech" target="_blank" class="hidden md:flex text-gray-300 hover:text-white transition">
+                <a href="https://github.com/aideepread-tech" target="_blank" class="hidden md:flex text-gray-300 hover:text-white transition" title="GitHub Repository">
                     <i class="ph ph-github-logo text-2xl"></i>
                 </a>
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSeFvIvo8i4tpglifjcnXn_R_cFy4csRPZEOzNxf07QFmguvmA/viewform?usp=sharing" target="_blank" 
                    class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium transition flex items-center gap-2 shadow-md border border-blue-400/30">
                     <i class="ph ph-magic-wand"></i> 
-                    <span class="hidden sm:inline">許願主題</span>
+                    <span class="hidden sm:inline">許願 / 投稿</span>
                 </a>
             </div>
         </div>
     </header>
 
-    <div class="bg-white border-b border-gray-200 pt-8 pb-6 shadow-sm">
+    <div class="bg-white border-b border-gray-200 pt-10 pb-8 shadow-sm">
         <div class="container mx-auto px-4 text-center">
-            <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800 mb-2 tracking-tight">
+            <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800 mb-3 tracking-tight">
                 Unlocking Knowledge, One Slide at a Time.
             </h2>
-            <p class="text-slate-500 text-sm md:text-base max-w-2xl mx-auto">
-                您的 AI 知識幕僚：將複雜的技術文獻與 ArXiv 論文，轉化為結構化的簡報與可行動的洞察。
+            <p class="text-slate-600 text-sm md:text-base max-w-3xl mx-auto leading-relaxed">
+                <span class="font-bold text-slate-800">您的專屬 AI 知識幕僚</span>。<br class="md:hidden">
+                我們運用 AI 對抗資訊焦慮，過濾雜訊、萃取精華，<br class="hidden md:block">
+                將龐雜的情報轉化為<span class="text-blue-600 font-bold">結構化簡報</span>與<span class="text-blue-600 font-bold">可行動洞察</span>，精準回應社群許願。
             </p>
 
-            <div class="flex justify-center mt-6 gap-2">
+            <div class="flex justify-center mt-8 gap-3">
                 <button @click="currentView = 'articles'" 
-                    :class="currentView === 'articles' ? 'bg-slate-800 text-white shadow-md' : 'bg-white text-slate-500 hover:bg-slate-50 border border-gray-200'"
-                    class="px-6 py-2 rounded-full text-sm font-semibold transition-all duration-200 flex items-center gap-2">
-                    <i class="ph ph-article"></i> 知識庫
+                    :class="currentView === 'articles' ? 'bg-slate-800 text-white ring-2 ring-slate-800 ring-offset-2' : 'bg-white text-slate-500 hover:bg-slate-50 border border-gray-200'"
+                    class="px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-200 flex items-center gap-2 shadow-sm">
+                    <i class="ph ph-article-medium"></i> 知識庫
                 </button>
                 <button @click="currentView = 'wishlist'" 
-                    :class="currentView === 'wishlist' ? 'bg-slate-800 text-white shadow-md' : 'bg-white text-slate-500 hover:bg-slate-50 border border-gray-200'"
-                    class="px-6 py-2 rounded-full text-sm font-semibold transition-all duration-200 flex items-center gap-2">
-                    <i class="ph ph-sparkle"></i> 許願排行榜
+                    :class="currentView === 'wishlist' ? 'bg-slate-800 text-white ring-2 ring-slate-800 ring-offset-2' : 'bg-white text-slate-500 hover:bg-slate-50 border border-gray-200'"
+                    class="px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-200 flex items-center gap-2 shadow-sm">
+                    <i class="ph ph-shooting-star"></i> 許願排行榜
                 </button>
             </div>
         </div>
@@ -193,8 +195,10 @@
                             {{ item.summary }}
                         </p>
 
-                        <a :href="item.guide_link" target="_blank" class="w-full bg-slate-900 hover:bg-blue-600 text-white py-2.5 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 shadow-sm">
-                            <i class="ph ph-presentation-chart"></i> 閱讀完整簡報
+                        <a :href="item.guide_link" target="_blank" class="w-full bg-slate-900 hover:bg-blue-600 text-white py-2.5 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 shadow-sm group/btn">
+                            <i class="ph ph-presentation-chart text-lg"></i> 
+                            閱讀完整簡報
+                            <i class="ph ph-arrow-right opacity-0 -ml-2 group-hover/btn:opacity-100 group-hover/btn:ml-0 transition-all"></i>
                         </a>
                     </div>
 
@@ -217,11 +221,13 @@
         </div>
 
         <div v-else-if="currentView === 'wishlist'" class="max-w-3xl mx-auto">
-            <div class="bg-blue-50 border border-blue-100 rounded-xl p-6 text-center mb-8">
-                <h3 class="text-blue-900 font-bold text-lg mb-1">社群許願池</h3>
-                <p class="text-blue-600/80 text-sm mb-4">票數最高的主題，我們將優先製作深度解析簡報！</p>
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeFvIvo8i4tpglifjcnXn_R_cFy4csRPZEOzNxf07QFmguvmA/viewform?usp=sharing" target="_blank" class="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition shadow">
-                    <i class="ph ph-plus-circle"></i> 提交新主題
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-8 text-center mb-8">
+                <h3 class="text-blue-900 font-bold text-xl mb-2">社群許願池</h3>
+                <p class="text-slate-600 text-sm mb-6 max-w-lg mx-auto">
+                    我們的內容製作方向由您決定。票數最高的主題，我們將優先啟動研究並製作深度解析簡報！
+                </p>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeFvIvo8i4tpglifjcnXn_R_cFy4csRPZEOzNxf07QFmguvmA/viewform?usp=sharing" target="_blank" class="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-700 transition shadow-md hover:-translate-y-0.5">
+                    <i class="ph ph-plus-circle text-lg"></i> 提交新主題 / 參與投票
                 </a>
             </div>
 
@@ -232,18 +238,18 @@
                     </div>
                     
                     <div class="flex-grow">
-                        <h4 class="font-bold text-slate-800">{{ item['主題'] }}</h4>
-                        <div class="flex items-center gap-2 mt-1">
-                            <span class="text-xs text-slate-400 bg-slate-50 px-2 py-0.5 rounded">期待指數</span>
-                            <div class="h-1.5 w-24 bg-slate-100 rounded-full overflow-hidden">
+                        <h4 class="font-bold text-slate-800 text-lg">{{ item['主題'] }}</h4>
+                        <div class="flex items-center gap-3 mt-1.5">
+                            <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full font-medium">社群期待值</span>
+                            <div class="h-2 w-32 bg-slate-100 rounded-full overflow-hidden">
                                 <div class="h-full bg-blue-500 rounded-full" :style="{ width: Math.min(item['票數'] * 10, 100) + '%' }"></div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="text-right min-w-[60px]">
+                    <div class="text-right min-w-[70px] bg-slate-50 p-2 rounded-lg">
                         <span class="block text-xl font-bold text-blue-600">{{ item['票數'] }}</span>
-                        <span class="text-[10px] text-slate-400 uppercase font-medium">Votes</span>
+                        <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Votes</span>
                     </div>
                 </div>
             </div>
@@ -251,16 +257,21 @@
 
     </main>
 
-    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
+    <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
         <div class="container mx-auto px-4 text-center">
-            <p class="text-sm text-slate-500 font-medium">
-                &copy; 2025 DeepRead AI. <span class="hidden sm:inline">Data sourced from OSINT & Academic Papers.</span>
+            <p class="text-sm text-slate-500 font-medium mb-2">
+                &copy; <span id="currentYear"></span> DeepRead AI. 
             </p>
-            <div class="flex justify-center gap-6 mt-4">
-                <a href="https://github.com/aideepread-tech" target="_blank" class="text-slate-400 hover:text-slate-800 transition">
+            <p class="text-xs text-slate-400">
+                Empowering Knowledge with AI. <br class="sm:hidden">
+                運用 AI 賦能知識獲取，消除資訊焦慮，連結社群智慧。
+            </p>
+
+            <div class="flex justify-center gap-6 mt-6">
+                <a href="https://github.com/aideepread-tech" target="_blank" class="text-slate-400 hover:text-slate-800 transition" aria-label="Github">
                     <i class="ph ph-github-logo text-2xl"></i>
                 </a>
-                <a href="https://www.youtube.com/@DeepReadAI-CK" target="_blank" class="text-slate-400 hover:text-red-600 transition">
+                <a href="https://www.youtube.com/@DeepReadAI-CK" target="_blank" class="text-slate-400 hover:text-red-600 transition" aria-label="YouTube">
                     <i class="ph ph-youtube-logo text-2xl"></i>
                 </a>
             </div>
@@ -270,6 +281,9 @@
 </div>
 
 <script>
+    // 1. 自動設定年份
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+
     const { createApp } = Vue;
     const API_URL = 'https://script.google.com/macros/s/AKfycbzT4i3PGhMn1YRzwRUrvxrMnha2PSbQaLcStfQeG3fzcxkb0eZig1NW4QxU8Zk23wLCqg/exec'; 
 
@@ -277,7 +291,7 @@
         data() {
             return {
                 loading: true,
-                currentView: 'articles', // 'articles' or 'wishlist'
+                currentView: 'articles', // 控制頁面顯示: 'articles' 或 'wishlist'
                 contentList: [],
                 wishlist: [],
                 searchQuery: '',
@@ -298,7 +312,7 @@
                     return matchSearch && matchCat;
                 });
             },
-            // 許願清單排序
+            // 許願清單排序 (票數高到低)
             sortedWishlist() {
                 return this.wishlist.sort((a, b) => b['票數'] - a['票數']);
             }
@@ -306,7 +320,6 @@
         methods: {
             parseTags(tagString) {
                 if (!tagString) return [];
-                // 處理 #Tag 或 comma separated
                 return tagString.replace(/#/g, '').split(/[ ,]+/)
                     .map(t => t.trim())
                     .filter(t => t.length > 0);
@@ -317,7 +330,6 @@
                 return d.toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' });
             },
             getCategoryClass(category) {
-                // 將 "系列整理" 映射到 "深度專題" 的樣式
                 if (category === '深度專題' || category === '系列整理') 
                     return 'bg-indigo-50 text-indigo-700 border-indigo-200';
                 if (category === '科技快訊') 
@@ -335,14 +347,13 @@
             fetch(API_URL)
                 .then(res => res.json())
                 .then(data => {
-                    // 處理資料結構
                     this.contentList = data.content || [];
                     this.wishlist = data.wishlist || [];
                     
-                    // 日期排序
+                    // 日期排序 (新的在前)
                     this.contentList.sort((a, b) => new Date(b.date) - new Date(a.date));
                     
-                    // 如果有需要，可以在這裡把 "系列整理" 的資料 category 改名為 "深度專題" 以符合前端顯示
+                    // 自動將 "系列整理" 轉為 "深度專題"
                     this.contentList.forEach(item => {
                         if(item.category === '系列整理') item.category = '深度專題';
                     });
