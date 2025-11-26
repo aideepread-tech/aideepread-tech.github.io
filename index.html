@@ -1,224 +1,507 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeepRead AI | 深度閱讀與科技快訊知識庫</title>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-
+    <title>DeepRead AI | 您的 AI 知識幕僚</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; }
-        .line-clamp-3 {
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
+        /* --- 設計系統 (Design System) --- */
+        :root {
+            /* 品牌色：沈穩的深藍與智庫灰，搭配強調重點的琥珀色 */
+            --brand-primary: #0f172a; /* Slate 900 */
+            --brand-secondary: #334155; /* Slate 700 */
+            --accent-color: #2563eb; /* Royal Blue */
+            --highlight-color: #f59e0b; /* Amber 500 */
+            
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-light: #e2e8f0;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.7;
+        }
+
+        /* --- Header: 強調知識幕僚與理念 --- */
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid var(--border-light);
+            padding: 3rem 1.5rem;
+            text-align: center;
+        }
+
+        .brand-title {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--brand-primary);
+            margin: 0;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-slogan {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            font-weight: 600;
+            margin: 0.5rem 0 1.5rem 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .mission-box {
+            max-width: 700px;
+            margin: 0 auto;
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .mission-highlight {
+            color: var(--brand-secondary);
+            font-weight: 600;
+        }
+
+        .social-links {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .social-btn:hover { opacity: 0.8; }
+        .btn-yt { background-color: #ef4444; color: white; }
+        .btn-gh { background-color: #24292e; color: white; }
+
+        /* --- 容器與導航 --- */
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            min-height: 70vh;
+        }
+
+        .nav-pills {
+            display: flex;
+            justify-content: center;
+            background: #e2e8f0;
+            width: fit-content;
+            margin: 0 auto 2.5rem auto;
+            padding: 4px;
+            border-radius: 50px;
+        }
+
+        .nav-item {
+            padding: 10px 24px;
+            border-radius: 50px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active {
+            background: #ffffff;
+            color: var(--brand-primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* --- 文章卡片: 結構化摘要風格 --- */
+        .article-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+            position: relative;
             overflow: hidden;
         }
-        /* 自定義漸層背景 */
-        .gradient-header {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+
+        .article-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+            border-color: #cbd5e1;
+        }
+
+        /* 左側強調線 */
+        .article-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: var(--accent-color);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .article-card:hover::before { opacity: 1; }
+
+        .meta-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .meta-category {
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+
+        .meta-date {
+            color: #94a3b8;
+        }
+
+        .card-title {
+            margin: 0 0 1rem 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--brand-primary);
+            line-height: 1.3;
+        }
+
+        .tag-cloud {
+            margin-bottom: 1.25rem;
+        }
+
+        .tag-pill {
+            display: inline-block;
+            background: #f1f5f9;
+            color: var(--brand-secondary);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            margin-right: 6px;
+            font-weight: 500;
+        }
+
+        .card-summary {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 12px;
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .btn-action {
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary { background: var(--brand-primary); color: white; }
+        .btn-primary:hover { background: #334155; }
+        
+        .btn-secondary { background: #fff; border: 1px solid var(--border-light); color: var(--text-muted); }
+        .btn-secondary:hover { background: #f8fafc; color: var(--text-main); }
+
+        /* --- 許願池樣式 --- */
+        .wishlist-hero {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            border: 1px dashed var(--border-light);
+            margin-bottom: 2rem;
+        }
+        
+        .wish-cta-btn {
+            display: inline-block;
+            background-color: var(--highlight-color);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 10px;
+            box-shadow: 0 2px 5px rgba(245, 158, 11, 0.3);
+            transition: transform 0.2s;
+        }
+        .wish-cta-btn:hover { transform: scale(1.05); }
+
+        .wish-list-container { display: flex; flex-direction: column; gap: 12px; }
+
+        .wish-row {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 16px 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border-light);
+            transition: transform 0.2s;
+        }
+        
+        .wish-rank {
+            font-size: 1.1rem;
+            font-weight: 800;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f1f5f9;
+            color: #94a3b8;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+        .rank-top-1 { background: linear-gradient(135deg, #FFD700 0%, #FDB931 100%); color: #854d0e; box-shadow: 0 2px 6px rgba(253, 185, 49, 0.3); }
+        .rank-top-2 { background: linear-gradient(135deg, #E0E0E0 0%, #CFD8DC 100%); color: #475569; }
+        .rank-top-3 { background: linear-gradient(135deg, #e4a277 0%, #d97742 100%); color: #7c2d12; }
+
+        .wish-info { flex-grow: 1; }
+        .wish-topic { font-weight: 600; color: var(--text-main); margin-bottom: 2px; }
+        .wish-meta { font-size: 0.8rem; color: #94a3b8; }
+        
+        .wish-stat {
+            text-align: right;
+            min-width: 60px;
+        }
+        .vote-num { font-size: 1.2rem; font-weight: 700; color: var(--accent-color); }
+        .vote-txt { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* Loading */
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--accent-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-light);
+            margin-top: 3rem;
+            background: white;
+        }
+
+        @media (max-width: 600px) {
+            .brand-title { font-size: 1.75rem; }
+            .action-row { flex-direction: column; }
+            .btn-action { justify-content: center; width: 100%; box-sizing: border-box; }
         }
     </style>
 </head>
 <body>
 
-<div id="app" class="min-h-screen pb-10 flex flex-col">
-
-    <header class="gradient-header text-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-4 h-16 flex items-center justify-between">
-            <h1 class="text-xl font-bold flex items-center gap-2 tracking-wide">
-                <i class="ph ph-brain text-blue-400 text-2xl"></i>
-                DeepRead AI
-            </h1>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeFvIvo8i4tpglifjcnXn_R_cFy4csRPZEOzNxf07QFmguvmA/viewform?usp=sharing&ouid=109922389232594363985" target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-full text-sm font-medium transition flex items-center gap-1 shadow">
-                <i class="ph ph-paper-plane-tilt"></i> 許願/投稿
-            </a>
+    <header>
+        <h1 class="brand-title">DeepRead AI</h1>
+        <p class="brand-slogan">Unlocking Knowledge, One Slide at a Time.</p>
+        <div class="mission-box">
+            <p>我們致力於解決資訊過載與工具焦慮。<br>透過<span class="mission-highlight">時間套利 (Time Arbitrage)</span>，將數小時的晦澀文獻，轉化為您 10 分鐘可吸收的結構化決策情報。</p>
+        </div>
+        <div class="social-links">
+            <a href="https://www.youtube.com/@DeepReadAI-CK" target="_blank" class="social-btn btn-yt">▶ YouTube 頻道</a>
+            <a href="https://aideepread-tech.github.io/" class="social-btn btn-gh">🌐 GitHub Repo</a>
         </div>
     </header>
 
-    <div class="bg-white border-b border-gray-200 py-8">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Unlocking Knowledge, One Slide at a Time.</h2>
-            <p class="text-gray-500 text-sm md:text-base">您的 AI 知識幕僚：將複雜的技術文獻，轉化為結構化的簡報與可行動的洞察。</p>
+    <div class="container">
+        <div class="nav-pills">
+            <button class="nav-item active" onclick="switchTab('articles')">⚡ 科技快訊 & 深度分析</button>
+            <button class="nav-item" onclick="switchTab('wishlist')">💡 許願排行榜</button>
         </div>
-    </div>
 
-    <div class="container mx-auto px-4 mt-8 mb-6">
-        <div class="flex flex-col md:flex-row gap-4 justify-between items-center bg-white p-2 rounded-xl shadow-sm border border-gray-100">
-            <div class="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-hide p-2">
-                <button @click="filterCategory = ''" :class="filterCategory === '' ? 'bg-gray-800 text-white shadow-md' : 'text-gray-600 hover:bg-gray-100'" class="px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition">全部</button>
-                <button @click="filterCategory = '科技快訊'" :class="filterCategory === '科技快訊' ? 'bg-amber-600 text-white shadow-md' : 'text-gray-600 hover:bg-amber-50'" class="px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition">科技快訊</button>
-                <button @click="filterCategory = '深度分析'" :class="filterCategory === '深度分析' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-600 hover:bg-blue-50'" class="px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition">深度分析</button>
+        <div id="loading" style="text-align:center; padding: 40px;">
+            <div class="loader"></div>
+            <p style="color:var(--text-muted)">正在同步最新情報...</p>
+        </div>
+
+        <div id="articles-view" style="display: none;">
             </div>
-            <div class="relative w-full md:w-72 p-2">
-                <i class="ph ph-magnifying-glass absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                <input v-model="searchQuery" type="text" placeholder="搜尋主題、關鍵字..." class="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition">
+
+        <div id="wishlist-view" style="display: none;">
+            <div class="wishlist-hero">
+                <h3>想看什麼主題？由您決定</h3>
+                <p style="color:var(--text-muted); margin-bottom:15px;">我們將優先製作票數最高的主題。這是一個由社群驅動的學習路徑。</p>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeFvIvo8i4tpglifjcnXn_R_cFy4csRPZEOzNxf07QFmguvmA/viewform?usp=sharing" target="_blank" class="wish-cta-btn">📝 提交許願 / 投票</a>
             </div>
-        </div>
-    </div>
-
-    <main class="container mx-auto px-4 flex-grow">
-        <div v-if="loading" class="text-center py-20 text-gray-500">
-            <i class="ph ph-spinner animate-spin text-4xl text-blue-500"></i>
-            <p class="mt-4 text-sm font-medium">正在載入知識庫...</p>
-        </div>
-
-        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             
-            <article v-for="item in filteredContent" :key="item.id" class="bg-white rounded-2xl shadow-sm hover:shadow-xl transition duration-300 overflow-hidden border border-gray-100 flex flex-col group">
-                
-                <div class="relative w-full aspect-video bg-gray-100 group-hover:opacity-95 transition">
-                    <iframe v-if="item.youtube_id"
-                        :src="`https://www.youtube.com/embed/${item.youtube_id}`" 
-                        title="Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
-                        class="w-full h-full absolute top-0 left-0"
-                    ></iframe>
-                    
-                    <a v-else :href="item.guide_link" target="_blank" class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900 text-white cursor-pointer relative overflow-hidden">
-                        <div class="absolute inset-0 bg-blue-600 opacity-0 group-hover:opacity-10 transition duration-500"></div>
-                        <div class="text-center p-6">
-                            <i class="ph ph-files text-4xl mb-2 text-gray-400 group-hover:text-white transition"></i>
-                            <h3 class="font-bold text-lg line-clamp-2 px-2">{{ item.title }}</h3>
-                            <span class="text-xs text-gray-400 mt-2 block border border-gray-600 rounded-full px-3 py-1 inline-block">點擊閱讀簡報</span>
-                        </div>
-                    </a>
+            <div id="wishlist-container" class="wish-list-container">
                 </div>
-
-                <div class="p-6 flex-grow flex flex-col">
-                    
-                    <div class="flex items-center justify-between mb-3">
-                        <span :class="getCategoryClass(item.category)" class="text-xs px-2.5 py-1 rounded-md font-bold tracking-wide">
-                            {{ item.category }}
-                        </span>
-                        <span class="text-gray-400 text-xs flex items-center gap-1">
-                            <i class="ph ph-calendar-blank"></i> {{ formatDate(item.date) }}
-                        </span>
-                    </div>
-
-                    <h3 class="text-xl font-bold text-gray-800 mb-2 leading-snug group-hover:text-blue-600 transition">
-                        <a :href="item.guide_link" target="_blank">{{ item.title }}</a>
-                    </h3>
-
-                    <div class="flex flex-wrap gap-2 mb-4" v-if="item.tags">
-                        <span v-for="tag in parseTags(item.tags)" :key="tag" class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full border border-gray-200">
-                            {{ tag }}
-                        </span>
-                    </div>
-
-                    <p class="text-gray-600 text-sm line-clamp-3 mb-6 leading-relaxed flex-grow">
-                        {{ item.summary }}
-                    </p>
-
-                    <a :href="item.guide_link" target="_blank" class="inline-flex items-center justify-center w-full bg-gray-900 text-white py-3 rounded-xl text-sm font-medium hover:bg-blue-600 transition gap-2 shadow-sm group-hover:shadow-md">
-                        <i class="ph ph-presentation-chart text-lg"></i>
-                        閱讀完整簡報 & 筆記
-                    </a>
-                </div>
-
-                <div class="bg-gray-50 px-6 py-3 border-t border-gray-100 text-xs flex items-start gap-2">
-                    <i class="ph ph-book-bookmark text-blue-500 mt-0.5 flex-shrink-0"></i>
-                    <div class="flex flex-col min-w-0">
-                        <span class="text-gray-400 font-medium mb-0.5">Source:</span>
-                        <a v-if="item.source_url" :href="item.source_url" target="_blank" class="text-gray-600 font-medium hover:text-blue-600 hover:underline transition truncate block" :title="item.source_title">
-                            {{ item.source_title }} <i class="ph ph-arrow-square-out inline-block ml-0.5"></i>
-                        </a>
-                        <span v-else class="text-gray-500 truncate">{{ item.source_title }}</span>
-                    </div>
-                </div>
-
-            </article>
-
         </div>
-        
-        <div v-if="!loading && filteredContent.length === 0" class="text-center py-20">
-            <div class="bg-gray-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                <i class="ph ph-magnifying-glass text-3xl text-gray-400"></i>
-            </div>
-            <h3 class="text-gray-800 font-medium">找不到相關內容</h3>
-            <p class="text-gray-500 text-sm mt-1">試試調整搜尋關鍵字或分類。</p>
-        </div>
-    </main>
+    </div>
 
-    <footer class="mt-12 bg-white border-t border-gray-200 py-8">
-        <div class="container mx-auto px-4 text-center">
-            <p class="text-sm text-gray-500 mb-2">
-                &copy; 2025 DeepRead AI. All rights reserved.
-            </p>
-            <div class="flex justify-center gap-4 text-gray-400 text-lg">
-                <a href="https://github.com/aideepread-tech" target="_blank" class="hover:text-gray-800 transition"><i class="ph ph-github-logo"></i></a>
-                <a href="https://www.youtube.com/@DeepReadAI-CK" target="_blank" class="hover:text-red-600 transition"><i class="ph ph-youtube-logo"></i></a>
-            </div>
-        </div>
+    <footer>
+        <p><b>DeepRead AI Team</b></p>
+        <p>Turning complexity into clarity.<br>Data sourced from public OSINT & Academic Papers.</p>
     </footer>
 
-</div>
+    <script>
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzT4i3PGhMn1YRzwRUrvxrMnha2PSbQaLcStfQeG3fzcxkb0eZig1NW4QxU8Zk23wLCqg/exec';
 
-<script>
-    const { createApp } = Vue;
-    // 使用您提供的 GAS URL
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzT4i3PGhMn1YRzwRUrvxrMnha2PSbQaLcStfQeG3fzcxkb0eZig1NW4QxU8Zk23wLCqg/exec'; 
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchData();
+        });
 
-    createApp({
-        data() {
-            return {
-                loading: true,
-                contentList: [],
-                searchQuery: '',
-                filterCategory: ''
+        async function fetchData() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+
+                document.getElementById('loading').style.display = 'none';
+                
+                renderArticles(data.content);
+                renderWishlist(data.wishlist);
+
+                document.getElementById('articles-view').style.display = 'block';
+
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').innerHTML = '<p>暫時無法取得資料，請稍後再試。</p>';
             }
-        },
-        computed: {
-            filteredContent() {
-                return this.contentList.filter(item => {
-                    const q = this.searchQuery.toLowerCase();
-                    const matchSearch = (
-                        item.title.toLowerCase().includes(q) || 
-                        item.summary.toLowerCase().includes(q) ||
-                        (item.tags && item.tags.toLowerCase().includes(q))
-                    );
-                    const matchCat = this.filterCategory ? item.category === this.filterCategory : true;
-                    return matchSearch && matchCat;
-                });
-            }
-        },
-        methods: {
-            // 新增：解析 Tag 字串轉為陣列
-            parseTags(tagString) {
-                if (!tagString) return [];
-                return tagString.split(',')
-                    .map(t => t.trim())
-                    .filter(t => t.length > 0);
-            },
-            formatDate(dateStr) {
-                if (!dateStr) return '';
-                const d = new Date(dateStr);
-                return d.toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' });
-            },
-            getCategoryClass(category) {
-                if (category === '深度分析') return 'bg-blue-100 text-blue-700';
-                if (category === '科技快訊') return 'bg-amber-100 text-amber-700';
-                return 'bg-gray-100 text-gray-700';
-            }
-        },
-        mounted() {
-            fetch(API_URL)
-                .then(res => res.json())
-                .then(data => {
-                    const list = data.content || data; 
-                    this.contentList = list;
-                    this.contentList.sort((a, b) => new Date(b.date) - new Date(a.date));
-                    this.loading = false;
-                })
-                .catch(err => {
-                    console.error('API Error:', err);
-                    this.loading = false;
-                });
         }
-    }).mount('#app');
-</script>
 
+        function renderArticles(articles) {
+            const container = document.getElementById('articles-view');
+            articles.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if(articles.length === 0) {
+                container.innerHTML = '<p class="text-center">目前尚無分析報告。</p>';
+                return;
+            }
+
+            const html = articles.map(article => {
+                // 標籤處理
+                const tagsHtml = article.tags 
+                    ? article.tags.split(' ').map(tag => `<span class="tag-pill">${tag.replace('#','')}</span>`).join('')
+                    : '';
+                
+                // 日期
+                const dateStr = new Date(article.date).toLocaleDateString('zh-TW');
+
+                return `
+                    <article class="article-card">
+                        <div class="meta-header">
+                            <span class="meta-category">${article.category || 'Deep Analysis'}</span>
+                            <span class="meta-date">${dateStr}</span>
+                        </div>
+                        <h2 class="card-title">${article.title}</h2>
+                        <div class="tag-cloud">${tagsHtml}</div>
+                        <p class="card-summary">${article.summary}</p>
+                        
+                        <div class="action-row">
+                            <a href="${article.guide_link}" target="_blank" class="btn-action btn-primary">
+                                📖 閱讀結構化報告
+                            </a>
+                            ${article.youtube_id ? `
+                                <a href="https://youtu.be/${article.youtube_id}" target="_blank" class="btn-action btn-secondary">
+                                    📺 觀看解說影片
+                                </a>` : ''}
+                             ${article.source_url ? `
+                                <a href="${article.source_url}" target="_blank" class="btn-action btn-secondary" style="font-size:0.8rem">
+                                    🔗 原始文獻
+                                </a>` : ''}
+                        </div>
+                    </article>
+                `;
+            }).join('');
+            container.innerHTML = html;
+        }
+
+        function renderWishlist(wishlist) {
+            const container = document.getElementById('wishlist-container');
+            if (!wishlist || wishlist.length === 0) {
+                container.innerHTML = '<p style="text-align:center">目前清單為空。</p>';
+                return;
+            }
+
+            wishlist.sort((a, b) => b['票數'] - a['票數']);
+
+            const html = wishlist.map((item, index) => {
+                const rank = index + 1;
+                let rankClass = '';
+                if(rank === 1) rankClass = 'rank-top-1';
+                else if(rank === 2) rankClass = 'rank-top-2';
+                else if(rank === 3) rankClass = 'rank-top-3';
+
+                return `
+                    <div class="wish-row">
+                        <div class="wish-rank ${rankClass}">${rank}</div>
+                        <div class="wish-info">
+                            <div class="wish-topic">${item['主題']}</div>
+                            <div class="wish-meta">社群期待值</div>
+                        </div>
+                        <div class="wish-stat">
+                            <div class="vote-num">${item['票數']}</div>
+                            <div class="vote-txt">votes</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            container.innerHTML = html;
+        }
+
+        function switchTab(tabName) {
+            const articlesView = document.getElementById('articles-view');
+            const wishlistView = document.getElementById('wishlist-view');
+            const btns = document.querySelectorAll('.nav-item');
+
+            btns.forEach(btn => btn.classList.remove('active'));
+
+            if (tabName === 'articles') {
+                btns[0].classList.add('active');
+                articlesView.style.display = 'block';
+                wishlistView.style.display = 'none';
+            } else {
+                btns[1].classList.add('active');
+                articlesView.style.display = 'none';
+                wishlistView.style.display = 'block';
+            }
+        }
+    </script>
 </body>
 </html>
