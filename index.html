@@ -1,408 +1,361 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeepRead AI | 深度閱讀與科技快訊</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>DeepRead AI | 您的 AI 知識幕僚</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
     <style>
-        /* --- 核心變數 --- */
-        :root {
-            --bg-body: #f8fafc;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --card-bg: #ffffff;
-            --accent: #2563eb;
-            --radius: 12px;
+        body { 
+            font-family: 'Inter', 'Noto Sans TC', sans-serif; 
+            background-color: #f8fafc; 
+            color: #1e293b;
         }
+        
+        /* 自定義捲軸 */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        body {
-            font-family: 'Inter', 'Noto Sans TC', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }
-
-        /* --- Header --- */
-        header {
-            background: #fff;
-            padding: 2rem 1rem;
-            text-align: center;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .brand {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #0f172a;
-            margin: 0;
-        }
-
-        .tagline {
-            color: var(--text-muted);
-            margin-top: 0.5rem;
-            font-size: 0.95rem;
-        }
-
-        /* --- Tab 切換 --- */
-        .tab-container {
-            display: flex;
-            justify-content: center;
-            margin: 2rem 0;
-            gap: 12px;
-        }
-
-        .tab-btn {
-            background: #fff;
-            border: 1px solid #cbd5e1;
-            color: var(--text-muted);
-            padding: 8px 20px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .tab-btn.active {
-            background: #0f172a;
-            color: #fff;
-            border-color: #0f172a;
-        }
-
-        /* --- 主容器 --- */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px 60px 20px;
-        }
-
-        /* --- Grid 佈局 --- */
-        .grid-layout {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); /* 卡片稍微寬一點 */
-            gap: 30px;
-        }
-
-        /* --- 卡片設計 --- */
-        .card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
+        /* 文字截斷 */
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
             overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            border: 1px solid #f1f5f9;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.2s;
+        }
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        /* 深色智庫漸層背景 */
+        .hero-gradient {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 背景裝飾紋路 */
+        .hero-pattern {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(#ffffff 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.05;
+            pointer-events: none;
         }
 
-        /* 影片容器：保持 16:9 */
-        .video-wrapper {
+        /* 排行榜前三名樣式 */
+        .rank-badge-1 { background: linear-gradient(135deg, #FFD700, #FDB931); color: #fff; box-shadow: 0 2px 4px rgba(253, 185, 49, 0.3); border:none; }
+        .rank-badge-2 { background: linear-gradient(135deg, #E0E0E0, #BDBDBD); color: #fff; border:none; }
+        .rank-badge-3 { background: linear-gradient(135deg, #e4a277, #d97742); color: #fff; border:none; }
+        
+        /* 影片容器 16:9 */
+        .aspect-video-wrapper {
             position: relative;
             padding-bottom: 56.25%; /* 16:9 */
             height: 0;
             background: #000;
         }
-
-        .video-wrapper iframe {
+        .aspect-video-wrapper iframe {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .card-body {
-            padding: 20px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* 頂部資訊列 (日期 + 分類) */
-        .card-meta-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .category-badge {
-            background: #e0f2fe;
-            color: #0369a1;
-            font-size: 0.75rem;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 6px;
-        }
-
-        .card-date {
-            font-size: 0.8rem;
-            color: #94a3b8;
-        }
-
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin: 0 0 12px 0;
-            line-height: 1.4;
-            color: var(--text-main);
-        }
-
-        .card-tags {
-            margin-bottom: 15px;
-        }
-
-        .tag {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            background: #f1f5f9;
-            padding: 2px 8px;
-            border-radius: 4px;
-            margin-right: 5px;
-            display: inline-block;
-        }
-
-        .card-summary {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            flex-grow: 1;
-        }
-
-        .btn-read {
-            display: block;
-            background: #0f172a;
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-        
-        .btn-read:hover {
-            background: #334155;
-        }
-
-        /* --- 許願排行榜 --- */
-        .wishlist-wrapper { max-width: 800px; margin: 0 auto; }
-        
-        .wishlist-header {
-            text-align: center;
-            margin-bottom: 30px;
-            background: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px dashed #cbd5e1;
-        }
-
-        .wish-item {
-            display: flex;
-            align-items: center;
-            background: #fff;
-            padding: 15px 20px;
-            margin-bottom: 15px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .rank {
-            width: 30px; 
-            height: 30px; 
-            background: #f1f5f9; 
-            border-radius: 50%;
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            font-weight: bold;
-            color: #64748b;
-            margin-right: 15px;
-            flex-shrink: 0;
-        }
-        
-        /* 前三名顏色 */
-        .rank-1 { background: #fef3c7; color: #b45309; }
-        .rank-2 { background: #e5e7eb; color: #374151; }
-        .rank-3 { background: #ffedd5; color: #c2410c; }
-
-        .wish-content { flex-grow: 1; font-weight: 500; }
-        .vote-count { font-weight: 700; color: #ef4444; }
-
-        /* RWD */
-        @media (max-width: 600px) {
-            .grid-layout { grid-template-columns: 1fr; }
+            top: 0; left: 0; width: 100%; height: 100%;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1 class="brand">DeepRead AI</h1>
-        <p class="tagline">Unlocking Knowledge, One Slide at a Time.</p>
+<div id="app" class="flex flex-col min-h-screen">
+
+    <header class="hero-gradient text-white shadow-lg sticky top-0 z-50">
+        <div class="hero-pattern"></div>
+        <div class="container mx-auto px-4 h-16 flex items-center justify-between relative z-10">
+            <div class="flex items-center gap-3 cursor-pointer" @click="currentView = 'articles'">
+                <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center shadow-lg">
+                    <i class="ph ph-brain text-white text-xl"></i>
+                </div>
+                <h1 class="text-xl font-bold tracking-tight">DeepRead AI</h1>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <a href="https://github.com/aideepread-tech" target="_blank" class="hidden md:flex text-gray-300 hover:text-white transition">
+                    <i class="ph ph-github-logo text-2xl"></i>
+                </a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeFvIvo8i4tpglifjcnXn_R_cFy4csRPZEOzNxf07QFmguvmA/viewform?usp=sharing" target="_blank" 
+                   class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium transition flex items-center gap-2 shadow-md border border-blue-400/30">
+                    <i class="ph ph-magic-wand"></i> 
+                    <span class="hidden sm:inline">許願主題</span>
+                </a>
+            </div>
+        </div>
     </header>
 
-    <div class="container">
-        <div class="tab-container">
-            <button class="tab-btn active" onclick="switchTab('articles')">文章與影片</button>
-            <button class="tab-btn" onclick="switchTab('wishlist')">許願排行榜</button>
-        </div>
+    <div class="bg-white border-b border-gray-200 pt-8 pb-6 shadow-sm">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-2xl md:text-3xl font-extrabold text-slate-800 mb-2 tracking-tight">
+                Unlocking Knowledge, One Slide at a Time.
+            </h2>
+            <p class="text-slate-500 text-sm md:text-base max-w-2xl mx-auto">
+                您的 AI 知識幕僚：將複雜的技術文獻與 ArXiv 論文，轉化為結構化的簡報與可行動的洞察。
+            </p>
 
-        <div id="loading" style="text-align:center; padding:50px; color:#64748b;">
-            載入資料中...
-        </div>
-
-        <div id="articles-view" class="grid-layout" style="display: none;">
+            <div class="flex justify-center mt-6 gap-2">
+                <button @click="currentView = 'articles'" 
+                    :class="currentView === 'articles' ? 'bg-slate-800 text-white shadow-md' : 'bg-white text-slate-500 hover:bg-slate-50 border border-gray-200'"
+                    class="px-6 py-2 rounded-full text-sm font-semibold transition-all duration-200 flex items-center gap-2">
+                    <i class="ph ph-article"></i> 知識庫
+                </button>
+                <button @click="currentView = 'wishlist'" 
+                    :class="currentView === 'wishlist' ? 'bg-slate-800 text-white shadow-md' : 'bg-white text-slate-500 hover:bg-slate-50 border border-gray-200'"
+                    class="px-6 py-2 rounded-full text-sm font-semibold transition-all duration-200 flex items-center gap-2">
+                    <i class="ph ph-sparkle"></i> 許願排行榜
+                </button>
             </div>
-
-        <div id="wishlist-view" class="wishlist-wrapper" style="display: none;">
-            <div class="wishlist-header">
-                <h3>想看什麼新技術解析？</h3>
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeFvIvo8i4tpglifjcnXn_R_cFy4csRPZEOzNxf07QFmguvmA/viewform?usp=sharing" target="_blank" style="display:inline-block; margin-top:10px; color:#2563eb; font-weight:600; text-decoration:none;">前往許願池投票 →</a>
-            </div>
-            <div id="wishlist-container">
-                </div>
         </div>
     </div>
 
-    <footer>
-        <p style="color:#94a3b8; font-size:0.8rem; text-align:center;">&copy; 2025 DeepRead AI. Powered by Google Sheets.</p>
+    <main class="container mx-auto px-4 py-8 flex-grow">
+        
+        <div v-if="loading" class="text-center py-20 text-slate-400">
+            <i class="ph ph-spinner-gap animate-spin text-4xl text-blue-600 mb-4"></i>
+            <p class="text-sm font-medium">正在同步最新情報...</p>
+        </div>
+
+        <div v-else-if="currentView === 'articles'">
+            
+            <div class="flex flex-col md:flex-row gap-4 justify-between items-center mb-8">
+                <div class="flex gap-2 overflow-x-auto w-full md:w-auto pb-1 scrollbar-hide">
+                    <button @click="filterCategory = ''" 
+                        :class="filterCategory === '' ? 'text-blue-700 bg-blue-50 border-blue-200' : 'text-slate-500 hover:bg-slate-50 border-transparent'"
+                        class="px-4 py-1.5 rounded-lg text-sm font-bold border transition whitespace-nowrap">
+                        全部
+                    </button>
+                    <button @click="filterCategory = '科技快訊'" 
+                        :class="filterCategory === '科技快訊' ? 'text-amber-700 bg-amber-50 border-amber-200' : 'text-slate-500 hover:bg-slate-50 border-transparent'"
+                        class="px-4 py-1.5 rounded-lg text-sm font-bold border transition whitespace-nowrap flex items-center gap-1">
+                        <i class="ph ph-lightning"></i> 科技快訊
+                    </button>
+                    <button @click="filterCategory = '深度專題'" 
+                        :class="filterCategory === '深度專題' ? 'text-indigo-700 bg-indigo-50 border-indigo-200' : 'text-slate-500 hover:bg-slate-50 border-transparent'"
+                        class="px-4 py-1.5 rounded-lg text-sm font-bold border transition whitespace-nowrap flex items-center gap-1">
+                        <i class="ph ph-book-open-text"></i> 深度專題
+                    </button>
+                </div>
+
+                <div class="relative w-full md:w-64 group">
+                    <i class="ph ph-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition"></i>
+                    <input v-model="searchQuery" type="text" placeholder="搜尋關鍵字..." 
+                           class="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm transition shadow-sm">
+                </div>
+            </div>
+
+            <div v-if="filteredContent.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <article v-for="item in filteredContent" :key="item.id" class="bg-white rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-200 flex flex-col overflow-hidden group">
+                    
+                    <div class="aspect-video-wrapper w-full bg-slate-900 group-hover:opacity-95 transition">
+                        <iframe v-if="item.youtube_id"
+                            :src="`https://www.youtube.com/embed/${item.youtube_id}`" 
+                            title="YouTube video" frameborder="0" loading="lazy"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+                        </iframe>
+                        <div v-else class="absolute inset-0 flex items-center justify-center text-slate-500">
+                            <span class="text-xs">無影片資源</span>
+                        </div>
+                    </div>
+
+                    <div class="p-5 flex-grow flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <span :class="getCategoryClass(item.category)" class="text-[10px] px-2 py-0.5 rounded border font-bold tracking-wider uppercase">
+                                {{ item.category }}
+                            </span>
+                            <span class="text-slate-400 text-xs font-medium">{{ formatDate(item.date) }}</span>
+                        </div>
+
+                        <h3 class="text-lg font-bold text-slate-800 mb-2 leading-snug line-clamp-2 group-hover:text-blue-600 transition">
+                            <a :href="item.guide_link" target="_blank">{{ item.title }}</a>
+                        </h3>
+
+                        <div class="flex flex-wrap gap-1.5 mb-3" v-if="item.tags">
+                            <span v-for="(tag, idx) in parseTags(item.tags).slice(0,3)" :key="idx" class="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded font-medium">
+                                {{ tag }}
+                            </span>
+                        </div>
+
+                        <p class="text-slate-600 text-sm line-clamp-3 mb-4 leading-relaxed flex-grow">
+                            {{ item.summary }}
+                        </p>
+
+                        <a :href="item.guide_link" target="_blank" class="w-full bg-slate-900 hover:bg-blue-600 text-white py-2.5 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 shadow-sm">
+                            <i class="ph ph-presentation-chart"></i> 閱讀完整簡報
+                        </a>
+                    </div>
+
+                    <div class="bg-slate-50 px-5 py-3 border-t border-slate-100 flex items-center gap-2 text-xs">
+                        <i class="ph ph-link text-slate-400"></i>
+                        <span class="text-slate-500 font-medium whitespace-nowrap">來源:</span>
+                        <a v-if="item.source_url" :href="item.source_url" target="_blank" class="text-blue-600 font-medium hover:underline truncate block flex-1" :title="item.source_title">
+                            {{ item.source_title }}
+                        </a>
+                        <span v-else class="text-slate-400 italic truncate flex-1">未提供來源</span>
+                    </div>
+                </article>
+            </div>
+
+            <div v-else class="text-center py-16 bg-white rounded-xl border border-dashed border-slate-200">
+                <i class="ph ph-ghost text-4xl text-slate-300 mb-2"></i>
+                <h3 class="text-slate-600 font-medium">找不到相關文章</h3>
+                <p class="text-slate-400 text-xs">試試看切換分類或搜尋其他關鍵字</p>
+            </div>
+        </div>
+
+        <div v-else-if="currentView === 'wishlist'" class="max-w-3xl mx-auto">
+            <div class="bg-blue-50 border border-blue-100 rounded-xl p-6 text-center mb-8">
+                <h3 class="text-blue-900 font-bold text-lg mb-1">社群許願池</h3>
+                <p class="text-blue-600/80 text-sm mb-4">票數最高的主題，我們將優先製作深度解析簡報！</p>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeFvIvo8i4tpglifjcnXn_R_cFy4csRPZEOzNxf07QFmguvmA/viewform?usp=sharing" target="_blank" class="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition shadow">
+                    <i class="ph ph-plus-circle"></i> 提交新主題
+                </a>
+            </div>
+
+            <div class="space-y-3">
+                <div v-for="(item, index) in sortedWishlist" :key="index" class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center gap-4 transition hover:shadow-md hover:border-blue-200">
+                    <div :class="getRankClass(index)" class="w-10 h-10 rounded-full bg-slate-100 text-slate-500 font-bold flex items-center justify-center flex-shrink-0 border border-slate-200">
+                        {{ index + 1 }}
+                    </div>
+                    
+                    <div class="flex-grow">
+                        <h4 class="font-bold text-slate-800">{{ item['主題'] }}</h4>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-xs text-slate-400 bg-slate-50 px-2 py-0.5 rounded">期待指數</span>
+                            <div class="h-1.5 w-24 bg-slate-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-blue-500 rounded-full" :style="{ width: Math.min(item['票數'] * 10, 100) + '%' }"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-right min-w-[60px]">
+                        <span class="block text-xl font-bold text-blue-600">{{ item['票數'] }}</span>
+                        <span class="text-[10px] text-slate-400 uppercase font-medium">Votes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-8 mt-auto">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-sm text-slate-500 font-medium">
+                &copy; 2025 DeepRead AI. <span class="hidden sm:inline">Data sourced from OSINT & Academic Papers.</span>
+            </p>
+            <div class="flex justify-center gap-6 mt-4">
+                <a href="https://github.com/aideepread-tech" target="_blank" class="text-slate-400 hover:text-slate-800 transition">
+                    <i class="ph ph-github-logo text-2xl"></i>
+                </a>
+                <a href="https://www.youtube.com/@DeepReadAI-CK" target="_blank" class="text-slate-400 hover:text-red-600 transition">
+                    <i class="ph ph-youtube-logo text-2xl"></i>
+                </a>
+            </div>
+        </div>
     </footer>
 
-    <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbzT4i3PGhMn1YRzwRUrvxrMnha2PSbQaLcStfQeG3fzcxkb0eZig1NW4QxU8Zk23wLCqg/exec';
+</div>
 
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchData();
-        });
+<script>
+    const { createApp } = Vue;
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzT4i3PGhMn1YRzwRUrvxrMnha2PSbQaLcStfQeG3fzcxkb0eZig1NW4QxU8Zk23wLCqg/exec'; 
 
-        async function fetchData() {
-            try {
-                const response = await fetch(API_URL);
-                const data = await response.json();
-
-                document.getElementById('loading').style.display = 'none';
-                
-                renderArticles(data.content);
-                renderWishlist(data.wishlist);
-                
-                // 顯示 Grid
-                document.getElementById('articles-view').style.display = 'grid';
-
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('loading').innerHTML = '讀取失敗，請重新整理。';
+    createApp({
+        data() {
+            return {
+                loading: true,
+                currentView: 'articles', // 'articles' or 'wishlist'
+                contentList: [],
+                wishlist: [],
+                searchQuery: '',
+                filterCategory: ''
             }
-        }
-
-        function renderArticles(articles) {
-            const container = document.getElementById('articles-view');
-            
-            // 排序：新日期在前
-            articles.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            if(articles.length === 0) {
-                container.innerHTML = '<p>目前沒有資料。</p>';
-                return;
+        },
+        computed: {
+            // 文章過濾邏輯
+            filteredContent() {
+                return this.contentList.filter(item => {
+                    const q = this.searchQuery.toLowerCase();
+                    const matchSearch = (
+                        item.title.toLowerCase().includes(q) || 
+                        item.summary.toLowerCase().includes(q) ||
+                        (item.tags && item.tags.toLowerCase().includes(q))
+                    );
+                    const matchCat = this.filterCategory ? item.category === this.filterCategory : true;
+                    return matchSearch && matchCat;
+                });
+            },
+            // 許願清單排序
+            sortedWishlist() {
+                return this.wishlist.sort((a, b) => b['票數'] - a['票數']);
             }
-
-            const html = articles.map(article => {
-                const dateStr = new Date(article.date).toLocaleDateString('zh-TW');
-                const tagsHtml = article.tags 
-                    ? article.tags.split(' ').slice(0, 3).map(tag => `<span class="tag">${tag}</span>`).join('') 
-                    : '';
-
-                // 如果有 YouTube ID 就顯示 iframe，否則顯示圖片或空白
-                // 使用 loading="lazy" 優化效能
-                let mediaHtml = '';
-                if (article.youtube_id) {
-                    mediaHtml = `
-                        <div class="video-wrapper">
-                            <iframe 
-                                src="https://www.youtube.com/embed/${article.youtube_id}" 
-                                title="YouTube video player" 
-                                frameborder="0" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                allowfullscreen
-                                loading="lazy">
-                            </iframe>
-                        </div>`;
-                } else {
-                    // 若無影片，顯示灰色佔位區塊 (保持版型一致)
-                    mediaHtml = `<div class="video-wrapper" style="background:#f1f5f9; display:flex; align-items:center; justify-content:center; color:#94a3b8;">無影片內容</div>`;
-                }
-
-                return `
-                    <article class="card">
-                        ${mediaHtml}
-                        <div class="card-body">
-                            <div class="card-meta-top">
-                                <span class="category-badge">${article.category}</span>
-                                <span class="card-date">${dateStr}</span>
-                            </div>
-                            <h3 class="card-title">${article.title}</h3>
-                            <div class="card-tags">${tagsHtml}</div>
-                            <p class="card-summary">${article.summary}</p>
-                            <a href="${article.guide_link}" target="_blank" class="btn-read">📖 閱讀完整簡報</a>
-                        </div>
-                    </article>
-                `;
-            }).join('');
-
-            container.innerHTML = html;
-        }
-
-        function renderWishlist(wishlist) {
-            const container = document.getElementById('wishlist-container');
-            if(!wishlist) return;
-
-            wishlist.sort((a, b) => b['票數'] - a['票數']);
-
-            const html = wishlist.map((item, index) => {
-                const rank = index + 1;
-                const rankClass = rank <= 3 ? `rank-${rank}` : '';
-                
-                return `
-                    <div class="wish-item">
-                        <div class="rank ${rankClass}">${rank}</div>
-                        <div class="wish-content">${item['主題']}</div>
-                        <div class="vote-count">${item['票數']} 票</div>
-                    </div>
-                `;
-            }).join('');
-            
-            container.innerHTML = html;
-        }
-
-        function switchTab(tabName) {
-            const articlesView = document.getElementById('articles-view');
-            const wishlistView = document.getElementById('wishlist-view');
-            const btns = document.querySelectorAll('.tab-btn');
-
-            btns.forEach(b => b.classList.remove('active'));
-
-            if (tabName === 'articles') {
-                btns[0].classList.add('active');
-                articlesView.style.display = 'grid'; // 保持 grid 屬性
-                wishlistView.style.display = 'none';
-            } else {
-                btns[1].classList.add('active');
-                articlesView.style.display = 'none';
-                wishlistView.style.display = 'block';
+        },
+        methods: {
+            parseTags(tagString) {
+                if (!tagString) return [];
+                // 處理 #Tag 或 comma separated
+                return tagString.replace(/#/g, '').split(/[ ,]+/)
+                    .map(t => t.trim())
+                    .filter(t => t.length > 0);
+            },
+            formatDate(dateStr) {
+                if (!dateStr) return '';
+                const d = new Date(dateStr);
+                return d.toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            },
+            getCategoryClass(category) {
+                // 將 "系列整理" 映射到 "深度專題" 的樣式
+                if (category === '深度專題' || category === '系列整理') 
+                    return 'bg-indigo-50 text-indigo-700 border-indigo-200';
+                if (category === '科技快訊') 
+                    return 'bg-amber-50 text-amber-700 border-amber-200';
+                return 'bg-slate-100 text-slate-600 border-slate-200';
+            },
+            getRankClass(index) {
+                if (index === 0) return 'rank-badge-1';
+                if (index === 1) return 'rank-badge-2';
+                if (index === 2) return 'rank-badge-3';
+                return '';
             }
+        },
+        mounted() {
+            fetch(API_URL)
+                .then(res => res.json())
+                .then(data => {
+                    // 處理資料結構
+                    this.contentList = data.content || [];
+                    this.wishlist = data.wishlist || [];
+                    
+                    // 日期排序
+                    this.contentList.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    
+                    // 如果有需要，可以在這裡把 "系列整理" 的資料 category 改名為 "深度專題" 以符合前端顯示
+                    this.contentList.forEach(item => {
+                        if(item.category === '系列整理') item.category = '深度專題';
+                    });
+
+                    this.loading = false;
+                })
+                .catch(err => {
+                    console.error('API Error:', err);
+                    this.loading = false;
+                });
         }
-    </script>
+    }).mount('#app');
+</script>
+
 </body>
 </html>
