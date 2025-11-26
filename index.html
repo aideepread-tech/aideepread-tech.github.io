@@ -12,10 +12,8 @@
             --text-main: #1e293b;
             --text-muted: #64748b;
             --card-bg: #ffffff;
-            --accent: #2563eb; /* 科技藍 */
-            --accent-hover: #1d4ed8;
-            --tag-bg: #f1f5f9;
-            --radius: 16px;
+            --accent: #2563eb;
+            --radius: 12px;
         }
 
         body {
@@ -27,142 +25,100 @@
             line-height: 1.6;
         }
 
-        /* --- Header: 簡約大器 --- */
+        /* --- Header --- */
         header {
             background: #fff;
-            padding: 2.5rem 1.5rem;
+            padding: 2rem 1rem;
             text-align: center;
             border-bottom: 1px solid #e2e8f0;
         }
 
         .brand {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            letter-spacing: -0.5px;
-            margin: 0;
             color: #0f172a;
+            margin: 0;
         }
 
         .tagline {
             color: var(--text-muted);
             margin-top: 0.5rem;
-            font-size: 1rem;
-            font-weight: 400;
+            font-size: 0.95rem;
         }
 
-        .social-nav {
-            margin-top: 1rem;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-        
-        .social-link {
-            text-decoration: none;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            transition: color 0.2s;
-        }
-        .social-link:hover { color: var(--accent); }
-
-        /* --- 導航切換 (Tabs) --- */
+        /* --- Tab 切換 --- */
         .tab-container {
             display: flex;
             justify-content: center;
             margin: 2rem 0;
-            gap: 10px;
+            gap: 12px;
         }
 
         .tab-btn {
-            background: transparent;
+            background: #fff;
             border: 1px solid #cbd5e1;
             color: var(--text-muted);
-            padding: 8px 24px;
+            padding: 8px 20px;
             border-radius: 50px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
+            transition: all 0.2s;
         }
 
         .tab-btn.active {
             background: #0f172a;
             color: #fff;
             border-color: #0f172a;
-            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2);
         }
 
         /* --- 主容器 --- */
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px 40px 20px;
+            padding: 0 20px 60px 20px;
         }
 
-        /* --- 網格佈局 (Grid System) --- */
+        /* --- Grid 佈局 --- */
         .grid-layout {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); /* 卡片稍微寬一點 */
             gap: 30px;
         }
 
-        /* --- IG/YouTube 風格卡片 --- */
+        /* --- 卡片設計 --- */
         .card {
             background: var(--card-bg);
             border-radius: var(--radius);
             overflow: hidden;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #f1f5f9;
             display: flex;
             flex-direction: column;
-            border: 1px solid #f1f5f9;
+            transition: transform 0.2s;
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.01);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
 
-        /* 縮圖區域 */
-        .card-image-wrapper {
+        /* 影片容器：保持 16:9 */
+        .video-wrapper {
             position: relative;
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
-            background: #e2e8f0;
-            overflow: hidden;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            background: #000;
         }
 
-        .card-image {
+        .video-wrapper iframe {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
+            border: none;
         }
 
-        .card:hover .card-image {
-            transform: scale(1.05); /* 圖片微放大效果 */
-        }
-
-        .card-category {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background: rgba(0,0,0,0.75);
-            color: #fff;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            backdrop-filter: blur(4px);
-        }
-
-        /* 卡片內容 */
         .card-body {
             padding: 20px;
             flex-grow: 1;
@@ -170,38 +126,48 @@
             flex-direction: column;
         }
 
+        /* 頂部資訊列 (日期 + 分類) */
+        .card-meta-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .category-badge {
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
         .card-date {
             font-size: 0.8rem;
             color: #94a3b8;
-            margin-bottom: 8px;
         }
 
         .card-title {
-            font-size: 1.15rem;
+            font-size: 1.25rem;
             font-weight: 700;
-            margin: 0 0 10px 0;
+            margin: 0 0 12px 0;
             line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2; /* 限制標題兩行 */
-            -webkit-box-orient: vertical;
-            overflow: hidden;
             color: var(--text-main);
         }
 
         .card-tags {
             margin-bottom: 15px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
         }
 
         .tag {
             font-size: 0.75rem;
-            color: var(--accent);
-            background: #eff6ff;
-            padding: 3px 8px;
+            color: var(--text-muted);
+            background: #f1f5f9;
+            padding: 2px 8px;
             border-radius: 4px;
-            font-weight: 500;
+            margin-right: 5px;
+            display: inline-block;
         }
 
         .card-summary {
@@ -215,54 +181,31 @@
             flex-grow: 1;
         }
 
-        /* 按鈕區 */
-        .card-footer {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: auto;
-        }
-
-        .btn {
-            text-decoration: none;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
+        .btn-read {
+            display: block;
+            background: #0f172a;
+            color: white;
             text-align: center;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
             transition: background 0.2s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-primary {
-            background-color: var(--text-main);
-            color: #fff;
-        }
-        .btn-primary:hover { background-color: #000; }
-
-        .btn-outline {
-            border: 1px solid #e2e8f0;
-            color: var(--text-main);
-            background: #fff;
-        }
-        .btn-outline:hover { background-color: #f8fafc; border-color: #cbd5e1; }
-
-
-        /* --- 許願池列表樣式 (保持清單易讀性) --- */
-        .wishlist-wrapper {
-            max-width: 800px;
-            margin: 0 auto;
         }
         
-        .wishlist-cta {
+        .btn-read:hover {
+            background: #334155;
+        }
+
+        /* --- 許願排行榜 --- */
+        .wishlist-wrapper { max-width: 800px; margin: 0 auto; }
+        
+        .wishlist-header {
             text-align: center;
-            background: #fff;
-            padding: 30px;
-            border-radius: 16px;
             margin-bottom: 30px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
             border: 1px dashed #cbd5e1;
         }
 
@@ -273,50 +216,34 @@
             padding: 15px 20px;
             margin-bottom: 15px;
             border-radius: 12px;
-            border: 1px solid #f1f5f9;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            border: 1px solid #e2e8f0;
         }
 
-        .rank-circle {
-            width: 36px;
-            height: 36px;
+        .rank {
+            width: 30px; 
+            height: 30px; 
+            background: #f1f5f9; 
             border-radius: 50%;
-            background: #f1f5f9;
-            color: #64748b;
-            display: flex;
-            align-items: center;
+            display: flex; 
+            align-items: center; 
             justify-content: center;
-            font-weight: 800;
+            font-weight: bold;
+            color: #64748b;
             margin-right: 15px;
             flex-shrink: 0;
         }
         
         /* 前三名顏色 */
-        .rank-1 { background: #fef3c7; color: #d97706; }
-        .rank-2 { background: #f1f5f9; color: #475569; }
+        .rank-1 { background: #fef3c7; color: #b45309; }
+        .rank-2 { background: #e5e7eb; color: #374151; }
         .rank-3 { background: #ffedd5; color: #c2410c; }
 
-        .wish-info { flex-grow: 1; }
-        .wish-title { font-weight: 600; margin-bottom: 2px; }
-        .vote-badge { background: #fee2e2; color: #ef4444; padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; }
+        .wish-content { flex-grow: 1; font-weight: 500; }
+        .vote-count { font-weight: 700; color: #ef4444; }
 
-        /* Loading */
-        .loading-state { text-align: center; padding: 60px; color: var(--text-muted); }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 40px;
-            color: #94a3b8;
-            font-size: 0.85rem;
-            border-top: 1px solid #e2e8f0;
-            background: #fff;
-            margin-top: 40px;
-        }
-
+        /* RWD */
         @media (max-width: 600px) {
-            .grid-layout { grid-template-columns: 1fr; } /* 手機單欄 */
-            .card-title { font-size: 1.25rem; }
+            .grid-layout { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -325,36 +252,25 @@
     <header>
         <h1 class="brand">DeepRead AI</h1>
         <p class="tagline">Unlocking Knowledge, One Slide at a Time.</p>
-        <div class="social-nav">
-            <a href="https://www.youtube.com/@DeepReadAI-CK" target="_blank" class="social-link">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                YouTube
-            </a>
-            <a href="https://aideepread-tech.github.io/" class="social-link">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                GitHub
-            </a>
-        </div>
     </header>
 
     <div class="container">
         <div class="tab-container">
-            <button class="tab-btn active" onclick="switchTab('articles')">📰 最新情報</button>
-            <button class="tab-btn" onclick="switchTab('wishlist')">✨ 許願排行榜</button>
+            <button class="tab-btn active" onclick="switchTab('articles')">文章與影片</button>
+            <button class="tab-btn" onclick="switchTab('wishlist')">許願排行榜</button>
         </div>
 
-        <div id="loading" class="loading-state">
-            <p>正在載入知識庫...</p>
+        <div id="loading" style="text-align:center; padding:50px; color:#64748b;">
+            載入資料中...
         </div>
 
         <div id="articles-view" class="grid-layout" style="display: none;">
             </div>
 
         <div id="wishlist-view" class="wishlist-wrapper" style="display: none;">
-            <div class="wishlist-cta">
-                <h3>想看什麼主題？</h3>
-                <p style="color:var(--text-muted)">您的投票決定我們的下一個研究主題。</p>
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeFvIvo8i4tpglifjcnXn_R_cFy4csRPZEOzNxf07QFmguvmA/viewform?usp=sharing" target="_blank" class="btn btn-primary" style="display:inline-flex; width:auto; padding: 10px 30px;">前往許願池 →</a>
+            <div class="wishlist-header">
+                <h3>想看什麼新技術解析？</h3>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeFvIvo8i4tpglifjcnXn_R_cFy4csRPZEOzNxf07QFmguvmA/viewform?usp=sharing" target="_blank" style="display:inline-block; margin-top:10px; color:#2563eb; font-weight:600; text-decoration:none;">前往許願池投票 →</a>
             </div>
             <div id="wishlist-container">
                 </div>
@@ -362,7 +278,7 @@
     </div>
 
     <footer>
-        <p>&copy; 2025 DeepRead AI Team. <br> Powered by Google Sheets & GitHub Pages.</p>
+        <p style="color:#94a3b8; font-size:0.8rem; text-align:center;">&copy; 2025 DeepRead AI. Powered by Google Sheets.</p>
     </footer>
 
     <script>
@@ -381,59 +297,65 @@
                 
                 renderArticles(data.content);
                 renderWishlist(data.wishlist);
-
-                document.getElementById('articles-view').style.display = 'grid'; // 注意: 這裡設為 grid
+                
+                // 顯示 Grid
+                document.getElementById('articles-view').style.display = 'grid';
 
             } catch (error) {
                 console.error('Error:', error);
-                document.getElementById('loading').innerHTML = '<p>資料讀取失敗</p>';
+                document.getElementById('loading').innerHTML = '讀取失敗，請重新整理。';
             }
         }
 
         function renderArticles(articles) {
             const container = document.getElementById('articles-view');
+            
+            // 排序：新日期在前
             articles.sort((a, b) => new Date(b.date) - new Date(a.date));
 
             if(articles.length === 0) {
-                container.innerHTML = '<p>No content available.</p>';
+                container.innerHTML = '<p>目前沒有資料。</p>';
                 return;
             }
 
             const html = articles.map(article => {
-                // 產生 YouTube 縮圖連結
-                const thumbUrl = article.youtube_id 
-                    ? `https://img.youtube.com/vi/${article.youtube_id}/maxresdefault.jpg`
-                    : 'https://via.placeholder.com/640x360?text=DeepRead+AI'; // 備用圖
-                
-                // 標籤只顯示前兩個，保持版面整潔
-                const tagsRaw = article.tags ? article.tags.split(' ') : [];
-                const tagsHtml = tagsRaw.slice(0, 3).map(tag => 
-                    `<span class="tag">${tag.replace('#','')}</span>`
-                ).join('');
-
                 const dateStr = new Date(article.date).toLocaleDateString('zh-TW');
+                const tagsHtml = article.tags 
+                    ? article.tags.split(' ').slice(0, 3).map(tag => `<span class="tag">${tag}</span>`).join('') 
+                    : '';
+
+                // 如果有 YouTube ID 就顯示 iframe，否則顯示圖片或空白
+                // 使用 loading="lazy" 優化效能
+                let mediaHtml = '';
+                if (article.youtube_id) {
+                    mediaHtml = `
+                        <div class="video-wrapper">
+                            <iframe 
+                                src="https://www.youtube.com/embed/${article.youtube_id}" 
+                                title="YouTube video player" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen
+                                loading="lazy">
+                            </iframe>
+                        </div>`;
+                } else {
+                    // 若無影片，顯示灰色佔位區塊 (保持版型一致)
+                    mediaHtml = `<div class="video-wrapper" style="background:#f1f5f9; display:flex; align-items:center; justify-content:center; color:#94a3b8;">無影片內容</div>`;
+                }
 
                 return `
                     <article class="card">
-                        <div class="card-image-wrapper">
-                            <img src="${thumbUrl}" alt="${article.title}" class="card-image">
-                            <div class="card-category">${article.category}</div>
-                        </div>
+                        ${mediaHtml}
                         <div class="card-body">
-                            <div class="card-date">${dateStr}</div>
+                            <div class="card-meta-top">
+                                <span class="category-badge">${article.category}</span>
+                                <span class="card-date">${dateStr}</span>
+                            </div>
                             <h3 class="card-title">${article.title}</h3>
                             <div class="card-tags">${tagsHtml}</div>
                             <p class="card-summary">${article.summary}</p>
-                            
-                            <div class="card-footer">
-                                <a href="${article.guide_link}" target="_blank" class="btn btn-primary">
-                                    📖 閱讀報告
-                                </a>
-                                ${article.youtube_id ? `
-                                <a href="https://youtu.be/${article.youtube_id}" target="_blank" class="btn btn-outline">
-                                    📺 影片
-                                </a>` : ''}
-                            </div>
+                            <a href="${article.guide_link}" target="_blank" class="btn-read">📖 閱讀完整簡報</a>
                         </div>
                     </article>
                 `;
@@ -444,7 +366,7 @@
 
         function renderWishlist(wishlist) {
             const container = document.getElementById('wishlist-container');
-            if (!wishlist) return;
+            if(!wishlist) return;
 
             wishlist.sort((a, b) => b['票數'] - a['票數']);
 
@@ -454,13 +376,9 @@
                 
                 return `
                     <div class="wish-item">
-                        <div class="rank-circle ${rankClass}">${rank}</div>
-                        <div class="wish-info">
-                            <div class="wish-title">${item['主題']}</div>
-                        </div>
-                        <div class="wish-votes">
-                            <span class="vote-badge">${item['票數']} 票</span>
-                        </div>
+                        <div class="rank ${rankClass}">${rank}</div>
+                        <div class="wish-content">${item['主題']}</div>
+                        <div class="vote-count">${item['票數']} 票</div>
                     </div>
                 `;
             }).join('');
@@ -477,12 +395,12 @@
 
             if (tabName === 'articles') {
                 btns[0].classList.add('active');
-                articlesView.style.display = 'grid'; // Grid 佈局
+                articlesView.style.display = 'grid'; // 保持 grid 屬性
                 wishlistView.style.display = 'none';
             } else {
                 btns[1].classList.add('active');
                 articlesView.style.display = 'none';
-                wishlistView.style.display = 'block'; // Block 佈局
+                wishlistView.style.display = 'block';
             }
         }
     </script>
