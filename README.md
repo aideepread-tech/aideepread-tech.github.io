@@ -1,62 +1,93 @@
-# 🧠 DeepRead AI | 深度閱讀與科技快訊知識庫
+# 🧠 DeepRead AI | 你的 AI 技術導讀夥伴
 
-[![YouTube](https://img.shields.io/badge/YouTube-DeepRead%20AI-red?style=for-the-badge&logo=youtube)](https://www.youtube.com/@DeepReadAI-CK)
-[![Website](https://img.shields.io/badge/Website-Knowledge%20Feed-blue?style=for-the-badge&logo=github)](https://aideepread-tech.github.io/)
+[![YouTube Channel](https://img.shields.io/badge/YouTube-DeepRead%20AI-red?style=for-the-badge&logo=youtube)](https://www.youtube.com/@DeepReadAI-CK)
+[![Knowledge Base](https://img.shields.io/badge/Website-Knowledge%20Base-blue?style=for-the-badge&logo=github)](https://aideepread-tech.github.io/)
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
-> **Unlocking Knowledge, One Slide at a Time.**
-> 您的 AI 知識幕僚：將複雜的技術文獻與開源情報，轉化為結構化的簡報與可行動的洞察。
+> **「陪你在技術洪流中，一起變強的 AI 夥伴。」**
+> Unlocking Knowledge, One Slide at a Time.
 
-## 📖 核心理念 (Core Philosophy)
+## 📖 專案緣起 (Origin & Philosophy)
 
-在 2025 年的數位資訊洪流中，知識工作者面臨的痛點並非缺乏資訊，而是缺乏**「結構化」**與**「可行動化」**的情報。
+在 2025 年的數位資訊洪流中，技術更新的速度往往超越了我們的學習極限。
+**DeepRead AI** 誕生於科技偵查（Cyber Investigation）的最前線。我們深知，無論是執法夥伴、資安專家還是開發者，大家面臨的最大痛點並非「缺乏資訊」，而是**缺乏時間**與**缺乏結構化**的情報。
 
-**DeepRead AI** 致力於解決「資訊過載」與「工具焦慮」。我們的核心價值在於**「時間套利 (Time Arbitrage)」**——利用自動化工作流，將閱讀數小時艱澀論文（如 ArXiv 資安研究、LLM 技術白皮書）的時間，壓縮為 10 分鐘左右的高品質簡報閱讀體驗。
+我們致力於解決**「資訊焦慮」**與**「工具門檻」**。
+本專案利用自動化工作流，將 ArXiv 論文、資安白皮書與技術文檔，轉化為「可行動」的知識，希望能讓每一位渴望進化的夥伴，**不用再孤軍奮戰**。
 
-我們不只提供摘要，更提供能直接用於**決策匯報**、**技術解說**與**實務應用**的結構化知識。
+## 🚀 核心功能 (Core Features)
 
-## 🚀 內容範疇 (Scope)
+DeepRead AI 不生產知識，我們致力於成為**原著與讀者之間的「橋樑」**。我們填補了「原始文獻」與「快速吸收」之間的最後一哩路：
 
-本知識庫聚焦於「資安趨勢」與「AI 技術」的前沿交叉點，您可以在 [網站首頁](https://aideepread-tech.github.io/) 瀏覽以下分類：
+* **⚡ 結構化中文簡報 (Structured Slides)**
+    * 將數十頁的原文濃縮為邏輯清晰的架構圖解，適合會議匯報與快速瀏覽。
+* **🎙️ 專屬講師導讀 (Verbatim Guide)**
+    * 提供彷彿「一對一教學」的逐字講稿，將硬核技術轉化為口語化的故事邏輯。
+* **⏱️ 10分鐘極速預告 (Time Arbitrage)**
+    * 透過 [YouTube 影片](https://www.youtube.com/@DeepReadAI-CK) 快速導讀，幫您用一杯咖啡的時間判斷文獻價值，進而回歸原著深讀。
 
-* **🕵️ 深度分析 (Deep Analysis)**
-    * 針對新興科技（如 DeepSeek, LLM Agent）的原理拆解與潛在風險評估。
-    * 將晦澀的學術理論轉化為邏輯清晰的簡報架構。
-* **⚡ 科技快訊 (Tech Briefs)**
-    * 重大資安漏洞與新技術發布的快速導讀，協助您即時掌握技術脈動。
+## 🎯 內容範疇 (Scope)
 
-## 💡 為什麼需要這個專案？
+DeepRead AI 是一個動態成長的知識有機體。比起學科分類，我們更在意 **「議題的啟發性」** 。
+您將在這裡看到我們探討多元的主題：
 
-通用型的 AI 工具（如 ChatGPT）雖然能提供摘要，但往往缺乏版面設計與口語化的邏輯梳理。DeepRead AI 填補了「原始文獻」與「專業簡報」之間的最後一哩路：
+1.  **技術的矛與盾**：從 AI Agent 到零日漏洞，解析最新的科技攻防戰。
+2.  **人性的光與影**：透過心理學與犯罪學文獻，解讀科技背後的行為動機。
+3.  **職涯的戰與休**：探討如何在極高壓的專業工作中，維持高效能與生活的平衡。
 
-1.  **結構化輸出**：產出包含逐字稿的 **Guide.html**，可作為學習與演講的底稿。
-2.  **微型學習**：適應碎片化時代的學習需求，透過 Slide 形式快速吸收高密度知識。
-3.  **實用導向**：不僅談理論，更提供可執行的觀點與實作指引。
+*從硬派的 Code 到軟性的 Mindset，都是我們進化的養分。*
 
 ## 📂 知識庫結構 (Repository Structure)
 
-本專案採用靜態網頁與結構化目錄管理內容：
+本專案採用靜態網頁技術，將自動化產出的內容進行結構化託管：
 
 ```text
 aideepread-tech.github.io/
-├── index.html          # 知識庫首頁 (Vue.js Frontend)
-├── content/            # 內容存放區
-│   └── 分類資料夾/              # 分類，如：AI (人工智慧)
-│       └── 每份文獻一個資料夾/   # 如: 20251122_120117_Agentic_Context_Engineering
-│          ├── .../guide.html   # 結構化簡報頁面
-│          └── .../slides/      # 原始 Markdown 投影片
+├── index.html          # 知識庫入口 (Knowledge Feed)
+├── content/            # 核心內容存放區
+│   └── [分類]           # e.g., AI_Artificial_Intelligence
+│       └── [文獻專案]   # e.g., 20251128_RAG_Optimization
+│           ├── guide.html  # 📖 網頁版閱讀模式 (簡報+講稿)
+│           ├── slides/     # 📊 原始 Markdown 投影片資源
+│           └── assets/     # 🖼️ 相關圖表與素材
 └── README.md           # 專案說明文件
 ````
 
-## 🔗 相關連結 (Links)
+## 🔗 加入進化行列 (Join Us)
 
-  * **📺 YouTube 頻道**: [DeepRead AI](https://www.youtube.com/@DeepReadAI-CK) - 觀看搭配視覺化解說的影片摘要。
-  * **🌐 知識庫網站**: [DeepRead Tech Feed](https://aideepread-tech.github.io/) - 瀏覽完整的簡報、筆記與原始文獻來源。
-  * **📝 許願池**: [提交您想了解的主題](https://docs.google.com/forms/d/e/1FAIpQLSeFvIvo8i4tpglifjcnXn_R_cFy4csRPZEOzNxf07QFmguvmA/viewform?usp=sharing&ouid=109922389232594363985) - 告訴我們您想看什麼，我們會優先製作。
+  * **📺 YouTube 頻道**: [DeepRead AI](https://www.youtube.com/@DeepReadAI-CK)
+      * 觀看搭配視覺化解說的導讀影片，與我們一起在留言區討論。
+  * **🌐 線上知識庫**: [DeepRead Tech Feed](https://aideepread-tech.github.io/)
+      * 獲取完整的簡報檔、逐字稿與原始文獻連結。
+  * **📝 主題許願池**: [Submit a Request](https://docs.google.com/forms/d/e/1FAIpQLSeFvIvo8i4tpglifjcnXn_R_cFy4csRPZEOzNxf07QFmguvmA/viewform?usp=sharing)
+      * 想看什麼技術主題？歡迎告訴我們，我們會優先排程製作。
 
-## ⚠️ 免責聲明 (Disclaimer)
+## ⚠️ 免責聲明與致謝 (Disclaimer)
 
-本專案內容皆基於公開來源情報（OSINT）與學術文獻整理。所有原始文獻的著作權歸原作者所有，本專案僅進行整理、摘要與翻譯以促進知識傳播。引用來源皆已在各別頁面中標註。
+本專案內容旨在**教育推廣**與**學術研究 (Educational Purpose)**。
+我們扮演「導讀者」的角色，所有引用之原始文獻、圖片與數據，其著作權與榮耀均歸屬於**原始作者**。本專案僅進行翻譯、整理與分析，作為學習的橋樑，並非原著的替代品。
+
+  * *All copyrights of the original literature cited belong to their respective authors.*
+  * *This project serves as a bridge to encourage further reading of the original material.*
+
+## ⚖️ 授權與使用條款 (License)
+
+**DeepRead AI** 的內容（包括簡報、講稿、圖表）採用 **[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh_TW)** 授權條款。
+
+✅ **您可以：**
+
+  * **分享**：在註明出處的情況下，複製、散布本專案的內容。
+  * **修改**：基於本專案內容進行改作（例如：用於內部教育訓練）。
+
+❌ **您不可以：**
+
+  * **商業使用**：將本專案內容用於販售、營利課程或置入於收費產品中。
+  * **未經授權的仿冒**：移除 DeepRead AI 的品牌標示並宣稱為自己的作品。
+
+*如果您有商業合作或授權需求，請聯繫我們。*
+
+*The content of this project is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/).*
 
 -----
 
-*Created by DeepRead AI Team.*
+*Built with ❤️ by DeepRead AI Team.*
