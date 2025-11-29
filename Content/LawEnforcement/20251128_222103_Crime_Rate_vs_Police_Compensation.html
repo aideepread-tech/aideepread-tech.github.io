@@ -4,96 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PPTPlaner Guide</title>
-<style>
-  :root{
-    --bg:#ffffff; --fg:#0f172a; --muted:#64748b; --card:#f8fafc; --accent:#2563eb; --accent-2:#1d4ed8;
-    --border:#e2e8f0; --ok:#16a34a; --warn:#ca8a04; --bad:#dc2626; --pill:#e0e7ff;
-  }
-  .dark{
-    --bg:#0b1220; --fg:#e5e7eb; --muted:#94a3b8; --card:#0f172a; --accent:#60a5fa; --accent-2:#3b82f6;
-    --border:#1f2937; --ok:#22c55e; --warn:#f59e0b; --bad:#f87171; --pill:#172554;
-  }
-  *{box-sizing:border-box}
-  body{margin:0; font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",Arial,"Apple Color Emoji","Segoe UI Emoji"; background:var(--bg); color:var(--fg);}
-  header{position:sticky; top:0; z-index:10; backdrop-filter:saturate(180%) blur(10px); background:color-mix(in srgb, var(--bg) 88%, transparent); border-bottom:1px solid var(--border);}
-  .container{max-width:1100px; margin:0 auto; padding:16px;}
-  h1{margin:6px 0 2px; font-size:22px;}
-  p.subtitle{margin:0 0 10px; color:var(--muted); font-size:14px;}
-  .toolbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:8px 0 12px;}
-  button{padding:8px 12px; font-size: 14px; border:1px solid var(--border); border-radius:12px; background:var(--card); color:var(--fg); cursor:pointer;}
-  button:hover{background-color: var(--border);}
-  .hr{height:1px; background:var(--border); margin:10px 0;}
-  .footer{color:var(--muted); font-size:12px; padding:20px 0 40px; text-align:center;}
-  .meta{display:flex; flex-wrap:wrap; gap:10px; margin:6px 0 8px;}
-  .meta a{color:var(--accent); text-decoration:none;}
-  .meta a:hover{text-decoration:underline;}
-
-  /* --- Layout Styles for side-by-side view --- */
-  .page { display: flex; border-bottom: 1px solid var(--border); padding: 20px 0; margin-bottom: 20px; }
-  .slide { flex: 1; padding-right: 20px; border-right: 1px solid var(--border); min-width: 0; }
-  .notes { flex: 1; padding-left: 20px; min-width: 0; }
-  h2 { border-bottom: 1px solid var(--border); padding-bottom: 10px; color: var(--fg); font-size: 18px; margin-top: 0; }
-  pre { background: var(--card); padding: 15px; border-radius: 8px; white-space: pre-wrap; word-wrap: break-word; border: 1px solid var(--border); font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; }
-  
-  /* --- SVG & Toggle Styles --- */
-  .slide-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-
-  .svg-container {
-    position: relative;
-    width: 100%;
-    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-    height: 0;
-    overflow: hidden;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    background-color: var(--card);
-  }
-  .svg-container svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px -2px rgba(0,0,0,0.08);
-  }
-
-  .conceptual-svg-container {
-    width: 100%;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    background-color: var(--card);
-    padding: 10px;
-    border: 1px solid var(--border);
-  }
-  .conceptual-svg-container svg {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-
-  .slide-view-svg .no-svg-placeholder { aspect-ratio: 16/9; background-color: var(--card); border: 2px dashed var(--border); border-radius: 8px; display: flex; justify-content: center; align-items: center; color: var(--muted); font-size: 14px; }
-
-  /* Generic styles for rendered markdown content */
-  .rendered-content h1, .rendered-content h2, .rendered-content h3, .rendered-content h4, .rendered-content h5, .rendered-content h6 { border-bottom: none; padding-bottom: 5px; margin-top: 20px; }
-  .rendered-content ul, .rendered-content ol { padding-left: 25px; }
-  .rendered-content code { background-color: var(--pill); padding: 2px 5px; border-radius: 3px; font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; }
-  .rendered-content blockquote { border-left: 4px solid var(--border); padding-left: 15px; color: var(--muted); margin-left: 0; }
-  .rendered-content table { border-collapse: collapse; width: 100%; margin: 1em 0; }
-  .rendered-content th, .rendered-content td { border: 1px solid var(--border); padding: 8px; }
-  .rendered-content th { background-color: var(--card); }
-  .rendered-content img { max-width: 100%; height: auto; display: block; margin: 1em 0; border-radius: 8px; }
-</style>
 
             <style>
                 :root {
-                    --header-height: 80px; /* Fallback initial value */
+                    --header-height: 100px; /* Initial large height */
+                    --tab-height: 50px;
+                    --bg:#ffffff; --fg:#0f172a; --muted:#64748b; --card:#f8fafc; --accent:#2563eb;
+                    --border:#e2e8f0;
+                }
+
+                /* Transitions */
+                header, header h1, header .container {
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 }
 
                 .img-text-toggle-btn {
                     padding: 6px 12px;
                     cursor: pointer;
-                    background: #4f46e5; /* Indigo-600 */
+                    background: #4f46e5;
                     color: white;
                     border: none;
                     border-radius: 6px;
@@ -110,13 +38,59 @@
                     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
                 }
 
-                /* Layout Improvements for Sticky Slide */
+                /* --- Header Styling (Dynamic) --- */
+                header {
+                    position: sticky; 
+                    top: 0; 
+                    z-index: 1000; 
+                    background: var(--bg);
+                    border-bottom: 1px solid var(--border);
+                    padding: 20px 0; /* Initial comfortable padding */
+                    width: 100%;
+                }
+                
+                header .container {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    max-width: 1100px;
+                    margin: 0 auto;
+                    padding: 0 16px;
+                }
+
+                header h1 {
+                    margin: 0; 
+                    font-size: 22px; /* Initial Title Size */
+                    line-height: 1.3;
+                    color: var(--fg);
+                    font-weight: 700;
+                }
+
+                /* Scrolled State (Compact) */
+                body.scrolled-mode header {
+                    padding: 8px 0;
+                    background: rgba(255, 255, 255, 0.95);
+                    backdrop-filter: blur(10px);
+                    box-shadow: 0 4px 20px -5px rgba(0,0,0,0.1);
+                }
+                
+                body.scrolled-mode header h1 {
+                    font-size: 15px; /* Tiny Title */
+                    color: var(--muted);
+                    font-weight: 600;
+                }
+
+                /* Hide subtitle in header (moved to body) */
+                header .subtitle { display: none !important; }
+
+
+                /* --- Desktop Layout --- */
                 .page {
                     display: flex;
                     border-bottom: 1px solid var(--border);
-                    padding: 30px 0;
+                    padding: 40px 0;
                     margin-bottom: 0;
-                    align-items: flex-start; /* Align to top */
+                    align-items: flex-start;
                 }
                 
                 .slide {
@@ -124,11 +98,10 @@
                     padding-right: 30px;
                     border-right: 1px solid var(--border);
                     min-width: 0;
-                    position: sticky; /* Make the left column sticky */
-                    /* Dynamic top position: Header height + 20px buffer */
+                    position: sticky;
+                    /* Stick below the header */
                     top: calc(var(--header-height) + 20px);
                     height: fit-content; 
-                    /* Dynamic max-height to fit in viewport */
                     max-height: calc(100vh - var(--header-height) - 40px);
                     overflow-y: auto;
                 }
@@ -139,20 +112,54 @@
                     min-width: 0;
                 }
                 
-                /* Mobile Responsiveness: Stack them on small screens */
+                /* --- Mobile Layout --- */
                 @media (max-width: 768px) {
-                    .page { display: block; }
-                    .slide { 
-                        padding-right: 0; 
-                        border-right: none; 
-                        border-bottom: 1px solid var(--border); 
-                        margin-bottom: 20px; 
-                        padding-bottom: 20px;
-                        position: static; /* Disable sticky on mobile */
-                        max-height: none;
+                    :root {
+                        --header-height: 60px; /* Reset for mobile calc */
                     }
-                    .notes { padding-left: 0; }
+
+                    .page { 
+                        display: block !important; 
+                        padding-top: 0 !important; 
+                        border-bottom: 8px solid #f1f5f9 !important; 
+                        padding-bottom: 30px;
+                    }
+                    .slide { 
+                        padding-right: 0 !important; 
+                        border-right: none !important; 
+                        border-bottom: none !important;
+                        margin-bottom: 0 !important; 
+                        position: static !important; 
+                        max-height: none !important;
+                    }
+                    .notes { 
+                        padding-left: 0 !important; 
+                        margin-top: 10px;
+                    }
+                    .slide-controls { display: none !important; }
+                    
+                    /* Mobile Sticky Tab Bar - Improved */
+                    .mobile-tab-bar { 
+                        display: flex !important; 
+                        position: sticky;
+                        top: var(--header-height); /* Stick exactly under header */
+                        z-index: 900;
+                        background: rgba(255, 255, 255, 0.98);
+                        backdrop-filter: blur(8px);
+                        padding: 10px 16px;
+                        border-bottom: 1px solid var(--border);
+                        margin: 0 -16px 20px -16px; /* Full width bleed */
+                        box-shadow: 0 4px 6px -4px rgba(0,0,0,0.05);
+                        transition: top 0.3s;
+                    }
+
+                    /* Ensure content doesn't get hidden under tabs when jumping */
+                    .slide-content-wrapper {
+                        scroll-margin-top: 160px;
+                    }
                 }
+                
+                .mobile-tab-bar { display: none; }
             </style>
             <script>
                 function toggleImageText(id) {
@@ -161,30 +168,149 @@
                     var btn = document.getElementById('btn-toggle-' + id);
                     
                     if (imgDiv.style.display !== 'none') {
-                        // Currently showing image, switch to text
                         imgDiv.style.display = 'none';
                         textDiv.style.display = 'block';
                         btn.innerText = '切換為圖片 (Show Image)';
                     } else {
-                        // Currently showing text, switch to image
                         imgDiv.style.display = 'block';
                         textDiv.style.display = 'none';
                         btn.innerText = '切換為文字 (Show Text)';
                     }
                 }
 
-                // Dynamic Header Height Calculation
-                function updateHeaderHeight() {
+                // Scroll Handler for Header Shrinking
+                function handleScroll() {
+                    const scrollY = window.scrollY;
+                    const body = document.body;
                     const header = document.querySelector('header');
-                    if (header) {
-                        const height = header.offsetHeight;
-                        document.documentElement.style.setProperty('--header-height', height + 'px');
+                    
+                    if (scrollY > 50) {
+                        if (!body.classList.contains('scrolled-mode')) {
+                            body.classList.add('scrolled-mode');
+                            // Update variable for sticky calculations
+                            document.documentElement.style.setProperty('--header-height', header.offsetHeight + 'px');
+                        }
+                    } else {
+                        if (body.classList.contains('scrolled-mode')) {
+                            body.classList.remove('scrolled-mode');
+                            // Reset variable
+                            document.documentElement.style.setProperty('--header-height', header.offsetHeight + 'px');
+                        }
                     }
                 }
-                // Update on load and resize
-                window.addEventListener('load', updateHeaderHeight);
-                window.addEventListener('resize', updateHeaderHeight);
+
+                // Init header height
+                function initHeader() {
+                    const header = document.querySelector('header');
+                    if(header) {
+                        document.documentElement.style.setProperty('--header-height', header.offsetHeight + 'px');
+                    }
+                }
+
+                window.addEventListener('scroll', handleScroll);
+                window.addEventListener('load', initHeader);
+                window.addEventListener('resize', initHeader);
+
+                document.addEventListener('DOMContentLoaded', function() {
+                    
+                    // 1. Move Subtitle to Content Area
+                    const headerSubtitle = document.querySelector('header .subtitle');
+                    const mainContainer = document.querySelector('main.container');
+                    
+                    if (headerSubtitle && mainContainer && !document.querySelector('.moved-subtitle')) {
+                        const newSubtitle = headerSubtitle.cloneNode(true);
+                        newSubtitle.classList.add('moved-subtitle');
+                        newSubtitle.style.cssText = `
+                            display: block; margin: 20px 0 30px 0; color: var(--muted); font-size: 15px; 
+                            line-height: 1.6; border-left: 4px solid var(--accent); padding-left: 15px;
+                            background: var(--card); padding: 15px; border-radius: 0 8px 8px 0;
+                        `;
+                        mainContainer.insertBefore(newSubtitle, mainContainer.firstChild);
+                    }
+
+                    // 2. Mobile Tabs Logic
+                    const pages = document.querySelectorAll('.page');
+                    pages.forEach(page => {
+                        const slideId = page.id.replace('page-', '');
+                        
+                        // Wrap content for scroll margin fix
+                        const imgContainer = document.getElementById('img-view-' + slideId);
+                        const textContainer = document.getElementById('text-view-' + slideId);
+                        if(imgContainer) imgContainer.classList.add('slide-content-wrapper');
+                        if(textContainer) textContainer.classList.add('slide-content-wrapper');
+
+                        // Create Tab Bar
+                        const tabBar = document.createElement('div');
+                        tabBar.className = 'mobile-tab-bar';
+                        
+                        const modes = [
+                            { label: '🖼️ 圖片', value: 'img', icon: '' },
+                            { label: '📄 文字', value: 'text', icon: '' },
+                            { label: '📝 備忘', value: 'notes', icon: '' }
+                        ];
+                        
+                        const btns = {};
+
+                        modes.forEach(mode => {
+                            const btn = document.createElement('button');
+                            btn.innerHTML = mode.label;
+                            // Base Tab Button Style
+                            btn.style.cssText = `
+                                flex: 1; padding: 8px; font-size: 14px; border: none; 
+                                background: transparent; cursor: pointer; color: var(--muted); 
+                                transition: all 0.2s; margin: 0 4px; border-radius: 8px; font-weight: 500;
+                            `;
+                            
+                            btn.onclick = (e) => {
+                                e.preventDefault();
+                                switchTab(mode.value);
+                                // Optional: scroll to top of section slightly if needed
+                            };
+                            
+                            tabBar.appendChild(btn);
+                            btns[mode.value] = btn;
+                        });
+
+                        page.insertBefore(tabBar, page.firstChild);
+
+                        const notesContainer = page.querySelector('.notes');
+                        if(notesContainer) notesContainer.classList.add('slide-content-wrapper');
+                        const desktopToggle = page.querySelector('.slide-controls');
+
+                        function switchTab(mode) {
+                            // Update Buttons
+                            Object.values(btns).forEach(b => {
+                                b.style.background = 'transparent';
+                                b.style.color = 'var(--muted)';
+                                b.style.boxShadow = 'none';
+                            });
+                            
+                            // Active State (Pill style)
+                            if(btns[mode]) {
+                                btns[mode].style.background = '#e0e7ff'; // Light Indigo
+                                btns[mode].style.color = '#4338ca'; // Indigo 700
+                                btns[mode].style.boxShadow = 'inset 0 0 0 1px #c7d2fe';
+                            }
+
+                            // Visibility
+                            if(imgContainer) imgContainer.style.display = (mode === 'img' ? 'block' : 'none');
+                            if(textContainer) textContainer.style.display = (mode === 'text' ? 'block' : 'none');
+                            if(notesContainer) notesContainer.style.display = (mode === 'notes' ? 'block' : 'none');
+                            
+                            if(desktopToggle) desktopToggle.style.display = 'none';
+                        }
+
+                        // Init
+                        if (window.innerWidth <= 768) {
+                            switchTab('img');
+                        }
+                    });
+                    
+                    // Recalculate header height one more time after DOM manip
+                    setTimeout(handleScroll, 100);
+                });
             </script>
+            
             </head>
 <body>
 <header>
