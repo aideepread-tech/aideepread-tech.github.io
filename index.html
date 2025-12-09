@@ -162,8 +162,24 @@
                                 <span v-for="(tag, idx) in parseTags(item.tags).slice(0,3)" :key="idx" class="text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded font-medium">{{ tag }}</span>
                             </div>
                             <p class="text-slate-600 text-sm line-clamp-3 mb-4 leading-relaxed flex-grow">{{ item.summary }}</p>
+
+                            <div v-if="item.source_title || item.source_url" class="mt-4 mb-4 pt-4 border-t border-slate-100 text-xs">
+                                <div class="flex items-center gap-1 text-slate-400 font-bold mb-1.5 uppercase tracking-wide text-[10px]">
+                                    <i class="ph-bold ph-book-bookmark"></i> Source / 原始文獻
+                                </div>
+                                
+                                <div v-if="item.source_title" class="font-medium text-slate-700 mb-1 leading-normal line-clamp-2" :title="item.source_title">
+                                    {{ item.source_title }}
+                                </div>
+                                <div v-if="item.source_author" class="text-slate-500 italic mb-1 line-clamp-1">
+                                    {{ item.source_author }}
+                                </div>
+                                <a v-if="item.source_url" :href="item.source_url" target="_blank" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline mt-1 font-medium transition">
+                                    閱讀原文 <i class="ph-bold ph-arrow-square-out"></i>
+                                </a>
+                            </div>
                             
-                            <a :href="item.guide_link" target="_blank" class="w-full bg-slate-900 hover:bg-blue-600 text-white py-2.5 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 shadow-sm group/btn">
+                            <a :href="item.guide_link" target="_blank" class="w-full bg-slate-900 hover:bg-blue-600 text-white py-2.5 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 shadow-sm group/btn mt-auto">
                                 <i class="ph ph-presentation-chart text-lg"></i> 閱讀簡報
                                 <i class="ph ph-arrow-right opacity-0 -ml-2 group-hover/btn:opacity-100 group-hover/btn:ml-0 transition-all"></i>
                             </a>
@@ -271,11 +287,11 @@
     document.getElementById('currentYear').textContent = new Date().getFullYear();
     const { createApp } = Vue;
     
-    // ⚠️ 請務必更換為您的 Google Apps Script 部署網址 ⚠️
+    // ⚠️ 請務必確認為您的 Google Apps Script 部署網址 ⚠️
     const API_URL = 'https://script.google.com/macros/s/AKfycbwyvcXmC7NO8b1JfE1LufcAQURHbDlo-KIiYjzBK0Gf6XV5ySbu3iSRE0F8at4hvvf9TQ/exec'; 
     
     // 連結設定
-    const WISH_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSeFvIvo8i4tpglifjcnXn_R_cFy4csRPZEOzNxf07QFmguvmA/viewform?usp=sharing';
+    const WISH_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSeFvIvo8i4tpglifjcnXn_R_cFy4csRPZEOzNxf07QFmguvmA/viewform?usp=header';
     const VIDEO_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSe6QupbMCAPBQA6inA6a88iZAUeIAbY5uiZ8aiRPyIFZDLx4A/viewform?usp=header'; // 請填入投稿影片的 Google Form 連結
 
     createApp({
@@ -292,9 +308,10 @@
                 hasMore: true,
                 totalItems: 0,
                 searchTimer: null,
-                votedTopics: [], // 本地紀錄已投票主題
+                votedTopics: [], 
                 wishFormUrl: WISH_FORM_URL,
-                videoFormUrl: VIDEO_FORM_URL
+                videoFormUrl: VIDEO_FORM_URL,
+                observer: null // 新增 observer 狀態
             }
         },
         watch: {
@@ -304,13 +321,43 @@
                 this.searchTimer = setTimeout(() => { this.resetAndFetch(); }, 500);
             }
         },
+        // 關鍵修正：當 Vue 更新 DOM 後 (例如載入資料後)，檢查是否需要綁定監聽器
+        updated() {
+            if (this.currentView === 'articles' && !this.initialLoading && !this.observer) {
+                this.setupObserver();
+            }
+        },
         methods: {
+            // --- 監聽器設定 ---
+            setupObserver() {
+                const trigger = document.getElementById('infinite-scroll-trigger');
+                if (!trigger) return; // 如果元素還沒出現，下次 updated 再試
+
+                const options = { root: null, rootMargin: '200px', threshold: 0.1 };
+                this.observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        // 確保有更多資料、沒有在載入中、且真的捲動到了底部
+                        if (entry.isIntersecting && this.hasMore && !this.loadingMore && !this.initialLoading) {
+                            this.loadingMore = true;
+                            this.fetchData();
+                        }
+                    });
+                }, options);
+                
+                this.observer.observe(trigger);
+            },
+            
             // --- 資料抓取邏輯 ---
             resetAndFetch() {
                 this.page = 1;
                 this.contentList = [];
                 this.hasMore = true;
                 this.initialLoading = true;
+                // 重置 observer
+                if (this.observer) {
+                    this.observer.disconnect();
+                    this.observer = null;
+                }
                 this.fetchData();
             },
             fetchData() {
@@ -327,19 +374,16 @@
                 fetch(`${API_URL}?${params.toString()}`)
                     .then(res => res.json())
                     .then(data => {
-                        // 處理 Content
                         if (this.page === 1) {
                             this.contentList = data.content;
                         } else {
                             this.contentList = [...this.contentList, ...data.content];
                         }
                         
-                        // 處理 Wishlist (只在第一頁更新)
                         if (data.wishlist && data.wishlist.length > 0) {
                             this.wishlist = data.wishlist;
                         }
 
-                        // 更新分頁狀態
                         this.totalItems = data.meta.total;
                         this.hasMore = data.meta.hasMore;
                         this.page++;
@@ -361,18 +405,15 @@
                 const topic = item['主題'];
                 if (this.hasVoted(topic)) return;
 
-                // 1. 樂觀 UI 更新 (立即顯示變化)
                 const originalVotes = Number(item['票數']) || 0;
                 const originalDown = Number(item['沒興趣']) || 0;
                 
                 if (type === 'up') item['票數'] = originalVotes + 1;
                 if (type === 'down') item['沒興趣'] = originalDown + 1;
 
-                // 2. 紀錄已投票 (LocalStorage)
                 this.votedTopics.push(topic);
                 localStorage.setItem('deepread_voted', JSON.stringify(this.votedTopics));
 
-                // 3. 發送請求 (x-www-form-urlencoded)
                 const formData = new URLSearchParams();
                 formData.append('topic', topic);
                 formData.append('type', type);
@@ -385,8 +426,6 @@
                 .then(res => res.json())
                 .then(res => {
                     if (res.status !== 'success') {
-                        // 失敗回滾
-                        console.error('Vote failed:', res.message);
                         item['票數'] = originalVotes;
                         item['沒興趣'] = originalDown;
                         this.votedTopics = this.votedTopics.filter(t => t !== topic);
@@ -396,7 +435,6 @@
                 })
                 .catch(err => {
                     console.error('Vote Error:', err);
-                    // 失敗回滾
                     item['票數'] = originalVotes;
                     item['沒興趣'] = originalDown;
                     this.votedTopics = this.votedTopics.filter(t => t !== topic);
@@ -411,7 +449,6 @@
             },
             formatDate(dateStr) {
                 if (!dateStr) return '';
-                // 嘗試處理各種日期格式
                 const d = new Date(dateStr);
                 return isNaN(d.getTime()) ? dateStr : d.toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' });
             },
@@ -428,33 +465,14 @@
             }
         },
         mounted() {
-            // 讀取本地投票紀錄
             const savedVotes = localStorage.getItem('deepread_voted');
             if (savedVotes) {
                 try {
                     this.votedTopics = JSON.parse(savedVotes);
                 } catch(e) { console.error('Error parsing votes'); }
             }
-
-            // 初始抓取
             this.fetchData();
-
-            // 設定無限捲動觀察器
-            const options = { root: null, rootMargin: '200px', threshold: 0.1 };
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && this.hasMore && !this.initialLoading && !this.loadingMore) {
-                        this.loadingMore = true;
-                        this.fetchData();
-                    }
-                });
-            }, options);
-
-            // 延遲綁定 Observer
-            setTimeout(() => {
-                const trigger = document.getElementById('infinite-scroll-trigger');
-                if (trigger) observer.observe(trigger);
-            }, 800);
+            // 注意：這裡移除了原本的 setTimeout observer 綁定，改由 updated() 自動處理
         }
     }).mount('#app');
 </script>
