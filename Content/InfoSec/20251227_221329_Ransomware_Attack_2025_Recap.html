@@ -1,0 +1,2235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ransomware_Attack_2025_Recap - PPTPlaner</title>
+<style>
+  :root{
+    --header-height: 100px;
+    --bg:#ffffff; --fg:#0f172a; --muted:#64748b; --card:#f8fafc; --accent:#2563eb; --accent-2:#1d4ed8;
+    --border:#e2e8f0; --ok:#16a34a; --warn:#ca8a04; --bad:#dc2626; --pill:#e0e7ff;
+  }
+  .dark{
+    --bg:#0b1220; --fg:#e5e7eb; --muted:#94a3b8; --card:#0f172a; --accent:#60a5fa; --accent-2:#3b82f6;
+    --border:#1f2937; --ok:#22c55e; --warn:#f59e0b; --bad:#f87171; --pill:#172554;
+  }
+  *{box-sizing:border-box}
+  body{margin:0; font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",Arial,"Apple Color Emoji","Segoe UI Emoji"; background:var(--bg); color:var(--fg);}
+  
+  /* --- Header Styling (Dynamic) --- */
+  header {
+      position: sticky; 
+      top: 0; 
+      z-index: 1000; 
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 0;
+      width: 100%;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 16px;
+      transition: all 0.3s;
+  }
+
+  header h1 {
+      margin: 0; 
+      font-size: 22px;
+      line-height: 1.3;
+      color: var(--fg);
+      font-weight: 700;
+      transition: font-size 0.3s;
+  }
+
+  /* Scrolled State (Compact) */
+  body.scrolled-mode header {
+      padding: 8px 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px -5px rgba(0,0,0,0.1);
+  }
+  
+  body.scrolled-mode header h1 {
+      font-size: 18px;
+      color: var(--fg);
+  }
+
+  /* Hide subtitle/meta in header on scroll (handled by JS moving it or CSS hiding) */
+  body.scrolled-mode header .header-extras { display: none !important; }
+  body.scrolled-mode header .header-wrapper { align-items: center; } /* Center vertically when compact */
+
+  .container{max-width:1100px; margin:0 auto; padding:16px;}
+  
+  .header-wrapper { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+  .header-left { flex: 1; min-width: 0; } /* min-width 0 allows text truncation if needed */
+  .header-right { flex-shrink: 0; padding-top: 4px; }
+
+  .header-extras { margin-top: 12px; transition: opacity 0.2s; }
+  
+  .source-btn {
+      display: inline-flex; align-items: center; gap: 4px; padding: 6px 16px; 
+      background-color: var(--pill); color: var(--accent); text-decoration: none; 
+      border-radius: 20px; font-size: 13px; font-weight: 500; border: 1px solid var(--border); 
+      transition: all 0.2s; white-space: nowrap;
+  }
+  .source-btn:hover { background-color: var(--border); }
+
+  p.subtitle{
+      margin:0 0 5px; 
+      color:var(--muted); 
+      font-size:14px; 
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+  }
+  
+  .toolbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:8px 0 12px;}
+  button{padding:8px 12px; font-size: 14px; border:1px solid var(--border); border-radius:12px; background:var(--card); color:var(--fg); cursor:pointer;}
+  button:hover{background-color: var(--border);}
+  .hr{height:1px; background:var(--border); margin:10px 0;}
+  .footer{color:var(--muted); font-size:12px; padding:20px 0 40px; text-align:center;}
+  .meta{display:flex; flex-wrap:wrap; gap:10px; margin:6px 0 8px;}
+  .meta a{color:var(--accent); text-decoration:none;}
+  .meta a:hover{text-decoration:underline;}
+
+  /* --- Layout Styles for side-by-side view --- */
+  .page {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      padding: 40px 0;
+      margin-bottom: 0;
+      align-items: flex-start;
+      scroll-margin-top: 120px; /* Offset for anchor jumping */
+  }
+  
+  .slide {
+      flex: 1;
+      padding-right: 30px;
+      border-right: 1px solid var(--border);
+      min-width: 0;
+      position: sticky;
+      top: calc(var(--header-height) + 20px);
+      height: fit-content; 
+      max-height: calc(100vh - var(--header-height) - 40px);
+      overflow-y: auto;
+  }
+  
+  .notes {
+      flex: 1;
+      padding-left: 30px;
+      min-width: 0;
+  }
+
+  h2 { border-bottom: 1px solid var(--border); padding-bottom: 10px; color: var(--fg); font-size: 18px; margin-top: 0; }
+  pre { background: var(--card); padding: 15px; border-radius: 8px; white-space: pre-wrap; word-wrap: break-word; border: 1px solid var(--border); font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; }
+  
+  /* --- SVG & Toggle Styles --- */
+  .slide-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .img-text-toggle-btn {
+      padding: 4px 10px;
+      background: var(--pill);
+      color: var(--accent);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+  }
+
+  .svg-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background-color: var(--card);
+    border: 1px solid var(--border);
+  }
+  .svg-container svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .conceptual-svg-container {
+    width: 100%;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background-color: var(--card);
+    padding: 10px;
+    border: 1px solid var(--border);
+  }
+  .conceptual-svg-container svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Generic styles for rendered markdown content */
+  .rendered-content h1, .rendered-content h2, .rendered-content h3, .rendered-content h4, .rendered-content h5, .rendered-content h6 { border-bottom: none; padding-bottom: 5px; margin-top: 20px; }
+  .rendered-content ul, .rendered-content ol { padding-left: 25px; }
+  .rendered-content code { background-color: var(--pill); padding: 2px 5px; border-radius: 3px; font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; }
+  .rendered-content blockquote { border-left: 4px solid var(--accent); padding-left: 15px; color: var(--muted); margin-left: 0; background: var(--card); padding: 10px 15px; border-radius: 0 8px 8px 0; }
+  .rendered-content table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+  .rendered-content th, .rendered-content td { border: 1px solid var(--border); padding: 8px; }
+  .rendered-content th { background-color: var(--card); }
+  .rendered-content img { max-width: 100%; height: auto; display: block; margin: 1em 0; border-radius: 8px; }
+
+  /* --- Mobile Layout --- */
+  .mobile-tab-bar { display: none; }
+
+  @media (max-width: 768px) {
+      :root {
+          --header-height: 60px;
+      }
+
+      .page { 
+          display: block !important; 
+          padding-top: 0 !important; 
+          border-bottom: 8px solid #f1f5f9 !important; 
+          padding-bottom: 30px;
+      }
+      .slide { 
+          padding-right: 0 !important; 
+          border-right: none !important; 
+          border-bottom: none !important;
+          margin-bottom: 0 !important; 
+          position: static !important; 
+          max-height: none !important;
+      }
+      .notes { 
+          padding-left: 0 !important; 
+          margin-top: 10px;
+      }
+      .slide-controls { display: none !important; }
+      
+      /* Mobile Sticky Tab Bar */
+      .mobile-tab-bar { 
+          display: flex !important; 
+          position: sticky;
+          top: var(--header-height);
+          z-index: 900;
+          background: rgba(255, 255, 255, 0.98);
+          backdrop-filter: blur(8px);
+          padding: 8px 16px;
+          border-bottom: 1px solid var(--border);
+          margin: 0 -16px 20px -16px; /* Full width bleed */
+          box-shadow: 0 4px 6px -4px rgba(0,0,0,0.05);
+          justify-content: space-around;
+      }
+      
+      .mobile-tab-btn {
+          flex: 1; padding: 8px; font-size: 14px; border: none; 
+          background: transparent; cursor: pointer; color: var(--muted); 
+          transition: all 0.2s; margin: 0 2px; border-radius: 8px; font-weight: 500;
+      }
+      .mobile-tab-btn.active {
+          background: var(--pill);
+          color: var(--accent);
+          box-shadow: inset 0 0 0 1px var(--border);
+      }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <div class="header-wrapper">
+        <div class="header-left">
+            <h1>Ransomware Attack 2025 Recap – From Critical Data Extortion to Operational Disruption</h1>
+            <div class="header-extras">
+                <p class="subtitle">2025年勒索軟體呈現「攻擊激增、支付驟降」的矛盾格局。儘管攻擊量成長近50%，但支付率跌至歷史新低（23-25%），迫使駭客轉向更激進的多重勒索與雲端滲透。本報告深度剖析Qilin、Cl0p等關鍵犯罪組織，並透過重大案例探討其對國家安全與全球經濟穩定性的深遠威脅。</p>
+                
+                <div class="meta-info" style="font-size: 13px; color: var(--muted); margin-top:8px;">
+                    By Guru Baran
+                </div>
+                
+            </div>
+        </div>
+        <div class="header-right">
+            
+            <a href="https://cybersecuritynews.com/ransomware-attack-2025-recap/" target="_blank" class="source-btn">
+                <span>🔗</span> 原文連結
+            </a>
+            
+        </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  
+  <div class="overview-section" style="margin-bottom: 40px;">
+      <h2 style="font-size: 20px; border-bottom: 2px solid var(--accent); display: inline-block; padding-bottom: 5px; margin-bottom: 15px;">Project Overview</h2>
+      <div class="rendered-content" style="font-size: 16px; line-height: 1.7; color: var(--fg);">
+          <p>2025年勒索軟體已進化為影響國家安全的策略威脅。本報告揭示攻擊量雖成長50%，但受害者支付率降至23%的新低，導致駭客轉向更具破壞性的「多重勒索」。分析涵蓋Qilin與Cl0p等集團如何利用AI釣魚與零日漏洞滲透醫療及製造業基礎設施。透過剖析Change Healthcare與Synnovis等重大案例，報告強調攻擊已從資料加密轉向「營運中斷」，甚至威脅病患生命。這份回顧為企業提供防禦策略，強調主動備份與雲端防護在對抗破碎化駭客生態系中的關鍵性。</p>
+
+      </div>
+  </div>
+  
+  
+  
+        <div class="page" id="page-01">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('01', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('01', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('01', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-01">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 01</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-01" >
+                    <h1>Ransomware Attack 2025 Recap</h1>
+<h2>From Critical Data Extortion to Operational Disruption</h2>
+<ul>
+<li><strong>Strategic Threat</strong>: Ransomware has evolved from a cybersecurity issue into a threat to national security and economic stability.</li>
+<li><strong>Persistent Surge</strong>: Attacks increased by 34%-50% compared to 2024, with over 4,700 confirmed incidents by September 2025.</li>
+<li><strong>Operational Shift</strong>: Focus has moved from simple data encryption to the deliberate disruption of critical infrastructure.</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-01">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 1 頁：Ransomware Attack 2025 Recap</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>戰略威脅轉型</strong>：勒索軟體已超越單純的資安議題，升級為國家安全與經濟穩定的重大威脅。</li>
+<li><strong>數據驚人成長</strong>：2025 年攻擊量較去年激增 34% 至 50%，僅前三季就有超過 4,700 起確診案例。</li>
+<li><strong>目標重心轉移</strong>：攻擊行為從單純的「資料加密」轉向有目的性的「基礎設施癱瘓」。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>各位好，歡迎參加今日的專題報告。我們今天要深入探討的是 <strong>2025 年勒索軟體攻擊的回顧與分析</strong>。</p>
+<p>站在 2025 年的當下，我們觀察到一個非常關鍵且令人不安的趨勢：勒索軟體已經不再只是企業內部的 IT 問題，而是演變成一種足以影響全球佈局的結構性威脅。</p>
+<h5>① 勒索軟體的戰略威脅轉型</h5>
+<p>首先，我們必須認知到勒索軟體的定位已經發生了質變。在文獻中，作者特別強調：</p>
+<blockquote>
+<p><strong>&quot;Ransomware has evolved from a cybersecurity issue into a threat to national security and economic stability.&quot;</strong>
+（勒索軟體已從一項網路安全問題，演變為對國家安全與全球經濟穩定的戰略威脅。）</p>
+</blockquote>
+<p>這意味著現在的攻擊者，其目標不再僅僅是獲取小額金錢，而是試圖透過打擊核心產業，來動搖整個國家的運作機制。</p>
+<h5>② 攻擊頻率的持續激增</h5>
+<p>接著，讓我們看一組令人震撼的數據。2025 年的勒索軟體版圖達到了新的高度。根據統計，今年 1 月至 9 月間，全球已確認的攻擊事件達到 <strong>4,701 起</strong>。與 2024 年同期相比，攻擊量激增了 <strong>34% 到 50%</strong>。這種 <strong>Persistent Surge</strong>（持續激增）的態勢，讓勒索軟體成為現代歷史上最持久且具破壞力的網路犯罪手段。</p>
+<h5>③ 從數據加密到運作中斷</h5>
+<p>最後，我們要關注的是攻擊手法的 <strong>Operational Shift</strong>（操作轉向）。過去我們熟悉的場景是檔案被鎖住、需要解密金鑰；但在 2025 年，攻擊者的策略發生了轉變。他們開始刻意針對「關鍵基礎設施（Critical Infrastructure）」進行攻擊。</p>
+<p>這代表什麼？這代表攻擊的目的已經從單純的 <strong>Data Extortion</strong>（數據勒索），進化到了 <strong>Operational Disruption</strong>（運作中斷）。他們不再只是要你的檔案，他們是要你的工廠停工、醫院癱瘓、甚至是能源供應中斷，藉此施加最高強度的壓力來獲取利益。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在提到「4,701 起攻擊」時，請稍作停頓，讓聽眾消化這個龐大數據背後的意義。</li>
+<li><strong>關鍵詞強調</strong>：強調 <strong>&quot;Strategic Threat&quot;</strong> 與 <strong>&quot;National Security&quot;</strong>，這兩個詞標誌著勒索軟體在 2025 年的新定義。</li>
+<li><strong>關鍵原文提醒</strong>：<strong>&quot;Operational Disruption&quot;</strong> 是本報告的核心詞彙，請在唸到時加重語氣。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>雖然攻擊頻率與破壞力都在攀升，但有趣的是，勒索軟體集團正正面臨一個前所未有的財務危機。為什麼攻擊變多了，錢卻變難賺了？下一頁，我們來探討「2025 年的勒索悖論」。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-02">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('02', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('02', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('02', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-02">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 02</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-02" >
+                    <h1>The 2025 Extortion Paradox</h1>
+<h2>Soaring Volumes vs. Plummeting Payments</h2>
+<ul>
+<li><strong>Incident Frequency</strong>: Global attacks reached a record 6,330 cases on leak sites by October 2025.</li>
+<li><strong>Payment Collapse</strong>: Ransom payment rates fell to historic lows of <strong>23-25%</strong>.</li>
+<li><strong>Business Model Stress</strong>: Threat actors are forced to reimagine extortion tactics as conversion rates decline.</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-02">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 2 頁：The 2025 Extortion Paradox</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>數據矛盾</strong>：2025 年勒索軟體攻擊次數創下歷史新高，但受害者的付費意願卻降至冰點。</li>
+<li><strong>攻擊激增</strong>：截至 2025 年 10 月，外洩網站上記錄了 6,330 起案件，較去年同期增長近 50%。</li>
+<li><strong>付費率崩盤</strong>：贖金支付率跌至 <strong>23-25%</strong> 的歷史新低，顯示防禦方的復原能力大幅提升。</li>
+<li><strong>商業模式重構</strong>：面對投資報酬率（ROI）的下降，犯罪集團正被迫開發更激進的勒索手段。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>各位，我們現在來到這場報告中最引人入勝的部分。這是一個被業界稱為 <strong>「2025 勒索悖論 (The 2025 Extortion Paradox)」</strong> 的怪異現象。簡單來說，攻擊者正在「加班」，但他們的「薪水」卻越來越難拿。</p>
+<p>我們可以從以下三個面向來解構這個現象：</p>
+<h5>① 瘋狂增長的攻擊量</h5>
+<p>首先，我們來看看螢幕左側的數據。2025 年的勒索軟體市場呈現出一種 <strong>「Soaring Volumes (激增的攻擊量)」</strong>。文中指出，光是 2025 年 1 月到 9 月，全球就有 4,701 起確定的事件。如果我們觀察 Dark Web 上的外洩網站，截至 10 月，數字更是攀升到了 6,330 起，這比 2024 年同期整整增加了 47%。</p>
+<blockquote>
+<p>文中特別提到一個驚人的數據：在 2025 年第三季，全球平均<strong>每 19 秒</strong>就有一家機構淪為受害者。這種高頻率的攻擊，顯示勒索軟體已經從單純的資安問題，升級為影響全球經濟穩定的策略性威脅。</p>
+</blockquote>
+<h5>② 歷史性的付費率崩盤</h5>
+<p>但有趣的地方來了，請看右側的數據。與攻擊量成反比的是 <strong>「Plummeting Payments (暴跌的付費率)」</strong>。在 2025 年，支付贖金的比例竟然跌到了 <strong>23% 至 25%</strong> 之間。這代表什麼？這代表每四家被勒索的企業，就有三家拒絕付錢。</p>
+<p>這不是因為駭客變仁慈了，而是因為防禦方變強了。企業不再僅僅依賴付錢來換取解密金鑰，而是透過更強大的備份系統、韌性架構，以及更成熟的應變機制來恢復運作。</p>
+<h5>③ 駭客的「中年危機」</h5>
+<p>這種現象直接導致了勒索軟體集團的 <strong>「Business Model Stress (商業模式壓力)」</strong>。勒索本質上是一種「投資報酬率」的計算，當成交率大幅下降，這些犯罪集團被迫開始「轉型」。</p>
+<blockquote>
+<p>正如報告所指出的，犯罪者的總收入從 2023 年的 11 億美元降到了 2024 年的 8.1 億美元。</p>
+</blockquote>
+<p>為了彌補損失，他們不再只是加密檔案，而是開始轉向更激進的 <strong>「Multi-extortion (多重勒索)」</strong>。這包括資料竊取、DDoS 攻擊，甚至直接騷擾受害者的員工或合作夥伴。這場貓鼠遊戲，正在進入一個更加不擇手段的新階段。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在提到「每 19 秒就有一個受害者」時，請稍微停頓，讓聽眾感受到那種緊迫感。</li>
+<li><strong>關鍵詞強調</strong>：唸到 <strong>&quot;The 2025 Extortion Paradox&quot;</strong> 時請加重語氣，這是本章的核心概念。</li>
+<li><strong>補充案例</strong>：如果時間允許，可以提到文中說的：單純的「資料盜竊」事件中，付費率甚至低到了 19%，這顯示聽眾對於「付錢買平安」的信心正在崩解。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>了解了這種「量升價跌」的宏觀趨勢後，接下來，我們將進一步剖析這些攻擊在全球各地的具體分佈，看看哪些國家正處於風暴中心。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-03">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('03', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('03', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('03', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-03">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 03</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-03" >
+                    <h1>Global Incident Volume and Reach</h1>
+<h2>Unprecedented Frequency Across Nations</h2>
+<ul>
+<li><strong>Attack Cadence</strong>: By Q3 2025, an organization fell victim to ransomware approximately every <strong>19 seconds</strong>.</li>
+<li><strong>Geographic Concentration</strong>:
+<ul>
+<li><strong>United States</strong>: Accounted for ~21% of all attacks.</li>
+<li><strong>Canada</strong>: The second most targeted nation.</li>
+<li><strong>Australia</strong>: Emerged as a top-five target with a 67% increase in activity.</li>
+</ul>
+</li>
+<li><strong>Sustained Escalation</strong>: October 2025 saw 623 incidents, marking the sixth consecutive monthly increase.</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-03">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 03 頁：Global Incident Volume and Reach</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>攻擊頻率 (Attack Cadence)</strong>：2025 年第三季達到每 19 秒一次攻擊的驚人速度。</li>
+<li><strong>地理分佈 (Geographic Concentration)</strong>：美國 (United States) 仍是首要目標，澳洲 (Australia) 則因資源豐富成為新興熱點。</li>
+<li><strong>持續升級 (Sustained Escalation)</strong>：2025 年 10 月記錄了 623 起事故，呈現連續六個月增長的態勢。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>各位，當我們談論勒索軟體的威脅時，數字往往是最直觀的警鐘。這張投影片揭示了 2025 年勒索軟體在全球範圍內那種「令人窒息」的擴張速度與廣度。</p>
+<h5>① 攻擊頻率的極速化 (Attack Cadence)</h5>
+<p>我們首先來看整份報告中最震撼的一個數據。</p>
+<blockquote>
+<p><strong>&quot;By Q3 2025, an organization fell victim to ransomware approximately every 19 seconds on average.&quot;</strong>
+(到 2025 年第三季，全球平均每 19 秒就有一家機構淪為勒索軟體的受害者。)</p>
+</blockquote>
+<p>這不僅僅是一個統計數字，它代表了一種<strong>全天候、無差別</strong>的威脅態勢。根據 <code>source_file</code> 的分析，光是在 2025 年的第二季，全球企業平均每週要面對將近 2,000 次（1,984 次）的網路攻擊，而勒索軟體在其中佔據了極高的比例。這種頻率意味著，當我們正在進行這場報告的同時，全球已經有數十家企業正陷入加密與勒索的夢魘中。</p>
+<h5>② 地理分佈的集中化 (Geographic Concentration)</h5>
+<p>接著，我們觀察這些攻擊的落點。勒索軟體組織顯然遵循著「利益最大化」的原則，將目標鎖定在經濟發達國家。</p>
+<ul>
+<li><strong>United States (美國)</strong>：依然是全球受災最嚴重的國家，佔了總攻擊量的 21%，約 1,000 起確診案例。</li>
+<li><strong>Canada (加拿大)</strong>：以 361 起攻擊位居全球第二。</li>
+<li><strong>Australia (澳洲)</strong>：這是今年最值得關注的轉變。澳洲首次躍升為全球前五大目標，其攻擊量激增了 <strong>67%</strong>。文中提到，這是因為澳洲擁有豐富的資源與極高的「人均國內生產總值」(High per-capita GDP)，使其成為駭客眼中含金量極高的目標。</li>
+</ul>
+<p>除此之外，德國、英國與義大利也緊隨其後，顯示出整個已開發經濟體都在駭客的射程範圍內。</p>
+<h5>③ 持續升級的態勢 (Sustained Escalation)</h5>
+<p>最後，我們看趨勢線。勒索軟體的活動並未因各國政府的打擊而放緩，反而呈現「持續升級 (Sustained Escalation)」的態勢。</p>
+<blockquote>
+<p><strong>&quot;October 2025 saw 623 incidents, marking the sixth consecutive monthly increase.&quot;</strong>
+(2025 年 10 月發生了 623 起事故，這已經是連續第六個月的活動增長。)</p>
+</blockquote>
+<p>10 月份的數據僅次於 2025 年 2 月的峰值。這說明了勒索軟體並非季節性的威脅，而是一個正在加速的惡性循環。駭客組織正在以更快的節奏進行攻擊，試圖在防禦技術更新之前，最大化他們的入侵成果。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在提到「每 19 秒 (Every 19 seconds)」時，可以停頓 3 秒，讓聽眾感受那個速度感。</li>
+<li><strong>關鍵詞強調</strong>：強調澳洲 (Australia) 的 <strong>67%</strong> 增長，這是一個很強的新興趨勢指標。</li>
+<li><strong>關鍵原文對照</strong>：確保提及 <strong>Attack Cadence</strong> 與 <strong>Sustained Escalation</strong>，這能展現報告的專業深度。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>既然攻擊頻率如此之高，那駭客到底賺了多少錢？有趣的是，數據告訴我們一個矛盾的現象：攻擊變多了，但付錢的人卻變少了。下一頁，我們來探討這個所謂的『勒索悖論』。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-04">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('04', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('04', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('04', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-04">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 04</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-04" >
+                    <h1>The Collapse of Ransom Payment Rates</h1>
+<h2>Existential Crisis for the Ransomware Business Model</h2>
+<ul>
+<li><strong>Payment Trends</strong>: Only 23% of victims paid in Q3 2025; for pure data theft, the rate dropped to 19%.</li>
+<li><strong>Driving Forces</strong>:
+<ul>
+<li>Improved backup and recovery capabilities.</li>
+<li>Growing awareness that payment does not guarantee data safety.</li>
+<li>Robust cybersecurity postures enabling faster response.</li>
+</ul>
+</li>
+<li><strong>Financial Impact</strong>: Total revenues fell from $1.1B (2023) to ~$813.6M (2024).</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-04">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 4 頁：The Collapse of Ransom Payment Rates</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>支付率崩跌</strong>：2025 年 Q3 僅 23% 受害者付費，純數據竊取案件更降至 19%。</li>
+<li><strong>三大驅動力</strong>：備份技術提升、對勒索信用破產的認知增加、及更強韌的資安防禦。</li>
+<li><strong>財務重創</strong>：勒索軟體產業總營收從 11 億美元下滑至 8 億美元，犯罪獲利正在縮減。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>各位，如果我們把勒索軟體視為一種「商業模式」，那麼 2025 年它正遭逢一場前所未有的「生存危機」。雖然攻擊次數在增加，但駭客最看重的利潤率卻正在崩盤。</p>
+<h5>① 支付趨勢的雪崩式下滑</h5>
+<p>根據報告顯示，勒索軟體的支付率已經跌至歷史新低。在 2025 年第三季，全球僅有 <strong>23%</strong> 的受害者選擇支付贖金；而在「純數據竊取」——也就是沒有加密檔案、僅威脅外流數據的案件中，支付率甚至掉到了 <strong>19%</strong>。</p>
+<blockquote>
+<p>這是勒索軟體經濟的一個分水嶺。正如資安公司 <strong>Coveware</strong> 的報告指出，在 2024 年底，願意付錢的組織就已經降到了 25% 的歷史低點，這意味著現在每四家被攻擊的企業中，就有三家能拒絕付錢並挺過難關。</p>
+</blockquote>
+<h5>② 讓犯罪成本大幅提高的驅動力</h5>
+<p>為什麼駭客愈來愈難收錢？文中分析了三個核心驅動力：
+首先是 <strong>Improved backup and recovery capabilities</strong>。企業不再受制於駭客的解密金鑰，因為更強大、更難被破壞的備份系統讓恢復運作變得可行。
+其次，企業界終於意識到：<strong>Paying ransoms often fails</strong>。支付贖金既不能保證駭客會銷毀數據，也無法避免第二次勒索。
+最後，是企業整體的資安體質提升，更快的偵測與應變能力，讓受害者能在損害擴大前就先行止血。</p>
+<h5>③ 獲利縮減與市場修正</h5>
+<p>這直接導致了勒索軟體產業鏈的營收縮減。全球勒索贖金的總收入從 2023 年的 11 億美元，大幅下滑至 2024 年的約 <strong>8.13 億美元</strong>。</p>
+<ul>
+<li><strong>Average ransom payments</strong>：2025 年 Q3 的平均贖金為 37 萬美元，比前一季下降了 66%。</li>
+<li><strong>Median payments</strong>：中位數也跌至 14 萬美元。</li>
+</ul>
+<p>這顯示出勒索軟體市場正在經歷一場「<strong>Market correction</strong>（市場修正）」。當獲利轉換率暴跌，駭客必須付出比以前多出數倍的努力，才能賺到同樣的一塊錢。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：講到「23%」這個數字時，請稍作停頓，讓聽眾感受到這個數字與前幾頁提到的「攻擊頻率飆升」之間的強烈對比。</li>
+<li><strong>關鍵詞強調</strong>：提到 <strong>Return-on-Investment (ROI)</strong> 時，強調這對犯罪者來說是一場失敗的投資。</li>
+<li><strong>補充案例</strong>：如果有人問起營收下降是否代表威脅減少，請提醒聽眾：雖然總額下降，但針對大型企業的「大獵捕」贖金單價反而可能上升，只是整體成交量變少了。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>當原本穩定獲利的「龍頭企業」開始收不到錢，勒索軟體的生態系會發生什麼變化？下一頁，我們將看到這些大型組織是如何瓦解並分裂成無數個小型碎片。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-05">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('05', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('05', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('05', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-05">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 05</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-05" >
+                    <h1>Ecosystem Fragmentation and Decentralization</h1>
+<h2>Post-Disruption Market Shift</h2>
+<ul>
+<li><strong>Fragmentation</strong>: Disruption of major groups (LockBit, ALPHV) led to 45 newly observed groups in 2025.</li>
+<li><strong>Actor Diversity</strong>: A record 85 distinct threat actors are currently active.</li>
+<li><strong>Market Share Dilution</strong>: The top 10 groups accounted for only 56% of postings by Q3, down from 71% in Q1.</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-05">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 05 頁：Ecosystem Fragmentation and Decentralization</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>權力真空與碎片化</strong>：執法行動瓦解了 LockBit 與 ALPHV 等大型組織，導致 2025 年湧現 45 個新攻擊團體。</li>
+<li><strong>威脅者多元化</strong>：活躍的勒索軟體運作團體數量創下歷史新高，達到 85 個獨立組織。</li>
+<li><strong>市場佔有率稀釋</strong>：前十大團體的影響力顯著下降，佔比從第一季的 71% 降至第三季的 56%。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>各位，如果我們把 2025 年的勒索軟體生態系比作一個江湖，那麼這一年發生的並不是「一統天下」，而是一場劇烈的「權力崩解」。</p>
+<h5>① 從巨頭瓦解到碎片化 (Fragmentation)</h5>
+<p>在 2024 年底到 2025 年初，我們看到了執法部門的重大勝利，特別是針對 LockBit 的 <strong>Operation Cronos</strong> 以及對 ALPHV/<strong>BlackCat</strong> 的持續打擊。然而，正如文中提到的，「野火燒不盡」，這些龍頭組織的瓦解並未終結威脅，反而引發了 <strong>Ecosystem Fragmentation</strong>（生態系碎片化）。</p>
+<blockquote>
+<p>文中指出：隨著大集團的倒下，2025 年僅前三季就觀察到了 45 個新興組織湧入市場，填補了留下的權力真空。</p>
+</blockquote>
+<h5>② 創紀錄的威脅多樣性</h5>
+<p>這導致了一個非常驚人的數據：目前市場上活躍的勒索軟體運作團體，已經達到了破紀錄的 <strong>85 個</strong>。這種高度的去中心化（Decentralization），意味著防禦者不再只需要面對幾個熟悉的對手，而是要應付 80 多個戰術各異、更難預測的散兵游勇。</p>
+<p>這種現象的部分原因在於 <strong>Ransomware-as-a-Service (RaaS)</strong> 模式的普及。核心開發者將工具租賃給加盟商（Affiliates），大幅降低了技術門檻，讓小型犯罪團隊能像連鎖加盟店一樣快速開張。</p>
+<h5>③ 市場稀釋與信用危機</h5>
+<p>最後，請大家看這組數據：前十大最活躍團體的市場佔有率，在第一季還高達 71%，但到了第三季已經稀釋到了 <strong>56%</strong>。這不僅僅是數量的改變，更引發了攻擊者的「信用危機」。</p>
+<p>以往的大型 RaaS 品牌為了長期經營，通常會維持「付錢就給金鑰」的商業信譽；但現在這些短命的小團體（Short-lived groups）缺乏這種品牌包袱。</p>
+<blockquote>
+<p>這種不確定性，也是導致整體贖金支付率跌至歷史新高的原因之一——因為受害者越來越不相信這些無名小卒在收到錢後會真的釋放資料。</p>
+</blockquote>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在提到「85 個活躍團體」時，請稍作停頓，讓聽眾意識到威脅環境的複雜度已大幅增加。</li>
+<li><strong>關鍵詞強調</strong>：<strong>Ecosystem Fragmentation</strong> 與 <strong>RaaS</strong> 是本頁的核心術語，建議加重語氣。</li>
+<li><strong>深度解釋</strong>：如果台下有技術人員，可以補充說明：這種碎片化讓威脅情報（Threat Intelligence）的追蹤變得極其困難，因為攻擊特徵（Signatures）更新得太快。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>在這種大亂鬥的背景下，有一個名字脫穎而出，成為了新的市場霸主。下一頁，我們就來聊聊 2025 年最令人頭痛的對手：<strong>Qilin</strong>。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-06">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('06', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('06', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('06', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-06">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 06</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-06" >
+                    <h1>Qilin: The Rise of a New Market Leader</h1>
+<h2>Dominating the 2025 Landscape</h2>
+<ul>
+<li><strong>Rapid Growth</strong>: Claimed 701 victims by October 2025, quadrupling its 2024 count.</li>
+<li><strong>Technical Profile</strong>: Utilizes Rust-based payloads with advanced features like Safe Mode execution.</li>
+<li><strong>Tactics</strong>: Employs double extortion and targets unpatched vulnerabilities (e.g., Fortinet firewalls).</li>
+<li><strong>Impact</strong>: Responsible for the devastating Synnovis attack affecting UK healthcare.</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-06">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 06 頁：Qilin: The Rise of a New Market Leader</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>爆發式成長</strong>：Qilin 在 2025 年迅速崛起，截至 10 月已累積 701 名受害者，規模達前一年的四倍。</li>
+<li><strong>技術特徵</strong>：採用 Rust 語言編寫的高效能組件，並具備 <strong>Safe Mode execution</strong>（安全模式執行）等先進躲避技術。</li>
+<li><strong>針對性攻勢</strong>：精準利用 <strong>Fortinet</strong> 防火牆漏洞進行滲透，並結合雙重勒索與法律施壓戰術。</li>
+<li><strong>人道衝擊</strong>：策劃了針對英國醫療服務供應商 Synnovis 的攻擊，直接影響病患安全。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>在 2025 年的勒索軟體版圖中，最令人不安的變動莫過於 Qilin（麒麟）的竄升。這支發跡於俄羅斯的組織，正以驚人的速度重塑市場規則。</p>
+<h5>① 爆炸性的擴張路徑</h5>
+<p>文中指出，Qilin 在 2022 年首次出現時名為 <strong>Agenda</strong>，當時僅是小規模運作。然而到了 2025 年，它的受害者數量從前一年的 179 家爆增至 701 家，成長了足足四倍。這種「躍遷式」的成長，很大程度歸功於 2025 年 4 月主要競爭對手 RansomHub 倒閉後，大量熟練的「加盟成員」（Affiliates）帶著資源轉投 Qilin。作者強調，Qilin 已連續六個月蟬聯最活躍勒索軟體榜首，其 10 月單月的攻擊數甚至是第二名 Akira 的三倍之多。</p>
+<h5>② 先進的技術武庫</h5>
+<p>Qilin 之所以強大，源於其高度成熟的 <strong>Ransomware-as-a-Service (RaaS)</strong> 平台。它採用 Rust 和 C 語言開發載荷（Payload），具備極高的執行效率。在技術層面上，它最值得注意的特徵是 <strong>Safe Mode execution</strong>（安全模式執行）。</p>
+<blockquote>
+<p>透過在作業系統進入「安全模式」時啟動執行，Qilin 能繞過絕大多數在正常模式下運行的端點防護軟體（EDR/AV），在完全無阻礙的環境下進行大規模加密。</p>
+</blockquote>
+<h5>③ 針對性漏洞利用與法律施壓</h5>
+<p>在滲透策略上，Qilin 展現了極高的專業度。報告特別提到，該組織在 2025 年 5 月至 6 月間，頻繁利用 <strong>Fortinet</strong> 防火牆的高危漏洞（如 <strong>CVE-2024-21762</strong> 和 <strong>CVE-2024-55591</strong>）攻破企業防線。除了傳統的加密與數據竊取，Qilin 還引入了所謂的「法律施壓戰術」。他們會主動聯繫監管機構或利益相關者，舉報受害企業的數據洩漏行為，藉此逼迫企業為了避免鉅額罰款或名譽損失而支付贖金。</p>
+<h5>④ Synnovis 案例：網絡攻擊的人間悲劇</h5>
+<p>Qilin 最具爭議性的行動是針對英國病理服務供應商 <strong>Synnovis</strong> 的攻擊。這場攻擊要求 5,000 萬美元的贖金，並導致倫敦東南部多所 NHS 醫院陷入癱瘓。</p>
+<ul>
+<li>文中指出，此次事件導致超過 800 場手術與 700 門診預約被取消。</li>
+<li>更沈重的是，調查顯示這次網絡攻擊被確認為導致一名病患死亡的「促成因素」。這標誌著勒索軟體已從財產威脅演變為直接的人身安全威脅。</li>
+</ul>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在提到「Safe Mode execution」與「Fortinet 漏洞」時，請稍微停頓，強調 Qilin 結合了「戰術智慧」與「技術強度」。</li>
+<li><strong>關鍵詞強調</strong>：提到 <strong>Synnovis</strong> 案例時，請語氣嚴肅，這反映了 2025 年勒索軟體最具破壞性的一面：對人類生命的實質威脅。</li>
+<li><strong>領域專家補充</strong>：可補充提到 Rust 語言的選擇並非偶然，它能同時跨 Windows 和 Linux 平台，且具備極強的抗分析特性。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>麒麟依靠的是技術與規模的壓制，但下一頁我們要看的 <strong>Cl0p</strong>，則代表了另一種極端：他們不玩加密，而是將『零日漏洞利用』玩到了極致。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-07">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('07', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('07', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('07', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-07">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 07</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-07" >
+                    <h1>Cl0p: Exploiting Zero-Day Vulnerabilities</h1>
+<h2>A Strategy of Mass Data Exfiltration</h2>
+<ul>
+<li><strong>Operational Shift</strong>: Largely abandoned encryption in favor of pure data extortion.</li>
+<li><strong>Vulnerability Mastery</strong>: Strategic reliance on mass exploitation of zero-days in managed file transfer (MFT) products.</li>
+<li><strong>2025 Campaigns</strong>: Exploited vulnerabilities in <strong>Cleo</strong> products and <strong>Oracle E-Business Suite</strong>.</li>
+<li><strong>Financial Scale</strong>: Has extorted over $500M since its emergence in 2019.</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-07">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 07 頁：Cl0p: Exploiting Zero-Day Vulnerabilities</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>營運轉型</strong>：Cl0p 已從傳統加密轉向「純數據勒索 (Pure Data Extortion)」模式，追求更高的隱蔽性與效率。</li>
+<li><strong>核心優勢</strong>：擅長針對託管文件傳輸 (MFT) 產品進行大規模的 <strong>Zero-day</strong> (零日漏洞) 利用。</li>
+<li><strong>2025 戰績</strong>：上半年大規模攻擊 Cleo 系列產品，下半年則精準打擊 Oracle E-Business Suite。</li>
+<li><strong>經濟影響</strong>：自 2019 年以來，累計勒索所得已突破 <strong>5 億美元</strong>，是目前最具威脅性的駭客組織之一。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>在前面的章節中，我們看過了 Qilin 的快速崛起，但如果要論「技術選型」最為獨特的組織，絕對非 <strong>Cl0p</strong> 莫屬。</p>
+<p>大家過去對勒索軟體的認知，通常是「加密文件、勒索贖金」，但 Cl0p 正在徹底改寫這個規則。</p>
+<h5>① 營運模式的重大轉向 (Operational Shift)</h5>
+<p>首先，Cl0p 展現了一個極為顯著的趨勢：他們已經大幅度放棄了檔案加密，轉向所謂的「<strong>Pure Data Extortion</strong>」——純數據勒索模式。研究顯示，Cl0p 發現比起耗時耗力的全系統加密，直接竊取海量的敏感數據，並以「公開洩露」作為談判籌碼，對企業的殺傷力往往更直接。這種策略讓他們能保持極高的攻擊速度與隱蔽性，甚至在不留下持久性後門的情況下，就完成數據的收割。</p>
+<h5>② 零日漏洞的「大師級」運用 (Vulnerability Mastery)</h5>
+<p>Cl0p 的招牌武器是對 <strong>Managed File Transfer (MFT)</strong>，也就是託管文件傳輸產品的大規模 <strong>Zero-day</strong> 漏洞開發與利用。</p>
+<blockquote>
+<p>文中形容 Cl0p 的策略是「殘酷的高效 (Ruthlessly efficient)」。他們不是亂槍打鳥，而是精準尋找那些專門用於傳輸企業核心機密的第三方平台，只要攻破一個節點，就能像骨牌效應一樣，同時接觸到成千上萬家企業的敏感資產。</p>
+</blockquote>
+<h5>③ 2025 年的兩大關鍵戰役</h5>
+<p>進入 2025 年後，這台勒索機器依然運作得非常精密。</p>
+<ul>
+<li>在第一季，他們利用 <strong>Cleo</strong> 文件傳輸產品的漏洞（如 CVE-2024-50623），僅僅三個月就斬獲了 392 名公開受害者。</li>
+<li>到了 10 月，他們又迅速將 <strong>Oracle E-Business Suite</strong> 的嚴重漏洞武器化（CVE-2025-61882），透過 SSRF 實現遠端代碼執行。這種能快速將新漏洞轉化為「攻擊套件」的能力，讓他們在 2025 年始終維持在威脅排行榜的前列。</li>
+</ul>
+<h5>④ 恐怖的財務規模</h5>
+<p>這並非小規模的犯罪，自 2019 年正式現身以來，Cl0p 透過這種「供應鏈式」的打擊策略，已累計 extorted 超過 <strong>5 億美元</strong>。他們不只是駭客，更像是一台極其專業、以數據為燃料的財富掠奪引擎。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在提到「5 億美元」時請稍微停頓，讓聽眾感受這個數字背後的產業化規模。</li>
+<li><strong>補充案例</strong>：如果聽眾有興趣，可以簡短提及他們 2023 年利用 <strong>MOVEit Transfer</strong> 的案例，那次攻擊影響了全球超過 6,600 萬人，奠定了他們在 MFT 攻擊領域的統治地位。</li>
+<li><strong>關鍵詞強調</strong>：特別強調 &quot;Pure Data Extortion&quot; 與 &quot;MFT&quot;，這是 Cl0p 區別於其他組織的 DNA。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>Cl0p 靠著精準的漏洞攻擊橫掃 2025 年市場，但另一個老牌霸主卻在被執法部門重創後，正如同鳳凰般浴火重生。下一頁，我們來看看 <strong>LockBit 5.0</strong> 的強勢回歸。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-08">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('08', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('08', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('08', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-08">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 08</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-08" >
+                    <h1>LockBit 5.0: Technical Resilience and Evolution</h1>
+<h2>The &quot;Resilient Phoenix&quot; of Ransomware</h2>
+<ul>
+<li><strong>Recovery</strong>: Resurfaced in late 2025 following law enforcement disruption (Operation Cronos).</li>
+<li><strong>LockBit 5.0 Enhancements</strong>:
+<ul>
+<li>Multi-platform support (Windows, Linux, ESXi).</li>
+<li>Stronger anti-analysis and evasion mechanisms.</li>
+<li>Optimized encryption routines to decrease response time for defenders.</li>
+</ul>
+</li>
+<li><strong>Persistence</strong>: LockBitSupp maintains that the group &quot;always rises up after being hacked.&quot;</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-08">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 8 頁：LockBit 5.0: Technical Resilience and Evolution</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>浴火重生</strong>：LockBit 在經歷 2024 年「克洛諾斯行動 (Operation Cronos)」重創後，於 2025 年底帶著 5.0 版本強勢回歸。</li>
+<li><strong>技術升級</strong>：新版支援 Windows、Linux 與 ESXi 多平台，具備更強的抗分析與逃逸機制。</li>
+<li><strong>核心理念</strong>：管理者 LockBitSupp 展現極高的韌性與公開挑釁，強調該組織具備不可摧毀的持續運作能力。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>在勒索軟體的歷史上，很少有組織能像接下來我們要討論的這一個一樣，展現出如此頑強且近乎狂妄的韌性。請看第八頁，我們稱之為「勒索軟體界的浴火鳳凰」——<strong>LockBit 5.0</strong>。</p>
+<h5>① 浴火重生的「克洛諾斯」挑戰</h5>
+<p>回顧 2024 年初，全球執法部門發動了規模空前的「<strong>克洛諾斯行動 (Operation Cronos)</strong>」，成功滲透了 LockBit 的後台、逮捕相關人員並扣押了大量數據。當時許多專家認為這個曾經霸佔三成市場的龍頭已經走入歷史。然而，LockBit 的靈魂人物 <strong>LockBitSupp</strong> 不僅規避了追捕，還在論壇上公開挑釁：</p>
+<blockquote>
+<p>「我們在被駭客攻擊後，總是能重新站起來 (We always rise up after being hacked)。」</p>
+</blockquote>
+<p>這不只是口頭威脅。到了 2025 年 9 月，該組織正式發布了代號為「<strong>ChuongDong</strong>」的 <strong>LockBit 5.0</strong>，證明了其基礎設施與關聯網絡已經全面恢復運作。</p>
+<h5>② 5.0 版的技術進化：多平台與極速加密</h5>
+<p>LockBit 5.0 的出現，象徵著攻擊技術的再次躍遷。這一次，他們不只鎖定桌面電腦。</p>
+<ul>
+<li><strong>多平台支援</strong>：新版本具備跨平台能力，特別加強了對 <strong>Linux</strong> 和 <strong>ESXi</strong> 虛擬化環境的打擊。這意味著他們可以直接癱瘓企業的數位心臟，也就是支撐所有業務運行的服務器。</li>
+<li><strong>抗分析與逃逸機制</strong>：為了對抗鑑識人員，5.0 版引入了更複雜的抗調試技術，並利用隨機的 16 字元文件擴展名來躲避傳統特徵碼的偵測。</li>
+<li><strong>優化加密效率</strong>：文中提到，5.0 優化了加密算法，縮短了反應時間。在防禦者還沒意識到系統受損前，數據可能就已經被全數鎖死。</li>
+</ul>
+<h5>③ 韌性背後的商業邏輯</h5>
+<p>LockBit 之所以能持續擴張，歸功於其成熟的 <strong>RaaS (Ransomware-as-a-Service)</strong> 模型。即使在 2025 年 5 月再次遭到基礎設施入侵與數據外洩，該組織依然能吸引大量「下線」。
+他們要求新的加盟者必須先支付約 500 美元的比特幣作為入會費，這反映了其對加盟者的篩選與對其品牌價值的自信。儘管聲譽受損，但 LockBit 依然能在 2025 年慶祝其成立六週年，這無疑是對全球執法與資安界的一個嚴峻警訊。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：提到「克洛諾斯行動」時可以稍作停頓，強調這曾經是一個轉折點，但顯然不夠徹底。</li>
+<li><strong>關鍵詞強調</strong>：<strong>ESXi</strong> 是一個核心概念，請強調針對虛擬化層級的攻擊比單純鎖定終端電腦更具破壞性。</li>
+<li><strong>補充案例</strong>：若有聽眾詢問，可以補充文中提到的細節：LockBit 5.0 的加密流程現在能在幾分鐘內鎖死整個企業網絡。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>了解了這位老牌霸主的強勢回歸後，我們不能忽視市場上的新興力量。下一頁，我們將探討兩家專門在「中階市場」快速擴張、給企業帶來巨大壓力的威脅群體：Play 與 Akira。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-09">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('09', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('09', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('09', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-09">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 09</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-09" >
+                    <h1>Mid-Market Threats: Play and Akira</h1>
+<h2>Relentless Pressure on Global Enterprises</h2>
+<ul>
+<li><strong>Play Ransomware</strong>:
+<ul>
+<li>Threefold increase in victims (900 total by May 2025).</li>
+<li>Closed group model focusing on secrecy and double extortion.</li>
+</ul>
+</li>
+<li><strong>Akira Ransomware</strong>:
+<ul>
+<li>Fast-rising threat targeting mid-sized businesses.</li>
+<li>Employs intermittent encryption and deletes shadow copies to hinder recovery.</li>
+</ul>
+</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-09">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 09 頁：Mid-Market Threats: Play and Akira</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>Play Ransomware</strong>：呈現爆發式增長，受害者數量在一年多內翻了三倍（達 900 家），採取封閉且高度隱密的「雙重勒索」模式。</li>
+<li><strong>Akira Ransomware</strong>：針對中型企業的後起之秀，利用「間歇性加密」與刪除陰影複製（Shadow Copies）技術，極大化修復難度。</li>
+<li><strong>共同特徵</strong>：兩者皆展現出極強的技術適應力，對全球中堅企業造成持續且巨大的壓力。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>了解完 LockBit 的韌性後，我們要把目光轉向兩個在 2025 年對全球企業造成巨大威脅的「中堅勢力」：Play 以及 Akira。這兩組人馬雖然不像大集團那樣高調，但其攻擊的精準度與破壞力，卻讓許多中型企業防不勝防。</p>
+<h5>① Play Ransomware 的爆發與隱密戰術</h5>
+<p>首先來看 <strong>Play Ransomware</strong>（有時也被稱為 <strong>Playcrypt</strong>）。這個組織自 2022 年出現以來，擴張速度驚人。根據最新數據，截至 2025 年 5 月，受害者數量已激增至 900 家，相較於一年前的 300 家，成長了整整三倍。</p>
+<blockquote>
+<p>研究指出，Play 採用的是一種「封閉式運作模式」，其目的在於確保行動的極度隱密性。</p>
+</blockquote>
+<p>最關鍵的是，他們是<strong>雙重勒索 (Double Extortion)</strong> 的箇中高手。他們不僅會加密企業的檔案，更會在加密前竊取大量敏感數據。這意味著即使企業擁有完善的備份系統，Play 仍能以「公開機密資料」為要脅，迫使受害者支付贖金。</p>
+<p>在技術上，他們非常擅長尋找突破口，例如利用 Windows 的零日漏洞（如 <strong>CVE-2025-29824</strong>）進行權限提升。一旦進入系統，他們會使用像 <strong>Grixba</strong> 這種客製化資訊竊取工具，像剝洋蔥一樣層層滲透企業網路。</p>
+<h5>② Akira 的技術詭計：間歇性加密</h5>
+<p>接著，我們來看專注於中型市場的 <strong>Akira</strong>。Akira 自 2023 年出現以來，憑藉著獨特的加密演算法 <strong>ChaCha2008</strong> 以及極具侵略性的回收阻礙技術，迅速躋身最活躍的威脅名單。</p>
+<p>Akira 最令人頭痛的特點是其<strong>間歇性加密 (Intermittent Encryption)</strong> 技術。他們不會加密檔案的全部內容，而是只加密其中的一部分。這樣做有兩個好處：第一，加密速度極快；第二，能夠規避部分偵測異常檔案變動的安全解決方案。</p>
+<p>此外，為了徹底斷絕受害者的後路，Akira 會強制刪除系統中的<strong>陰影複製 (Shadow Copies)</strong>。這直接導致了 Windows 內建的還原功能失效。一個典型的案例是俄羅斯連鎖零售商 <strong>WineLab</strong>，在遭到 Akira 攻擊後，其線上與零售業務被迫全面中斷，IT 基礎設施幾乎癱瘓。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：提到「受害者翻了三倍」以及「900 家」時，請稍微加重語氣，讓聽眾感受到該威脅的擴張速度。</li>
+<li><strong>關鍵詞強調</strong>：請務必清晰傳達 <strong>&quot;Double Extortion&quot;（雙重勒索）</strong>，這不僅是 Play 的核心手段，也是當前勒索軟體能維持獲利的關鍵原因。</li>
+<li><strong>技術點補充</strong>：如果台下有技術背景的聽眾，可以補充提及 Play 善於利用 <strong>FortiOS</strong> 與 <strong>Microsoft Exchange</strong> 的舊漏洞進行初始入侵。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>雖然 Play 與 Akira 依靠技術與隱密性取勝，但下一頁我們要探討的這組對手，則是將「社交工程」與「身分劫持」玩到了極致——他們就是惡名昭彰的 Scattered Spider。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-10">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('10', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('10', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('10', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-10">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 10</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-10" >
+                    <h1>Scattered Spider: Identity Hijacking Mastery</h1>
+<h2>Advanced Social Engineering and Cloud Exploitation</h2>
+<ul>
+<li><strong>Targeting Profile</strong>: Focuses on high-value technology, finance, and retail credentials.</li>
+<li><strong>Methods</strong>: Experts in SIM swapping, vishing (impersonating IT support), and MFA fatigue.</li>
+<li><strong>Cloud Focus</strong>: Targeted <strong>Snowflake</strong> databases and Amazon EC2 instances.</li>
+<li><strong>Strategic Alliances</strong>: Collaborates with major RaaS operators to deploy DragonForce ransomware.</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-10">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 10 頁：Scattered Spider: Identity Hijacking Mastery</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>身分劫持專家</strong>：Scattered Spider (分散蜘蛛) 擅長利用人性弱點進行高階社交工程攻擊。</li>
+<li><strong>精準打擊目標</strong>：鎖定技術、金融及<strong>零售業</strong> (Retail) 的高價值憑證與系統管理員帳號。</li>
+<li><strong>手法多變</strong>：整合 SIM swapping、vishing 與 MFA fatigue 等手段，達成身分竊取。</li>
+<li><strong>雲端與聯盟策略</strong>：針對 <strong>Snowflake</strong> 與 <strong>Amazon EC2</strong> 進行數據竊取，並與 DragonForce 等 RaaS 運營商結盟。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>接著，我們要來深入研究 2025 年最具威脅性的組織之一：<strong>Scattered Spider</strong>（分散蜘蛛）。如果說 Qilin 是靠強大的惡意程式代碼取勝，那麼 Scattered Spider 就是玩弄「人性心理」的大師。這個組織據信是由歐美地區的青少年及年輕人組成，他們不一定依賴複雜的漏洞利用，而是專精於「身分劫持」（Identity Hijacking）。</p>
+<h5>① 精準的目標選擇與身分劫取</h5>
+<p>Scattered Spider 的攻擊目標非常明確。根據研究報告顯示，他們高達 70% 的攻擊集中在技術、金融以及<strong>零售業</strong> (Retail)。</p>
+<blockquote>
+<p>文中特別提到，2025 年 7 月英國警方逮捕了四名年僅 17 到 20 歲的年輕人，他們就涉嫌對 <strong>Marks &amp; Spencer</strong>、<strong>Co-op</strong> 和 <strong>Harrods</strong> 等大型零售巨頭發動攻擊，造成嚴重的營運中斷。</p>
+</blockquote>
+<p>這群駭客非常清楚，只要拿到系統管理員或高階主管的憑證，就能掌握企業的命脈。數據顯示，他們註冊的釣魚網域中，有 81% 都在冒充技術供應商（例如 Okta 登入介面），藉此精準收割這些關鍵帳號。</p>
+<h5>② 社交工程的「組合拳」手法</h5>
+<p>他們的手法被稱為「身分劫持的教科書」。他們擅長使用 <strong>SIM swapping</strong>（SIM 卡劫持）和 <strong>vishing</strong>（語音釣魚）。</p>
+<ul>
+<li>駭客會假冒成 IT 客服人員，打電話給公司員工進行心理博弈，騙取登入資訊。</li>
+<li>對於有雙重驗證保護的帳號，他們會發動 <strong>MFA fatigue</strong>（多因素驗證疲勞攻擊），也就是透過所謂的 <strong>Push Bombing</strong>，不斷向受害者手機發送驗證請求，直到受害者不勝其擾、或是手滑點擊「允許」為止。</li>
+</ul>
+<p>一旦進入系統，他們甚至會潛伏在企業內部的 Slack 或 Microsoft Teams 頻道中，即時監控 IT 部門的應變進度，隨時調整攻擊策略。</p>
+<h5>③ 雲端攻勢與戰略同盟</h5>
+<p>Scattered Spider 的野心不止於此。他們將觸角伸向了雲端基礎設施，特別是針對 <strong>Snowflake</strong> 資料庫發動大規模查詢來竊取數據，並在 <strong>Amazon EC2</strong> 上創建新的執行個體來集中處理這些贓物。</p>
+<p>雖然他們早期偏向純粹的資料竊取與勒索，但 2025 年我們觀察到一個重大轉變：他們開始與 <strong>DragonForce</strong> 等 Ransomware-as-a-Service (RaaS) 運營商結盟，正式部署加密勒索軟體。他們甚至宣稱將推出自有的 <strong>ShinySp1d3r RaaS</strong> 服務，這意味著這群「身分劫持專家」正演變成一個全功能的網路犯罪帝國。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在提到英國零售業受害案例時可以稍作停頓，強調這群駭客的年輕化趨勢與對傳統產業的威脅。</li>
+<li><strong>關鍵詞強調</strong>：<strong>Retail (零售業)</strong> 是本次報告中特別標註的受害重災區，唸到時請加重語氣；提及 <strong>Snowflake</strong> 與 <strong>MFA fatigue</strong> 等術語時應保持其專業性。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>Scattered Spider 展示了如何透過「欺騙」來突破防禦，而這種欺騙在 2025 年更因為技術的進步而如虎添翼。下一頁，我們將探討 AI 是如何被用來自動化、並優化這些社交工程戰術的。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-11">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('11', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('11', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('11', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-11">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 11</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-11" >
+                    <h1>AI-Enhanced Social Engineering Tactics</h1>
+<h2>The Automation of Deception</h2>
+<ul>
+<li><strong>AI-Powered Phishing</strong>: GenAI is used to create more convincing lures and deepfakes.</li>
+<li><strong>Automation</strong>: 87% of security professionals believe AI makes phishing more effective.</li>
+<li><strong>Targeted Impersonation</strong>: Shifting from mass spam to tailored attacks impersonating IT staff.</li>
+<li><strong>LLM Abuse</strong>: Documented evidence of threat groups using tools like ChatGPT to support attack execution.</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-11">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 11 頁：AI-Enhanced Social Engineering Tactics</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>生成式 AI 的威脅</strong>：GenAI 被用於製作更具說服力的釣魚誘餌與深偽技術（Deepfakes）。</li>
+<li><strong>專家共識</strong>：87% 的資安專業人士認為 AI 顯著提升了社交工程攻擊的有效性。</li>
+<li><strong>攻擊典範轉移</strong>：從傳統的大規模垃圾郵件（Spam），轉向精準偽裝成 IT 支援人員的定向攻擊。</li>
+<li><strong>模型濫用</strong>：已有證據顯示威脅組織利用 ChatGPT 等大型語言模型（LLM）來優化攻擊流程。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>各位，我們現在進入了一個防禦者最擔心的領域：當網路犯罪遇上人工智慧。這一頁我們要討論的是「欺騙技術的自動化」。過去，我們常開玩笑說釣魚信件很好辨認，因為語法錯誤百出或語氣生硬，但在 2025 年，這種想法已經過時了。</p>
+<h5>① 生成式 AI 驅動的釣魚 (AI-Powered Phishing)</h5>
+<p>文中指出，生成式 AI（GenAI）正在賦予攻擊者前所未有的能力。根據 CrowdStrike 的 2025 年勒索軟體報告顯示：</p>
+<blockquote>
+<p>「87% 的資安專業人士認為 AI 使得釣魚誘餌更具說服力，而深偽技術（Deepfakes）正成為未來勒索軟體攻擊的主要驅動力。」
+(87% of security professionals believed AI makes phishing lures more convincing, with deepfakes emerging as a major driver of future ransomware attacks.)</p>
+</blockquote>
+<p>這意味著，攻擊者不再需要精通多國語言，AI 就能幫他們產出語氣自然、甚至針對特定企業文化量身打造的郵件。更危險的是，AI 能自動化掃描漏洞並自定義勒索信件，實現大規模且高效的精準打擊。</p>
+<h5>② 定向偽裝與自動化 (Targeted Impersonation &amp; Automation)</h5>
+<p>另一個顯著趨勢是攻擊策略的轉移。犯罪組織正從「亂槍打鳥」轉向針對具備特權權限員工的「定向偽裝」。作者特別提到了 <strong>Black Basta</strong> 成員的案例：他們在 2025 年重出江湖，不再使用傳統手法，而是透過 <strong>Microsoft Teams</strong> 進行釣魚，並偽裝成 IT 支援人員。</p>
+<p>他們會引導受害者使用 <strong>Quick Assist</strong> 或 <strong>AnyDesk</strong> 等遠端存取工具。一旦取得存取權，便會利用 Python 腳本建立指令與控制（C2）通訊。這種「真人偽裝 + 數位工具」的混合手法，讓傳統的過濾系統極難防範。</p>
+<h5>③ 大型語言模型的濫用 (LLM Abuse)</h5>
+<p>最後，我們必須正視工具被武器化的現實。<strong>ThreatLabz</strong> 的調查揭露了威脅組織如何濫用大型語言模型來優化其運作：</p>
+<blockquote>
+<p>「生成式 AI 讓攻擊者能夠自動化執行關鍵任務，並撰寫程式碼來簡化操作；威脅組織甚至被發現使用 ChatGPT 來支援攻擊的執行。」
+(GenAI-enabled attackers to automate key tasks and write code to streamline operations, with ThreatLabz uncovering evidence of how one notorious threat group used ChatGPT to support the execution of attacks.)</p>
+</blockquote>
+<p>這顯示了 <strong>LLM Abuse</strong> 不再只是理論，而是正在發生的事實。攻擊者正在利用這些 AI 工具來消除技術門檻，讓複雜的滲透腳本變得垂手可得。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：提到「87%」這項數據時請放慢語速，強調資安社群對 AI 威脅的高度共識。</li>
+<li><strong>關鍵詞強調</strong>：提到 <strong>Deepfakes</strong>（深偽）與 <strong>Targeted Impersonation</strong>（定向偽裝）時，可以舉例說明這對企業高管或財務部門的巨大風險。</li>
+<li><strong>專業提示</strong>：注意 <strong>Black Basta</strong> 利用 Microsoft Teams 這種信賴平台進行釣魚的案例，這代表防禦範圍必須擴及內部通訊軟體。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>既然攻擊者已經能用 AI 輕易騙過「人」，那麼他們又是如何迅速突破「系統」的呢？下一頁，我們將探討他們是如何將漏洞利用技術武器化，達到近乎即時的攻擊速度。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-12">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('12', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('12', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('12', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-12">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 12</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-12" >
+                    <h1>Weaponization of Unpatched Vulnerabilities</h1>
+<h2>Speed and Efficiency in Ingress</h2>
+<ul>
+<li><strong>Rapid Exploitation</strong>: Vulnerabilities are often weaponized within hours of disclosure.</li>
+<li><strong>Key 2025 Targets</strong>:
+<ul>
+<li><strong>Oracle E-Business Suite</strong> (CVE-2025-61882).</li>
+<li><strong>GoAnywhere MFT</strong> (CVE-2025-10035).</li>
+<li><strong>FortiGate Firewalls</strong> (CVE-2024-21762).</li>
+</ul>
+</li>
+<li><strong>Shrinking Windows</strong>: The timeframe for patching before exploitation is reaching critical levels.</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-12">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 12 頁：Weaponization of Unpatched Vulnerabilities</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>攻擊速度革命</strong>：漏洞從公開到被武器化（Weaponized）的時間縮短至數小時內。</li>
+<li><strong>2025 關鍵目標</strong>：列舉了 Oracle E-Business Suite、GoAnywhere MFT 及 FortiGate 等廣泛使用的系統漏洞。</li>
+<li><strong>防禦窗口縮減</strong>：防禦者在補丁發布前的應對時間已達臨界點。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>各位，如果說傳統的勒索軟體是靠「亂槍打鳥」，那麼 2025 年的攻擊則是「精準手術」。這一頁我們探討的是目前防禦體系最大的痛點：<strong>未修補漏洞的武器化</strong>。</p>
+<h5>① 攻擊速度與效率的極致化</h5>
+<p>現在的網路犯罪集團（Threat Actors）不再等待漏洞被大眾知曉，他們擁有極其敏銳的技術雷達。根據文中指出，現在的漏洞利用已不再以「天」計算，而是以「小時」計算。</p>
+<blockquote>
+<p><strong>&quot;Vulnerabilities are often weaponized within hours of disclosure.&quot;</strong>
+(漏洞通常在揭露後的幾個小時內就會被武器化。)</p>
+</blockquote>
+<p>這意味著，當安全管理員還在開會討論是否要更新系統時，攻擊者的掃描程式可能已經攻破了企業的前線。</p>
+<h5>② 2025 年的關鍵獵殺名單</h5>
+<p>我們在 2025 年看到了幾次指標性的漏洞利用事件。首先是 <strong>Cl0p</strong> 集團，他們利用了 <strong>Oracle E-Business Suite</strong> 的 <strong>CVE-2025-61882</strong> 漏洞進行遠端程式碼執行，這是一種透過伺服器端請求偽造（SSRF）發動的攻擊。</p>
+<p>接著是 <strong>Medusa</strong> 集團，他們針對 <strong>GoAnywhere MFT</strong>（<strong>CVE-2025-10035</strong>）發動了串聯攻擊，利用反序列化漏洞直接獲取初始存取權。最後是 <strong>Qilin</strong> 集團，他們在 5 月到 6 月間大規模攻擊了 <strong>FortiGate Firewalls</strong> 的 <strong>CVE-2024-21762</strong> 漏洞。這些案例共同證實了一個趨勢：攻擊者正專注於攻擊企業的<strong>基礎設施邊緣</strong>。</p>
+<h5>③ 消失中的修補窗口</h5>
+<p>這對防禦者來說是一個巨大的生存危機。傳統的「漏洞管理週期」在這種速度面前已經完全失效。</p>
+<blockquote>
+<p><strong>&quot;The window of opportunity for defenders continued shrinking as attackers accelerated their exploitation timelines.&quot;</strong>
+(隨著攻擊者加速其利用時間線，防禦者的機會窗口持續縮小。)</p>
+</blockquote>
+<p>在某些 <strong>Zero-day（零日漏洞）</strong> 的案例中，甚至在補丁正式發布之前，大規模的攻擊就已經在進行了。這強迫組織必須從「被動補洞」轉向更主動的「暴露管理」。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在提到三個具體 CVE 編號時，請稍微放慢語速，強調這些是 2025 年真實發生的重大威脅。</li>
+<li><strong>補充案例</strong>：可以補充提到 Cl0p 這類組織已經從「加密」轉向「純數據勒索」，這使得漏洞利用的收益比以往更高。</li>
+<li><strong>關鍵詞強調</strong>：<strong>Weaponized</strong>（武器化）與 <strong>Shrinking Windows</strong>（縮減中的窗口）是本頁的核心，語氣應帶有緊迫感。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>既然攻擊者利用漏洞的速度如此之快，那他們又是如何精準地找到這些入口的？下一頁，我們將揭開勒索鏈條中一個專業的幕後推手：初始存取仲介（IAB）。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-13">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('13', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('13', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('13', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-13">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 13</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-13" >
+                    <h1>The Initial Access Broker (IAB) Economy</h1>
+<h2>Commoditizing the Breach Phase</h2>
+<ul>
+<li><strong>Market Role</strong>: IABs specialize in the initial intrusion, selling access to ransomware operators.</li>
+<li><strong>Commoditization</strong>: Access is sold for as little as $500, lowering barriers to entry for attackers.</li>
+<li><strong>Professionalization</strong>: This division of labor allows ransomware groups to focus on exfiltration and negotiation.</li>
+<li><strong>Brute-Force Frameworks</strong>: Widespread use of automated tools (e.g., &quot;BRUTED&quot;) to target VPNs and firewalls.</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-13">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 13 頁：The Initial Access Broker (IAB) Economy</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>角色定位</strong>：IAB 是網路犯罪鏈中的「仲介商」，專門負責滲透企業邊界，並將存取權限出售給勒索軟體運營商。</li>
+<li><strong>犯罪商品化</strong>：存取權限的售價低至 500 美元，大幅降低了發動勒索攻擊的技術門檻。</li>
+<li><strong>專業化分工</strong>：IAB 的存在讓勒索軟體集團能專注於更具「產值」的數據竊取、加密與談判環節。</li>
+<li><strong>自動化框架</strong>：廣泛使用如 &quot;BRUTED&quot; 等自動化工具，針對企業級 VPN 與防火牆進行暴力破解。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>各位，我們現在要深入探討的是 2025 年勒索軟體生態圈中最關鍵的一個轉折：<strong>「專業化分工的極致」</strong>。在過去，黑客可能需要一條龍式地完成掃描、入侵、提權到加密；但現在，這個產業鏈已經高度成熟。</p>
+<h5>① 誰是 Initial Access Broker (IAB)？</h5>
+<p>我們可以將 IAB 想像成網路犯罪世界裡的「專業鎖匠」或「仲介商」。
+這群人的核心業務非常單一且專業：他們不負責加密數據，也不負責敲詐，他們只負責**「敲開你家的大門」**。一旦成功進入企業網路，他們就會在暗網市場上標價出售這份存取權限（Access）。</p>
+<h5>② 犯罪成本的斷崖式下跌</h5>
+<p>這裡有一個非常驚人的數據，根據報告指出：</p>
+<blockquote>
+<p>某些企業網路的初步存取權限，在暗網上的售價竟然可以低到僅僅 <strong>$500 美元</strong>。</p>
+</blockquote>
+<p>這種**「犯罪商品化 (Commoditization)」**現象產生了一個致命的後果：它極大地降低了進入門檻。即使是一個技術平庸的犯罪集團，只要花幾百美金買一張「門票」，就能直接進入全球知名企業的內部網路。這種分工模式讓如 <strong>Medusa</strong> 這樣的勒索軟體集團能直接跳過最耗時的滲透階段，將所有資源集中在最具殺傷力的數據外洩與談判上。</p>
+<h5>③ 自動化武器：BRUTED 框架</h5>
+<p>為了大規模生產這些「門票」，IAB 依賴的是高度自動化的暴力破解框架。
+文中特別提到了一個名為 <strong>&quot;BRUTED&quot;</strong> 的自動化框架。這不是隨機的嘗試，而是有針對性地瞄準企業防禦最薄弱的環節——也就是遠端辦公的入口。</p>
+<ul>
+<li>他們系統性地針對 <strong>Palo Alto Networks GlobalProtect</strong>、<strong>Cisco AnyConnect</strong> 以及 <strong>Fortinet SSL VPN</strong> 等主流企業設備進行暴力破解或憑證填充攻擊。</li>
+<li>這種「亂箭穿心」式的自動化攻擊，讓企業即便只有一個員工使用了弱密碼，整個網路的存取權就會被貼上標籤，放在暗網貨架上待價而沽。</li>
+</ul>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在提到「500 美元」這個數字時，請稍作停頓，讓聽眾感受到這種犯罪成本與潛在破壞力之間的巨大反差。</li>
+<li><strong>補充案例</strong>：可以提到 <strong>Medusa</strong> 集團的策略，他們通常直接付錢給 IAB 購買權限，以便能像流水線一樣快速發動攻擊。</li>
+<li><strong>關鍵詞強調</strong>：<strong>&quot;Initial Access Broker (IAB)&quot;</strong> 與 <strong>&quot;BRUTED&quot;</strong> 框架是本頁核心，建議唸到時加重語氣。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>當黑客透過 IAB 拿到了大門鑰匙後，他們不再滿足於僅僅攻擊你的電腦桌機，而是將目光投向了更深層、更核心的基礎設施。下一頁，我們來看看他們是如何滲透雲端與虛擬化環境的。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-14">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('14', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('14', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('14', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-14">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 14</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-14" >
+                    <h1>Cloud and Virtual Infrastructure Targeting</h1>
+<h2>Maximizing Impact via Hypervisor Access</h2>
+<ul>
+<li><strong>Shift to Infrastructure</strong>: Moving beyond endpoints to target the virtualization layer.</li>
+<li><strong>VMware ESXi</strong>: A primary target for Scattered Spider and BlackSuit; allows encrypting hundreds of VMs at once.</li>
+<li><strong>Evasion Strategy</strong>: Targeting hypervisors bypasses security tools deployed at the guest OS level.</li>
+<li><strong>Platform Agnosticism</strong>: Standardized development of payloads for Windows, Linux, and ESXi.</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-14">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 14 頁：Cloud and Virtual Infrastructure Targeting</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>戰術轉型</strong>：攻擊重心從單一端點（Endpoints）轉向雲端與虛擬化基礎設施。</li>
+<li><strong>關鍵目標</strong>：VMware ESXi 成為 Scattered Spider 與 BlackSuit 等組織的首選目標，具備同時加密數百台虛擬機（VMs）的能力。</li>
+<li><strong>防禦規避</strong>：透過攻擊 Hypervisor 層，可直接繞過部署在客體作業系統（Guest OS）內的傳統安全工具。</li>
+<li><strong>跨平台趨勢</strong>：現代勒索軟體已達成 Windows、Linux 與 ESXi 的平台不可知（Platform Agnosticism）開發模式。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>各位請看這張投影片，這代表了 2025 年勒索軟體發展中最具威脅性的技術轉變。如果說過去的攻擊是針對森林中的每一棵樹，那麼現在的攻擊者則是直接對「整片土地」下手。</p>
+<h5>① 從端點到基礎設施的戰略遷移</h5>
+<p>過去勒索軟體通常從單一的 PC 或伺服器切換，但在 2025 年，我們看到了一個顯著的<strong>戰略性轉向（Shift to Infrastructure）</strong>。攻擊者不再滿足於逐台加密電腦，而是鎖定虛擬化層與雲端環境。</p>
+<blockquote>
+<p>文中特別指出，像 Bling Libra 與 Muddled Libra 這類組織，正透過利用錯誤配置或外流的憑證進入雲端環境。這就像是拿到了大樓的總鑰匙，讓他們能一次控制整間企業的數據命脈。</p>
+</blockquote>
+<h5>② 鎖定 VMware ESXi：大規模加密的利器</h5>
+<p>在這個範疇中，<strong>VMware ESXi</strong> 無疑是 2025 年的頭號目標。為什麼呢？因為 ESXi 是企業數位運算的「大腦」。</p>
+<ul>
+<li><strong>Scattered Spider</strong> 與 <strong>BlackSuit</strong> 這類頂尖組織，特別擅長針對 ESXi 環境發動攻擊。</li>
+<li>以 <strong>BlackSuit</strong> 為例，它開發了一個名為 <code>–killvm</code> 的專屬指令。這個功能非常致命，它能強行關閉所有運行中的虛擬機並立即進行加密。</li>
+<li>這意味著攻擊者不需要入侵數百台伺服器，他們只需要入侵一台 Hypervisor，就能在幾分鐘內癱瘓數百個企業服務。</li>
+</ul>
+<h5>③ 隱形的入侵：防禦規避與跨平台開發</h5>
+<p>接下來，我們要談談為什麼這種攻擊這麼難防。這涉及兩個關鍵因素：</p>
+<p>第一，是<strong>規避策略（Evasion Strategy）</strong>。因為傳統的安全工具通常安裝在虛擬機內部的 <strong>guest OS</strong>（客體作業系統）層，但當攻擊發生在底層的 <strong>Hypervisor</strong> 時，這些安全工具往往根本看不見威脅。這就像是在房間裡裝了監視器，卻沒發現有人正在拆除房子的地基。</p>
+<p>第二，是勒索軟體的<strong>平台不可知性（Platform Agnosticism）</strong>。</p>
+<blockquote>
+<p>正如報告所觀察到的，開發跨平台負載已成為行業標準。<strong>LockBit 5.0</strong> 與 <strong>Play</strong> 等勒索軟體現在都能同時產出針對 Windows、Linux 以及 ESXi 的版本。這種「一魚多吃」的開發模式，讓攻擊者的破壞力得以無限制地擴張。</p>
+</blockquote>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在提到 <code>–killvm</code> 指令時，請稍微加重語氣並停頓，強調這種自動化破壞的威脅性。</li>
+<li><strong>補充案例</strong>：若有聽眾詢問，可補充書中提到的案例：有些攻擊者甚至會偽裝成 IT 部門打電話（Vishing），騙取員工權限後直接進入 ESXi 管理介面。</li>
+<li><strong>關鍵詞強調</strong>：強調 <strong>Hypervisor Layer</strong>（虛擬化層）是目前的防禦盲區，大多數組織在這一層的監控力較弱。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>了解了攻擊者如何從基礎架構層奪取數據後，接下來我們要探討，當他們成功竊取這些海量數據後，是如何利用『心理戰』來逼迫受害者就範的。讓我們進入下一頁：專屬洩露網站的心理攻勢。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-15">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('15', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('15', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('15', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-15">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 15</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-15" >
+                    <h1>Dedicated Leak Sites and Psychological Warfare</h1>
+<h2>Reputation as an Extortion Lever</h2>
+<ul>
+<li><strong>Leak Site Proliferation</strong>: A record 81 active data leak sites (DLS) observed in Q3 2025.</li>
+<li><strong>Pressure Tactics</strong>:
+<ul>
+<li>Countdown timers for data release.</li>
+<li>&quot;Proof packs&quot; to demonstrate sensitive data theft.</li>
+<li>Stakeholder harassment (contacting employees and partners).</li>
+</ul>
+</li>
+<li><strong>Regulatory Weaponization</strong>: Threatening victims with regulatory reporting (e.g., GDPR violations).</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-15">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 15 頁：Dedicated Leak Sites and Psychological Warfare</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>DLS 數量創紀錄</strong>：2025 年第三季觀測到 81 個活躍的資料洩漏網站（DLS），反映了勒索生態的高度碎片化。</li>
+<li><strong>心理戰術升級</strong>：利用倒數計時器、提供「證據包（Proof packs）」以及直接騷擾利害關係人，極大化受害者的焦慮感。</li>
+<li><strong>法規武器化</strong>：威脅向監管機構（如 GDPR）舉報受害者，將法律責任轉化為勒索籌碼。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>各位，當加密技術不再能保證拿到贖金時，勒索軟體組織轉向了一種更陰險、更具毀滅性的策略：<strong>心理戰 (Psychological Warfare)</strong>。這一頁我們要探討的是，駭客如何將「名譽」作為槓桿，把單純的資安事件演變成一場公共關係與法律的災難。</p>
+<h5>① 資料洩漏網站 (DLS) 的激增</h5>
+<p>首先看數據，根據 2025 年第三季的觀測，全球活躍的 <strong>Dedicated Leak Sites (DLS)</strong> 數量達到了創紀錄的 81 個。</p>
+<blockquote>
+<p>文中指出，這標誌著勒索軟體生態的深刻轉型。</p>
+</blockquote>
+<p>隨著像 LockBit 或 ALPHV 這樣的大型組織被執法部門瓦解，市場出現了大量小型且激進的派系。這些網站不僅是存放資料的空間，更是駭客的「新聞發布中心」，用來公開羞辱那些拒絕妥協的企業。</p>
+<h5>② 窒息式的壓力戰術</h5>
+<p>為了強迫受害者回到談判桌，這些組織開發出一套標準的「壓力劇本」。</p>
+<ul>
+<li>第一，是<strong>倒數計時器 (Countdown timers)</strong>。這在心理學上會造成極大的壓迫感，暗示著毀滅的時刻正在逼近。</li>
+<li>第二，是發布所謂的 <strong>「證據包 (Proof packs)」</strong>。以 <strong>Qilin</strong> 組織為例，在攻擊英國醫療服務商 <strong>Synnovis</strong> 時，他們直接在暗網公開了包含病人姓名、生日、甚至是血檢報告的截圖。這種做法不只是在證明他們有資料，更是直接在受害者的傷口上撒鹽。</li>
+<li>第三，是更過分的 <strong>Stakeholder harassment</strong>。駭客會主動聯繫受害公司的員工、客戶、甚至合作夥伴，告訴他們：「這間公司保護不了你們的隱私」，藉此引發內部的混亂與外部的集體訴訟壓力。</li>
+</ul>
+<h5>③ 監管體系的「武器化」</h5>
+<p>最令人不寒而慄的演進是「法規武器化」。</p>
+<blockquote>
+<p>駭客開始扮演起「監管者」的角色。</p>
+</blockquote>
+<p>他們會威脅受害者，如果不付錢，他們將主動向監管機構舉報該公司的資安缺失，例如違反 <strong>GDPR (歐盟一般資料保護規範)</strong>。這種做法把本應保護公眾的法律，變成了勒索者的屠刀，讓受害者面臨天價贖金與政府鉅額罰款的雙重夾擊。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在提到「81 個活躍 DLS」時，請稍作停頓，讓聽眾感受勒索生態系的規模之大。</li>
+<li><strong>關鍵詞強調</strong>：提到 <strong>&quot;Proof packs&quot;</strong> 與 <strong>&quot;Regulatory Weaponization&quot;</strong> 時請加重語氣，這是 2025 年最重要的戰術轉變。</li>
+<li><strong>補充案例</strong>：如果聽眾對 <strong>Synnovis</strong> 案例感興趣，可以補充該組織竊取了超過 11 TB 的資料，造成倫敦多家醫院手術被迫取消。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>這種名譽勒索在一般商業環境已經夠糟了，但如果受害者是國家的命脈——也就是關鍵基礎設施呢？下一頁，我們來看看勒索軟體如何成為國家安全層級的威脅。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-16">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('16', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('16', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('16', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-16">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 16</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-16" >
+                    <h1>Critical Infrastructure Under Siege</h1>
+<h2>National Security Implications</h2>
+<ul>
+<li><strong>High Impact</strong>: 50% of global ransomware attacks now target critical infrastructure.</li>
+<li><strong>Manufacturing</strong>: Experienced the sharpest growth (+61% year-over-year).</li>
+<li><strong>Strategic Disruption</strong>: Ransomware is used as a weapon to destabilize industries and supply chains.</li>
+<li><strong>OT Targeting</strong>: Evolving payloads are capable of halting industrial control systems (ICS/SCADA).</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-16">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 16 頁：Critical Infrastructure Under Siege</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>威脅升級</strong>：勒索軟體已轉化為國家安全威脅，全球 50% 的攻擊鎖定關鍵基礎設施。</li>
+<li><strong>重災區分析</strong>：製造業增長最為劇烈（+61%），成為駭客的首選目標。</li>
+<li><strong>戰略性破壞</strong>：攻擊目的從單純勒索金錢，演變為透過停機施壓的「工業勒索」。</li>
+<li><strong>技術下沉</strong>：威脅已深入運營技術（OT）層級，具備癱瘓 ICS/SCADA 系統的能力。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>各位，現在我們要進入整場報告最令人不安的部分。勒索軟體在 2025 年已經徹底「變質」了。它不再只是單純的網路犯罪，而是演變成一種針對國家安全與全球經濟穩定的戰略武器。</p>
+<h5>① 關鍵基礎設施成為「主戰場」</h5>
+<p>根據 2025 年前三季的統計，全球勒索軟體攻擊中有高達 <strong>50%</strong> 是針對關鍵基礎設施（Critical Infrastructure）。這意味著每兩起攻擊中，就有一場是鎖定在那些支撐社會運作的關鍵齒輪上。</p>
+<blockquote>
+<p>「勒索軟體已超越了其犯罪起源，成為一種能夠破壞整個行業穩定並威脅公共安全的武器。」
+(Ransomware has transcended its criminal origins to become a weapon capable of destabilizing entire industries and threatening public safety.)</p>
+</blockquote>
+<p>文中提到的這組數據非常驚人：在 1 月至 9 月間，共記錄了 2,332 起針對基礎設施的事件。這反映出駭客正在有系統地尋找國家韌性的弱點。</p>
+<h5>② 製造業的「完美風暴」</h5>
+<p>在所有關鍵領域中，<strong>製造業 (Manufacturing)</strong> 遭受的打擊最為沉重。與 2024 年相比，製造業受攻擊的次數飆升了 <strong>61%</strong>。</p>
+<p>為什麼駭客如此青睞製造業？原因在於這個行業對「營運連續性」有近乎苛求的依賴。製造商通常擁有大量的知識產權，但系統卻往往過於陳舊（Outdated Systems），且安全預算有限。駭客深知，只要讓生產線停擺一小時，企業面臨的經濟損失與供應鏈壓力，就會逼得他們不得不屈服。</p>
+<h5>③ 從資料加密到「戰略性停機」</h5>
+<p>我們正在見證「工業勒索 (Industrial Extortion)」的興起。2025 年 10 月的 <strong>Asahi Breweries（朝日啤酒）</strong> 事件就是一個典型的案例。勒索軟體不再只是鎖定你的 Excel 或 PDF 檔案，而是直接造成大規模的業務中斷（Operational Disruption）。</p>
+<p>駭客現在將「停機時間」視為談判桌上最有力的籌碼。他們利用供應鏈的相互依賴性，將勒索行為轉化為一種精密的心理戰與經濟戰。</p>
+<h5>④ OT 與 ICS 的深層威脅</h5>
+<p>最後，最危險的趨勢在於 <strong>運營技術 (Operational Technology, OT)</strong> 的淪陷。</p>
+<p>目前的勒索軟體載體已經具備了「自動化感知 (Automation-aware)」的能力，能夠直接鎖定工業控制系統（ICS）與數據採集與監控系統（SCADA）。它們的目標是那些直接控制硬體設備的關鍵組件，例如 <strong>可程式化邏輯控制器 (PLC)</strong> 以及 <strong>人機介面 (HMI)</strong>。一旦這些系統被癱瘓，駭客就等於握住了整個工業設施的「切斷開關」，能在不炸毀任何設施的情況下，讓一座工廠甚至一個地區的電力系統陷入死寂。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在提到「製造業增長 61%」時，請稍微加重語氣並停頓，強調這個數字的異常。</li>
+<li><strong>關鍵詞強調</strong>：本頁提到的 <strong>&quot;Industrial Extortion&quot;</strong> 是 2025 年的核心概念，代表威脅已從「數位世界」侵入「物理實體」。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>當我們看到連大型製造業都難以倖免時，另一個更關乎生命安全、且數據更敏感的領域——醫療保健，其處境更是危險。下一頁，我們來探討駭客如何利用「病患安全」作為終極的勒索手段。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-17">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('17', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('17', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('17', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-17">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 17</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-17" >
+                    <h1>Healthcare Vulnerability and Sectoral Impact</h1>
+<h2>Maximum Leverage via Patient Safety</h2>
+<ul>
+<li><strong>High Payment Likelihood</strong>: Healthcare shows a 53% payment rate, higher than average.</li>
+<li><strong>Interconnected Risks</strong>: Attacks on healthcare businesses (billing, tech) rose by 30%.</li>
+<li><strong>Extortion Evolution</strong>: Extortion-only attacks (no encryption) tripled to 12%.</li>
+<li><strong>Key Actors</strong>: INC Ransom and Qilin are the most prolific in this sector.</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-17">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 17 頁：Healthcare Vulnerability and Sectoral Impact</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>高支付率的誘惑</strong>：醫療保健產業的支付率高達 53%，遠高於平均水準，成為駭客首選目標。</li>
+<li><strong>生態系連鎖反應</strong>：針對醫療服務商（如計費、科技公司）的攻擊增加 30%，利用「一箭多雕」擴大影響力。</li>
+<li><strong>勒索策略演進</strong>：不加密檔案、僅威脅外洩數據的「純勒索」攻擊比例從 4% 暴增至 12%。</li>
+<li><strong>產業公敵</strong>：INC Ransom 與 Qilin 是目前醫療領域最活躍且破壞力最強的兩大組織。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>在 2025 年的勒索軟體版圖中，如果說製造業是駭客眼中的「肥羊」，那麼醫療保健產業（Healthcare）無疑就是他們眼中的「軟肋」。為什麼呢？因為在這一行，<strong>「時間」不僅僅是金錢，更是生命。</strong></p>
+<h5>① 難以拒絕的勒索：53% 的高支付率</h5>
+<p>首先，我們來看看一個令人憂心的數據。研究顯示，醫療機構在遭遇攻擊後的 <strong>Ransom Payment Rate (支付率)</strong> 高達 53%。</p>
+<blockquote>
+<p>根據統計，醫療保健產業的支付意願顯著高於其他產業，平均支付金額飆升至 440 萬美元，中位數也有 150 萬美元。</p>
+</blockquote>
+<p>這反映出一個殘酷的現實：醫療機構面臨極大的 <strong>Operational Continuity (營運持續性)</strong> 壓力。當手術室的系統無法連線、當急診室找不到病人的病歷時，醫療機構往往別無選擇，只能被迫支付贖金以求快速恢復服務。</p>
+<h5>② 攻擊目標的戰略轉移：醫療服務商</h5>
+<p>其次，駭客的戰術正在改變。他們不再只攻擊單一醫院，而是轉向攻擊 <strong>Healthcare Businesses</strong>，例如製藥廠、醫療帳務處理公司或醫療技術供應商。</p>
+<p>這類攻擊在 2025 年增長了 30%。這是一種「槓桿效應」，透過攻破一個中心化的服務商，駭客就能同時掌握成百上千家診所或醫院的數據。這就是所謂的 <strong>Interconnected Risks (互連風險)</strong>——在醫療生態系高度數位化的今天，任何一個環節的斷裂都會引發連鎖反應。</p>
+<h5>③ 心理戰升級：Extortion-only (純勒索) 模式</h5>
+<p>更有趣（也更危險）的是勒索手段的進化。傳統上，駭客會加密你的硬碟，讓你無法開機；但現在，<strong>Extortion-only (純勒索)</strong> 的攻擊比例從 2022 年的 4% 三倍跳升到了 12%。</p>
+<p>這意味著駭客根本不需要加密你的系統。他們只要悄悄竊取 <strong>Protected Health Information (PHI, 受保護的健康資訊)</strong>，然後威脅要在 Dark Web 上公開病人的診斷紀錄、心理諮商紀錄或甚至是手術影像。對於極其重視聲譽與法律合規的醫療業來說，這種「名譽勒索」的威脅力有時比系統當機還要巨大。</p>
+<h5>④ 醫療產業的兩大威脅：INC 與 Qilin</h5>
+<p>最後，我們必須記住這兩個名字。在醫療保健領域，<strong>INC Ransom</strong> 與 <strong>Qilin</strong> 是最頻繁出現的威脅者。</p>
+<ul>
+<li><strong>INC Ransom</strong> 在 2025 年發動了至少 39 次針對醫療機構的攻擊。</li>
+<li><strong>Qilin</strong> 則以極高的數據竊取量著稱，單是在以色列的 Shamir 醫療中心一案，就竊取了超過 8TB 的敏感數據。</li>
+</ul>
+<p>這些組織不僅僅是為了錢，他們非常清楚醫療數據的敏感性，因此在談判桌上佔盡了優勢。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在提到「53% 的支付率」時請稍微停頓，讓聽眾感受這個比例對資安防禦帶來的打擊。</li>
+<li><strong>關鍵詞強調</strong>：特別強調 <strong>Protected Health Information (PHI)</strong>，這是醫療業被勒索時最核心的痛點。</li>
+<li><strong>補充案例</strong>：如果聽眾有興趣，可以簡短提到前幾頁講過的 <strong>Change Healthcare</strong> 事件，那正是利用「服務商漏洞」癱瘓全美醫療體系的經典案例。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>了解了醫療產業整體的脆弱性後，接下來我們將深入剖析 2025 年最具代表性的「教科書級」案例——那場影響了三分之一美國人口的『Change Healthcare 大規模數據外洩事件』。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-18">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('18', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('18', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('18', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-18">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 18</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-18" >
+                    <h1>Case Study: The Change Healthcare Breach</h1>
+<h2>The Largest Healthcare Breach in U.S. History</h2>
+<ul>
+<li><strong>Incident Overview</strong>: February 2024 attack by ALPHV/BlackCat.</li>
+<li><strong>Critical Failure</strong>: Access gained through a remote service lacking Multi-Factor Authentication (MFA).</li>
+<li><strong>Scale of Impact</strong>: Affected ~192.7 million individuals (nearly 1/3 of the U.S. population).</li>
+<li><strong>Economic Toll</strong>: Estimated costs exceeding $1.5 billion; $22 million ransom paid.</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-18">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 18 頁：Case Study: The Change Healthcare Breach</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>事件背景</strong>：2024 年 2 月，由 ALPHV/BlackCat 發起的勒索軟體攻擊，針對美國最大的醫療支付處理商。</li>
+<li><strong>關鍵失誤</strong>：遠端存取服務（Citrix）未啟用 <strong>Multi-Factor Authentication (MFA，多因素驗證)</strong>，成為攻擊者的突破口。</li>
+<li><strong>影響規模</strong>：影響約 <strong>192.7 million (1.927 億)</strong> 名個人，相當於美國人口的三分之一。</li>
+<li><strong>經濟損失</strong>：預估總成本超過 <strong>$1.5 billion (15 億美元)</strong>；曾支付 <strong>$22 million (2,200 萬美元)</strong> 贖金，但數據安全仍未獲得保障。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>各位，現在我們要深入探討一個在 2024 年與 2025 年震撼全球的標竿案例——Change Healthcare 網路攻擊事件。這不只是單純的資安漏洞，它被公認為美國醫療體系史上「最嚴重、後果最深遠」的網路攻擊，甚至直接改變了美國政府對醫療資安法規的態度。</p>
+<h5>① 事件起因與致命的安全疏漏</h5>
+<p>這場災難始於 2024 年 2 月。Change Healthcare 作為 UnitedHealth Group 的子公司，每年處理高達 150 億筆醫療交易。然而，作者在文中指出了一個令人震驚的細節：攻擊者 ALPHV/BlackCat 能成功侵入，僅僅是因為該公司的一個 <strong>Citrix 遠端存取服務</strong> 竟然沒有設置 <strong>Multi-Factor Authentication (MFA，多因素驗證)</strong>。</p>
+<blockquote>
+<p>這種在處理極度敏感數據的系統中出現的基本安全漏洞，為後續的災難埋下了導火線。</p>
+</blockquote>
+<h5>② 攻擊過程與潛伏時間 (Dwell Time)</h5>
+<p>攻擊者在 2 月 12 日獲得存取權後，並非立即發動攻擊。他們在網路中潛伏了長達九天的 <strong>Dwell Time (潛伏時間)</strong>，在內部橫向移動並竊取了多達 <strong>6 terabytes (6 TB)</strong> 的數據，內容包含病歷、社會安全號碼、甚至現役軍人的機密資訊。直到 2 月 21 日，勒索軟體正式啟動，導致全美超過 100 個系統被迫斷線，醫療理賠、處方領取與 eligibility（資格驗證）陷入全面癱瘓。</p>
+<h5>③ 空前的規模與慘重的代價</h5>
+<p>這場攻擊受影響的人數高達 <strong>192.7 million (1.927 億)</strong> 人，這個數字是先前最大醫療資安紀錄（2015 年 Anthem 案）的 2.5 倍之多。</p>
+<p>在經濟損害方面，UnitedHealth Group 雖然支付了高達 <strong>$22 million (2,200 萬美元)</strong> 的贖金，但悲劇並未結束。ALPHV 集團發生了所謂的 <strong>Exit Scam（捲款潛逃）</strong>，拿了錢就消失，並未分給執行攻擊的「加盟商」 (Affiliate)。導致這名心懷不滿的加盟商帶著數據轉投另一個勒索集團 RansomHub，在 2024 年 4 月發起第二次勒索。這證明了「支付贖金」往往無法解決問題。最終，該事件的應變、恢復與法律責任等總成本，估計超過了 <strong>$1.5 billion (15 億美元)</strong>。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在提到「三分之一美國人口」時請放慢語速，讓聽眾理解受災規模的恐怖程度。</li>
+<li><strong>關鍵詞強調</strong>：強調 <strong>MFA (多因素驗證)</strong> 的缺失。提醒聽眾：即使是市值數千億美元的醫療巨頭，也會因為一個簡單的驗證漏失而崩潰。</li>
+<li><strong>補充知識</strong>：如果時間允許，可以提到這起事件直接推動了美國 OCR（民權辦公室）提議修改 HIPAA 安全規則，要求強制執行 MFA。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>Change Healthcare 事件展現了巨大的經濟損失，但下一頁我們要看的 Synnovis 案例，將揭示勒索軟體如何跨越數位世界，直接威脅到人類的生命安全。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-19">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('19', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('19', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('19', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-19">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 19</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-19" >
+                    <h1>The Human Toll: The Synnovis Incident</h1>
+<h2>When Cybersecurity Directly Impacts Mortality</h2>
+<ul>
+<li><strong>Incident</strong>: June 2024 attack on UK pathology services by Qilin.</li>
+<li><strong>Disruption</strong>: 800+ operations and 700+ outpatient appointments cancelled.</li>
+<li><strong>Fatal Consequence</strong>: Investigation confirmed the attack as a contributory factor in a patient's death.</li>
+<li><strong>Lesson</strong>: Highlighting the life-and-death stakes of critical service security.</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-19">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 19 頁：The Human Toll: The Synnovis Incident</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>個案背景</strong>：2024 年 6 月，俄羅斯勒索軟體組織 <strong>Qilin</strong> 針對英國病理服務機構 <strong>Synnovis</strong> 發動攻擊。</li>
+<li><strong>營運衝擊</strong>：導致超過 800 台手術與 700 場門診被迫取消，倫敦多家大型 <strong>NHS</strong> 醫院陷入癱瘓。</li>
+<li><strong>悲劇後果</strong>：調查證實，該次網路攻擊是導致一名患者不幸死亡的「促成因素 (Contributory factor)」。</li>
+<li><strong>核心啟示</strong>：資安不再僅是數位風險，它已直接威脅到醫療前線的生命安全。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>當我們討論勒索軟體時，焦點往往集中在財政損失或數據外洩。但接下來這頁提到的案例，將帶領我們正視一個最殘酷的現實：網路攻擊是真的會奪走人命的。</p>
+<p>這就是震驚全球的 <strong>Synnovis</strong> 事件。</p>
+<h5>① 倫敦醫療體系的心臟停擺</h5>
+<p>2024 年 6 月 3 日，一家名為 <strong>Synnovis</strong> 的機構遭到勒索組織 <strong>Qilin</strong> 的入侵。這不是一般的公司，它是英國 <strong>NHS</strong>（國民保健署）多家頂尖醫院的病理合作夥伴，負責處理東南倫敦數百萬人的血液測試與診斷。</p>
+<p>攻擊發生後，<strong>Qilin</strong> 鎖定了整個電腦網路，並開出了高達 <strong>5,000 萬美元</strong> 的天價贖金。醫院因為無法存取檢驗結果，手術室與門診瞬間陷入混亂。</p>
+<blockquote>
+<p>文中提到，這次攻擊造成超過 800 台計畫中的手術與 700 多場門診被迫取消，更有超過 11,000 件預約受到延誤。當時倫敦甚至出現了緊急缺血的狀況，因為醫院無法進行必要的配血流程。</p>
+</blockquote>
+<h5>② 當數據延遲變成致命傷</h5>
+<p>但最令國際社會心碎的，是 2025 年 6 月揭露的調查報告。金氏學院醫院 (<strong>King’s College Hospital</strong>) 證實，在一次針對患者安全事件的調查中發現，這次勒索軟體攻擊被列為導致一名患者「意外死亡」的關鍵 <strong>contributory factor</strong>（促成因素）。</p>
+<blockquote>
+<p>根據調查，主因是醫療團隊在攻擊期間，為了等待血液檢驗結果而耗費了太長時間，導致搶救時機流失。</p>
+</blockquote>
+<p>這打破了過往「資安只是技術問題」的虛假安全感。正如 <strong>Synnovis</strong> 執行長 <strong>Mark Dollar</strong> 所言，這是一起令人深感悲痛的刑事犯罪，它直接干預了醫療體系拯救生命的能力。</p>
+<h5>③ 關鍵啟示：安全即生命</h5>
+<p>作者指出，醫療機構之所以成為 <strong>Qilin</strong> 這種組織的首選目標，正是因為犯罪者看準了醫院有著「必須快速復原」的巨大壓力。當患者的性命懸於一線時，資安韌性 (Cyber Resilience) 就等同於生命救援。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在提到「患者死亡」時請稍作停頓，讓聽眾感受此事件的嚴重性，語氣應保持肅穆。</li>
+<li><strong>關鍵詞強調</strong>：特別強調 <strong>&quot;contributory factor&quot;</strong>（促成因素），這是醫學與法律上將資安事件與死亡聯繫起來的重要定性。</li>
+<li><strong>補充細節</strong>：如果聽眾對攻擊者感興趣，可以補充 <strong>Qilin</strong> 除了加密數據，還在暗網發布了 <strong>400GB</strong> 的病患隱私資料（包含姓名、生日與檢驗描述）來施壓。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>這種針對醫療核心服務的精準打擊，揭示了勒索攻擊的新常態——攻擊者不再滿足於入侵單一終端，而是鎖定那些「倒下一個，影響萬千」的供應鏈節點。下一頁，我們將分析這種連鎖反應的技術源頭：供應鏈災難。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-20">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('20', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('20', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('20', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-20">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 20</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-20" >
+                    <h1>Supply Chain Catastrophes: MOVEit and Cleo</h1>
+<h2>Cascading Impacts Across Global Services</h2>
+<ul>
+<li><strong>MOVEit Transfer</strong>: Affected 66.4 million individuals across 2,500+ firms.</li>
+<li><strong>Mechanism</strong>: Use of the &quot;LEMURLOOT&quot; web shell for stealthy, automated exfiltration.</li>
+<li><strong>Cleo Exploitation</strong>: 2025 campaign resulting in 392 victims in Q1 alone.</li>
+<li><strong>Efficiency</strong>: These attacks allow compromise of thousands of entities via a single vulnerability.</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-20">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 20 頁：Supply Chain Catastrophes: MOVEit and Cleo</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>MOVEit Transfer 災難</strong>：分析其如何影響全球 2,500 多家企業，導致超過 6,640 萬人的隱私外洩。</li>
+<li><strong>核心工具 &quot;LEMURLOOT&quot;</strong>：解析這款針對 MFT 系統開發的隱形網頁後門（Web Shell）。</li>
+<li><strong>Cleo 系列漏洞利用</strong>：追蹤 2025 年初爆發的連鎖攻擊，僅第一季就有近 400 家受害者。</li>
+<li><strong>供應鏈效率</strong>：探討攻擊者如何透過「單點突破、全線收割」的策略，實現極高效率的勒索。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>各位，如果說傳統的勒索攻擊是針對單一企業的「狙擊」，那麼本頁要討論的「供應鏈攻擊」就是一場「地毯式轟炸」。</p>
+<h5>① 數位災難的起點：MOVEit Transfer</h5>
+<p>我們首先來看那場被稱為「全球隱私災難 (Global Privacy Disaster)」的 <strong>MOVEit Transfer</strong> 事件。這是一場由 <strong>Cl0p</strong> 組織發起的供應鏈浩劫。文中提到，這場攻擊的影響力在 2025 年仍持續震盪。</p>
+<blockquote>
+<p>數據顯示：這場攻擊最終導致了至少 <strong>6,640 萬人</strong> 的敏感資料被盜，受害企業遍佈全球超過 <strong>2,500 家</strong>。</p>
+</blockquote>
+<p>這其中包括了 PwC、Aon、EY 以及 TD Ameritrade 等知名機構。這種「攻擊一個產品、控制數千家企業」的模式，徹底改變了網路犯罪的效率天花板。</p>
+<h5>② 隱形的後門：LEMURLOOT</h5>
+<p>為什麼這些企業在被入侵時毫無察覺？秘密在於一款名為 <strong>&quot;LEMURLOOT&quot;</strong> 的自定義 Web Shell。</p>
+<p>作者指出，<strong>LEMURLOOT</strong> 的設計極其陰險，它會偽裝成 MOVEit 正常的系統文件 <code>human2.aspx</code>。它不只是個簡單的後門，而是一個具備多階段功能的「自動化竊密引擎」。它能利用特殊的 HTTP 標頭來串接命令，繞過一般的邊界防護，讓攻擊者能像在自家花園散步一樣，輕易地從 <strong>Microsoft Azure Blob Storage</strong> 雲端方案中提取海量數據。</p>
+<h5>③ 2025 年的新目標：Cleo</h5>
+<p>這種成功模式在 2025 年被完美複製到了 <strong>Cleo</strong> 檔案傳輸產品上。<strong>Cl0p</strong> 組織利用了 <strong>Cleo Harmony</strong> 和 <strong>VLTrader</strong> 中的關鍵漏洞（如 CVE-2024-50623），在 2025 年第一季就創下了 <strong>392 名</strong> 受害者的紀錄。</p>
+<p>值得我們深思的是，這類攻擊已經從「加密勒索」轉向了「純數據勒索 (Pure Data Extortion)」。攻擊者不再費力去鎖定你的系統，因為他們知道，單單是「將盜取的數據發布在 <strong>Leak Sites</strong> (洩密網站)」所造成的信譽損害與法規罰款，就足以讓企業乖乖交出贖金。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在提到 &quot;66.4 million&quot; 這個數字時請放慢速度，讓聽眾感受到災難的規模感。</li>
+<li><strong>關鍵詞強調</strong>：<strong>&quot;LEMURLOOT&quot;</strong> 是本頁的核心技術詞彙，唸到它偽裝成 <code>human2.aspx</code> 時可以稍微提高音調，強調其欺騙性。</li>
+<li><strong>補充案例</strong>：如果聽眾有技術背景，可以補充說明 Cl0p 早在 2021 年就開始對 MOVEit 進行長期偵察，這不是突發事件，而是蓄謀已久的「零日漏洞 (Zero-day)」獵殺。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>當攻擊者的效率變得如此駭人聽聞，我們是否還有反擊的餘地？下一頁，我們將探討如何從經濟的角度，去瓦解這些犯罪組織的投報率。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-21">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('21', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('21', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('21', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-21">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 21</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-21" >
+                    <h1>Breaking the Cybercriminal ROI</h1>
+<h2>Changing the Economic Equation</h2>
+<ul>
+<li><strong>ROI Calculation</strong>: As payment rates drop, the economic viability of ransomware is challenged.</li>
+<li><strong>Market Correction</strong>: Median payments fell 65% in 2025 to $140,000.</li>
+<li><strong>Defensive Success</strong>: Organizations are proving that refusing to pay and investing in recovery can break the cycle.</li>
+<li><strong>Revenue Decline</strong>: Despite higher attack volumes, total criminal revenue is on a downward trend.</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-21">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 21 頁：Breaking the Cybercriminal ROI</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>經濟模式受挫</strong>：隨著支付率大幅下降，勒索軟體的 <strong>Return on Investment (ROI)</strong> 正在面臨嚴峻挑戰。</li>
+<li><strong>市場修正</strong>：2025 年贖金中位數驟降 65% 至 140,000 美元，顯示獲利空間縮減。</li>
+<li><strong>防禦帶來的勝利</strong>：企業透過完善備份與拒絕支付，成功阻斷了犯罪的經濟循環。</li>
+<li><strong>營收負成長</strong>：即便攻擊次數增加，勒索軟體產業的總營收仍呈現下滑趨勢。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>各位，在看過前面這麼多驚心動魄的案例後，我們現在要討論一個最關鍵轉折點：也就是我們如何從「經濟動機」上擊敗這些駭客。</p>
+<p>勒索軟體本質上是一場「關於數字的博弈」。對犯罪集團來說，這是一門生意，而 2025 年的數據顯示，這門生意的「投資報酬率」，也就是 <strong>Return on Investment (ROI)</strong>，正在經歷前所未有的市場修正。</p>
+<h5>① 崩潰的轉化率與 ROI</h5>
+<p>以往駭客只要發動攻擊，就有相當高的機率拿到錢。但根據最新研究，贖金支付率已經跌至 <strong>23% 到 25%</strong> 的歷史新低。這意味著什麼？這代表著駭客現在必須花費多出四倍的力氣，才能獲得與以往相同的經濟回報。</p>
+<blockquote>
+<p>正如文中所提到的，勒索軟體的經濟模型高度依賴簡單的 ROI 計算。當「轉化率」跌破臨界點，整個犯罪生態系的商業邏輯就會開始瓦解。</p>
+</blockquote>
+<h5>② 震撼的市場修正數據</h5>
+<p>我們可以從數據中看到一場劇烈的 <strong>Market Correction</strong>。2025 年，贖金的中位數從過去的高點重挫了 <strong>65%</strong>，目前僅剩約 <strong>140,000 美元</strong>。這說明了雖然我們常在新聞看到數千萬美元的極端勒索案，但整體市場的「平均獲利能力」正在大幅萎縮。這種「利潤攤薄」的現象，正在讓許多技術層次較低的犯罪小組（Affiliates）退出市場。</p>
+<h5>③ 成功防禦的實證</h5>
+<p>為什麼支付率會崩潰？原因在於防禦方的成功。
+第一，企業整體的 <strong>Backup and Recovery</strong>（備份與復原）能力顯著提升；
+第二，大家越來越清楚，支付贖金既不能保證資料不外流，也無法保證一定能拿回密鑰。
+研究顯示，目前每四家受害企業中，就有三家有能力在「不付錢」的情況下恢復運作。這是一種集體意識的覺醒，證明了透過正確的防禦投資，我們確實能打破這個勒索循環。</p>
+<h5>④ 總體營收的黃金交叉</h5>
+<p>最後，請看這個非常激勵人心的數據：儘管 2025 年的攻擊次數增長了 34% 到 50%，但勒索軟體產業的「年度總收益」卻從 2023 年的 11 億美元，下滑到了約 <strong>8.13 億美元</strong>。</p>
+<blockquote>
+<p>這是一個里程碑。它告訴我們，即便敵人變多、變快了，只要我們拒絕餵養這個邪惡的生態系，他們的總產值就會萎縮。</p>
+</blockquote>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在提到「140,000 美元」和「8.13 億美元」時，可以稍作停頓，讓聽眾感受數據背後所代表的防禦成效。</li>
+<li><strong>關鍵詞強調</strong>：強調 <strong>ROI</strong> 和 <strong>Market Correction</strong>，這是從商務觀點分析犯罪趨勢的核心詞彙。</li>
+<li><strong>補充細節</strong>：如果聽眾有疑問，可以補充說：雖然中位數下降，但針對大型企業的「大獵取（Big Game Hunting）」案件，其平均贖金反而提高到了 200 萬美元，這顯示了駭客正轉向極端的高價值目標。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>雖然經濟面看起來對我們有利，但我們不能掉以輕心。因為當傳統手段賺不到錢時，駭客會進化出更詭譎的技術。下一頁，我們將探討 2026 年之後，AI 與地緣政治將如何重新定義這場戰爭。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-22">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('22', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('22', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('22', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-22">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 22</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-22" >
+                    <h1>Future Trajectories: AI and Geopolitical Risks</h1>
+<h2>The Next Wave of Cyber Extortion</h2>
+<ul>
+<li><strong>IT/OT Convergence</strong>: Synchronized disruptions across manufacturing and logistics.</li>
+<li><strong>Geopolitical Blurring</strong>: Lines between financially motivated crime and nation-state objectives are fading.</li>
+<li><strong>AI Dominance</strong>: Future campaigns will likely feature modular, AI-driven architectures for maximum stealth.</li>
+<li><strong>Industrial Extortion</strong>: Moving from data theft to strategic business downtime as the primary lever.</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-22">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 22 頁：Future Trajectories: AI and Geopolitical Risks</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>IT/OT 深度融合</strong>：勒索軟體將目標轉向生產、物流等營運技術系統，引發同步化的產業中斷。</li>
+<li><strong>地緣政治模糊化</strong>：金錢動機與國家戰略目標的界線逐漸消失，勒索軟體成為戰略武器。</li>
+<li><strong>AI 驅動的隱匿攻擊</strong>：未來將普及模組化、AI 賦能的架構，大幅提升攻擊的隱蔽性與效率。</li>
+<li><strong>工業勒索新常態</strong>：勒索重心從單純的「資料加密」轉向有預謀的「策略性停擺」。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>各位，當我們看完了 2025 年種種慘烈的案例後，最關鍵的問題是：接下來的風向標會往哪裡吹？在這一頁，我們要探討的是勒索軟體正處於一個「質變」的轉折點。</p>
+<h5>① IT/OT Convergence 與工業勒索的新手段</h5>
+<p>未來的攻擊將不再僅限於辦公室的電腦，而是更深層地進入 <strong>IT 與 OT（營運技術）</strong> 的融合地帶。這意味著攻擊者會精準地打擊生產排程、物流系統與訂單管理之間的依賴鏈。</p>
+<p>我們在文中看到，勒索軟體已經進化到「工業勒索」的階段。這不只是把檔案鎖起來，而是透過造成 <strong>Strategic business downtime（策略性業務停機）</strong> 作為談判籌碼。例如 2025 年發生的「朝日啤酒（Asahi Breweries）」事件，就是一個典型案例，勒索軟體直接導致了營運中斷，而不僅僅是資料加密。未來的惡意程式甚至會具備「自動化感知」能力，能夠直接針對 <strong>ICS（工業控制系統）</strong> 或 <strong>SCADA</strong> 系統中的 <strong>PLC</strong>（可程式邏輯控制器）進行破壞。</p>
+<h5>② 地緣政治的模糊邊界 (Geopolitical Blurring)</h5>
+<p>第二個關鍵點是攻擊動機的質變。過去我們認為勒索軟體就是為了錢，但現在，純粹的犯罪與國家戰略目標之間的界線正變得模糊。</p>
+<blockquote>
+<p>&quot;Ransomware has transcended its criminal origins to become a weapon capable of destabilizing entire industries and threatening public safety.&quot;
+「勒索軟體已經超越了其犯罪起源，成為一種能夠破壞整個產業穩定並威脅公共安全的武器。」</p>
+</blockquote>
+<p>這反映出勒索軟體已成為一種戰略工具。它能透過破壞供應鏈來侵蝕大眾對制度的信任，甚至影響國家安全。這種 <strong>Geopolitical Blurring</strong> 的趨勢，讓防禦者更難判斷背後的對手究竟是單純的駭客組織，還是具備國家背景的特種部隊。</p>
+<h5>③ AI Dominance：隱匿攻擊的全面進化</h5>
+<p>最後，我們必須談談 <strong>AI（人工智慧）</strong> 的統治力。未來的勒索軟體將採用「模組化架構」，利用 <strong>GenAI（生成式 AI）</strong> 自動編寫高強度的釣魚郵件，甚至製作 <strong>Deepfakes（深偽技術）</strong> 來進行社交工程攻擊。</p>
+<p>更難應付的是，駭客會增加 <strong>LOTL (Living-off-the-land)</strong> 技巧的使用，也就是利用受害者系統中合法的工具來執行惡意指令。透過 AI 驅動的自動化掃描與漏洞利用，攻擊者能像變色龍一樣隱藏在正常的營運流量中，達到 <strong>Maximum stealth（最大化隱匿）</strong>，在防禦者察覺之前就已經完成了資料竊取與基礎設施的佈署。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：講到第 ② 點的引用句時，請加重語氣，強調這不僅是經濟損失，更是安全威脅。</li>
+<li><strong>關鍵詞強調</strong>：提到 <strong>IT/OT Convergence</strong> 與 <strong>Modular architectures</strong> 時請稍作停頓，讓聽眾理解技術層面的複雜度。</li>
+<li><strong>補充案例</strong>：若時間充裕，可以提到 2025 年 Scattered Spider 宣佈推出的 <strong>&quot;ShinySp1d3r RaaS&quot;</strong>，這就是 AI 賦能攻擊的最佳證明。</li>
+<li><strong>轉場橋樑 (Bridge)</strong>：
+<blockquote>
+<p>當攻擊手段已經進化到我們難以想像的高度時，我們該如何應對？最後一頁，我們將總結建立「全球數位韌性」的實戰策略。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+        <div class="page" id="page-23">
+            
+            <!-- Mobile Tab Bar (Injected by JS logic or rendered here directly) -->
+            <div class="mobile-tab-bar">
+                <button class="mobile-tab-btn active" onclick="switchTab('23', 'slide')">🖼️ 簡報</button>
+                <button class="mobile-tab-btn" onclick="switchTab('23', 'text')">📄 文字</button>
+                <button class="mobile-tab-btn" onclick="switchTab('23', 'notes')">📝 講稿</button>
+            </div>
+
+            <div class="slide" id="slide-col-23">
+                <div class="slide-toolbar slide-controls">
+                    <h2>Slide 23</h2>
+                    
+                </div>
+
+                <!-- Visual Content (SVG) -->
+                
+
+                <!-- Text Content -->
+                <div class="slide-text rendered-content" id="text-view-23" >
+                    <h1>Conclusion: Building Global Cyber Resilience</h1>
+<h2>Strategies for a Shifting Landscape</h2>
+<ul>
+<li><strong>Core Pillar</strong>: Cyber resilience must be treated as a foundation of national security.</li>
+<li><strong>Actionable Steps</strong>:
+<ul>
+<li>Enforce Multi-Factor Authentication (MFA) across all services.</li>
+<li>Maintain immutable backups and conduct regular recovery drills.</li>
+<li>Foster international cooperation to dismantle criminal infrastructure.</li>
+</ul>
+</li>
+<li><strong>Outlook</strong>: Collective commitment to denying profits is the only path to neutralizing the ransomware threat.</li>
+</ul>
+
+                </div>
+            </div>
+
+            <div class="notes" id="notes-col-23">
+                <h2 class="slide-controls">Speaker Notes</h2>
+                <div class="note-content rendered-content">
+                    <h3>🎙️ 第 23 頁：Conclusion: Building Global Cyber Resilience</h3>
+<h4>【本頁重點摘要】</h4>
+<ul>
+<li><strong>核心支柱</strong>：網路韌性（Cyber Resilience）已從 IT 問題上升為國家安全（National Security）的基石。</li>
+<li><strong>具體行動</strong>：
+<ul>
+<li>全面強制執行 <strong>Multi-Factor Authentication (MFA)</strong>。</li>
+<li>建立 <strong>Immutable backups</strong> 並定期進行<strong>復原演練 (Recovery drills)</strong>。</li>
+<li>推動國際合作，合力拆除犯罪基礎設施。</li>
+</ul>
+</li>
+<li><strong>未來展望</strong>：唯有透過全球一致行動「拒絕支付贖金」，徹底打破犯罪組織的 ROI，才能終結勒索軟體威脅。</li>
+</ul>
+<hr />
+<h4>【逐字講稿】</h4>
+<p>各位，在看過 2025 年這一系列驚心動魄的數據與案例後，我們來到了這份報告的最核心：也就是面對這種不斷進化的威脅，我們該如何構建全球性的防禦韌性？</p>
+<h5>① 具體行動：從基礎做起，強化防禦縱深</h5>
+<p>首先，我們必須將簡報中的這幾項行動視為「不容妥協」的標準。</p>
+<blockquote>
+<p>作者在文中特別提到，<strong>Change Healthcare</strong> 的慘痛教訓，其源頭竟然是一個缺乏 <strong>Multi-Factor Authentication (MFA)</strong> 的遠端存取服務。這提醒我們，無論技術多先進，基礎設施的漏洞往往在於最基本的身分驗證。</p>
+</blockquote>
+<p>除了 MFA，我們更需要建立 <strong>Immutable backups</strong>（不可變備份）。但請記住，僅有備份是不夠的。</p>
+<ul>
+<li><strong>定期復原演練 (Regular recovery drills)</strong>：這是確保備份有效的唯一方式。在 <strong>Synnovis</strong> 的案例中，法醫審查與資料恢復耗時超過一年，這說明了「擁有備份」與「快速復原」之間存在巨大的鴻溝。我們必須透過實戰演練，縮短復原時間，才能在遭受攻擊時，真正擁有拒絕向駭客妥協的底氣。</li>
+</ul>
+<h5>② 戰略層面：將網路韌性提升至國家安全高度</h5>
+<p>我們要意識到，勒索軟體已不再僅是財務損失問題。</p>
+<p>當攻擊者開始針對<strong>關鍵基礎設施 (Critical Infrastructure)</strong>，甚至直接或間接地導致患者死亡（如 Synnovis 案件所示），<strong>Cyber resilience</strong> 就不再只是企業的責任，而是 <strong>National security</strong> 的核心支柱。我們需要推動更深層次的<strong>國際合作 (International cooperation)</strong>。就像「克羅諾斯行動」(Operation Cronos) 成功瓦解 LockBit 的基礎設施一樣，只有各國政府與產業聯手，才能有效地拆除這些跨國犯罪網路。</p>
+<h5>③ 最終展望：打破犯罪的經濟邏輯</h5>
+<p>最後，讓我們回到這份報告提到的「勒索悖論」。</p>
+<p>2025 年是一個分水嶺。雖然攻擊量在增加，但<strong>支付率 (Payment rates)</strong> 卻降到了歷史新低。這是一個極為正面且重要的信號：當全球受害者一致決定不再支付贖金時，勒索軟體的 <strong>Return-on-Investment (ROI)</strong> 就會崩潰。</p>
+<blockquote>
+<p>「集體承諾拒絕提供利潤，是中和勒索軟體威脅的唯一路徑。」</p>
+</blockquote>
+<p>當犯罪變得「無利可圖」，這個邪惡的商業模式才會真正瓦解。</p>
+<hr />
+<h4>【講者提示 &amp; 轉場】</h4>
+<ul>
+<li><strong>節奏提醒</strong>：在提到「定期復原演練」時，請加重語氣。這是針對上一輪回饋特別補強的重點，強調「備份不是裝飾品」。</li>
+<li><strong>補充案例</strong>：若有提問，可進一步用 <strong>Change Healthcare</strong> 沒設 MFA 導致 15 億美金損失的數據來對比 MFA 的低廉成本。</li>
+<li><strong>關鍵詞強調</strong>：<strong>Cyber resilience</strong> 與 <strong>National security</strong> 應視為同義詞處理。</li>
+<li><strong>結束語</strong>：
+<blockquote>
+<p>感謝各位參與今天的 2025 勒索軟體回顧報告。網路安全沒有終點，唯有保持警惕並持續優化韌性，我們才能在數位時代中生存並繁榮。期待與各位在下一次的專題中再見。</p>
+</blockquote>
+</li>
+</ul>
+
+                </div>
+            </div>
+        </div>
+  
+</main>
+
+    <footer class="footer">
+        <div class="hr" style="margin: 40px 0 20px;"></div>
+        <div class="meta" style="justify-content: center; font-size: 14px;">
+            <span>Generated by PPTPlaner</span>
+            <a href="https://github.com/Chiakai-Chang/PPTPlaner" target="_blank">GitHub</a>
+        </div>
+        <p style="margin-top: 8px; font-size: 11px;">&copy; 2025 Chiakai Chang. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // --- Header Scroll Logic ---
+        function handleScroll() {
+            const scrollY = window.scrollY;
+            const body = document.body;
+            const header = document.querySelector('header');
+            
+            if (scrollY > 50) {
+                if (!body.classList.contains('scrolled-mode')) {
+                    body.classList.add('scrolled-mode');
+                    document.documentElement.style.setProperty('--header-height', header.offsetHeight + 'px');
+                }
+            } else {
+                if (body.classList.contains('scrolled-mode')) {
+                    body.classList.remove('scrolled-mode');
+                    document.documentElement.style.setProperty('--header-height', header.offsetHeight + 'px');
+                }
+            }
+        }
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('load', handleScroll);
+
+        // --- Desktop Toggle Logic ---
+        function toggleDesktopView(pageId) {
+            const visualView = document.getElementById(`visual-view-${pageId}`);
+            const textView = document.getElementById(`text-view-${pageId}`);
+            
+            if (visualView.style.display === 'none') {
+                visualView.style.display = 'block';
+                textView.style.display = 'none';
+            } else {
+                visualView.style.display = 'none';
+                textView.style.display = 'block';
+            }
+        }
+
+        // --- Mobile Tab Logic ---
+        function switchTab(pageId, mode) {
+            const slideCol = document.getElementById(`slide-col-${pageId}`);
+            const notesCol = document.getElementById(`notes-col-${pageId}`);
+            
+            const visualView = document.getElementById(`visual-view-${pageId}`);
+            const textView = document.getElementById(`text-view-${pageId}`);
+            
+            // 1. Manage Columns Visibility
+            if (mode === 'notes') {
+                slideCol.style.display = 'none';
+                notesCol.style.display = 'block';
+            } else {
+                slideCol.style.display = 'block';
+                notesCol.style.display = 'none';
+                
+                // 2. Manage Slide Content (Visual vs Text)
+                if (mode === 'slide') {
+                    if (visualView) {
+                        visualView.style.display = 'block';
+                        textView.style.display = 'none';
+                    } else {
+                        // Fallback if no visual exists
+                        textView.style.display = 'block';
+                    }
+                } else if (mode === 'text') {
+                    if (visualView) visualView.style.display = 'none';
+                    textView.style.display = 'block';
+                }
+            }
+
+            // 3. Update Buttons State
+            const pageDiv = document.getElementById(`page-${pageId}`);
+            const btns = pageDiv.querySelectorAll('.mobile-tab-btn');
+            btns.forEach(btn => btn.classList.remove('active'));
+            
+            // Find the button that was clicked (approximate match based on text content logic or order)
+            // Simpler: pass 'this' or recreate logic. Let's just highlight based on index for simplicity or text.
+            const iconMap = {'slide': '🖼️', 'text': '📄', 'notes': '📝'};
+            const targetIcon = iconMap[mode];
+            btns.forEach(btn => {
+                if(btn.innerText.includes(targetIcon)) btn.classList.add('active');
+            });
+        }
+
+        // Init Mobile State
+        function initMobile() {
+            if (window.innerWidth <= 768) {
+                const pages = document.querySelectorAll('.page');
+                pages.forEach(page => {
+                    const pageId = page.id.replace('page-', '');
+                    // Default to 'slide' view
+                    switchTab(pageId, 'slide');
+                });
+            }
+        }
+        window.addEventListener('resize', initMobile);
+        window.addEventListener('load', initMobile);
+    </script>
+</body>
+</html>
